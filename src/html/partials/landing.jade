@@ -1,0 +1,31 @@
+#landing
+    video(loop, muted)
+        source(src='https://dl.dropboxusercontent.com/u/26745309/assets/videos/hero.webm', type='video/webm')
+        source(src='https://dl.dropboxusercontent.com/u/26745309/assets/videos/hero.mp4', type='video/mp4')
+
+    a.volume-controls unmute
+
+    .auth-container
+        form(autocomplete='off')
+            .brand vacay
+
+            .auth-message
+
+            .reset.meta.i-header reset password
+            .request.meta.i-header request password reset link
+            .invite.meta.i-header accept invite
+            .signup.meta.i-header join the community
+
+            .inputs
+                input#email(type='email', placeholder='Email', required)
+                input#password(type='password', placeholder='Password', required)
+                input.signup.reset.invite(type='password', placeholder='Confirm Password')
+                input#username.signup.invite(type='text', placeholder='Username')
+                input#name.signup.invite(type='text', placeholder='Name')
+
+                button.submit(type='submit') Login
+
+        button.sm.signin(onclick="Landing.set('signup')") sign up
+        button.sm.signup(onclick="Landing.set('signin')") already have an account? login.
+        button.sm.request(onclick="Landing.set('signin')") back
+        button.sm.signin(onclick="Landing.set('request')") reset password

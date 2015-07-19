@@ -1,0 +1,21 @@
+.left
+    button.icon.play.avatar
+        img.avatar-image-icon(src='{{=it.artwork}}', onerror='this.src=""')
+        i.icon-play
+        i.icon-pause
+
+.i-body.cursor
+    h5.i-title {{=it.displayTitle}}
+    p.i-description
+        small.meta {{=it.time}}
+        small.meta {{=it.bitrate}}
+
+.right
+    button.icon.crate.success.t(data-active='{{=it.crated}}', title='crate')
+        i.icon-crate.f
+        i.icon-crate-dark.o
+
+    button.icon.queue(data-active='{{=it.queued}}', title='queue')
+        i.icon-add
+
+    button.icon.more(title='more') ...

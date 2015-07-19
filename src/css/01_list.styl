@@ -1,0 +1,16 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.list:empty
+    &:before
+        content ""
+        display block
+        width 70px
+        margin 30px auto 0
+        border-top 1px solid $border        
+    &:after
+        content attr(empty)
+        display block
+        width 100%
+        padding 15px 0
+        text-align center

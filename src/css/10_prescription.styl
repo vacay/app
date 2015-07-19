@@ -1,0 +1,40 @@
+@import '00_variables.styl'
+@import 'nib'
+
+#prescription
+    margin-top 30px
+
+.prescription
+    .i-actions
+        margin 15px
+        padding 15px 0
+        border-top 1px solid $border
+        border-bottom 1px solid $border
+        .avatar
+            display inline-block
+            margin-right 5px
+            img
+                width 30px
+                height 30px
+    .i-image
+        border 1px solid rgba(0,0,0,0.03)
+    a.i-image
+        background-position center
+        background-size cover
+        height 400px
+    .description[contenteditable='true']
+        background yellow
+        margin 10px 0
+    .recommend
+        margin-right 10px
+        .active
+            display none
+        &.active
+            .active
+                display inline-block
+            .inactive
+                display none
+    .save
+        display none
+    .editable .save
+        display inline-block

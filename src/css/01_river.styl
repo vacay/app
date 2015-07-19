@@ -1,0 +1,11 @@
+@import '00_variables.styl'
+@import 'nib'
+
+#river .md-loading
+    display none
+
+#river[data-loading='true']
+    .list:empty
+        display none
+    .md-loading
+        display block

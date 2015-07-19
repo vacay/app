@@ -1,0 +1,301 @@
+/* global User, page, Me, Location, Elem, User, Prescription, Vitamin, Page, document, View, doT, Log, Vitamins */
+(function() {
+
+    var init = function(ctx, next) {
+	if (ctx.state.user && ctx.state.user.username === ctx.params.id) {
+	    next();
+	} else {
+	    User.read(ctx.params.id, null, null, function(err, user) {
+		if (err) {
+		    page('/');
+		    return ;
+		}
+
+		ctx.state.user = user;
+		ctx.save();
+		next();
+	    });
+	}
+    };
+
+    var read = function(ctx) {
+
+	var search = Location.search();
+
+	ctx.state.user.isOwner = ctx.state.user.username === Me.username;
+
+	var filterLoaded, headingLoaded;
+
+	var q, offset = 0, tags = search.tag ? [search.tag] : [];
+
+	var load = function(options) {
+
+	    var self = this;
+
+	    var subpath = ctx.params.subpath || 'summary';
+	    var type;
+
+	    var r = document.getElementById('river');
+	    var l = r.querySelector('.list');
+
+	    var intro = ctx.state.user.isOwner ? 'You have ' : ctx.params.id + ' has ';
+
+	    switch(subpath) {
+	    case 'crate':
+		l.setAttribute('empty', intro + 'not crated (saved) any vitamins (recordings).');
+		type = 'vitamin';
+		break;
+
+	    case 'listens':
+		l.setAttribute('empty', intro + 'no listening history.');
+		type = 'vitamin';
+		break;
+
+	    case 'imports':
+		l.setAttribute('empty', intro + 'not added or uploaded to vacay.');
+		type = 'vitamin';
+		break;
+
+	    case 'prescriptions':
+		l.setAttribute('empty', intro + 'not made any prescriptions.');
+		type = 'prescription';
+		break;
+
+	    case 'recommendations':
+		l.setAttribute('empty', intro + 'not recommended any prescriptions.');
+		type = 'prescription';
+		break;
+
+	    case 'drafts':
+		l.setAttribute('empty', intro + 'no prescription drafts (unpublished).');
+		type = 'prescription';
+		break;
+
+	    case 'pages':
+		l.setAttribute('empty', intro + 'not subscribed to any pages.');
+		type = 'page';
+		break;
+
+	    case 'users':
+		l.setAttribute('empty', intro + 'not subscribed to any people.');
+		type = 'user';
+		break;
+
+	    default:
+		l.setAttribute('empty', intro + 'no activity to show.');
+		type = 'summary';
+		break;
+	    }
+
+	    if (options) {
+		offset = 0;
+		l.innerHTML = null;
+		headingLoaded = false;
+
+		if (typeof options.q !== 'undefined') q = options.q;
+		if (typeof options.tags !== 'undefined') tags = options.tags;
+
+		if (options.reset) {
+		    document.querySelector('.filters input').value = q = null;
+		    tags = [];
+		    var ts = document.querySelectorAll('.filters .tag');
+		    Elem.each(ts, function(t) {
+			t.classList.remove('active');
+		    });
+		}
+	    }
+
+	    var params = { offset: offset, limit: 10 };
+	    if (q) params.q = q;
+	    if (tags) params.tags = tags;
+	    
+	    User.read(ctx.params.id, subpath, params, function(err, data) {
+		if (err) {
+		    Log.error(err);
+		} else {
+
+		    var frag = document.createDocumentFragment();
+
+		    if (type === 'summary') {
+			var crate = Elem.create({ className: 'crate' });
+			if (data.crate && data.crate.length) {
+			    crate.appendChild(Elem.create({
+				className: 'h _d',
+				childs: [{
+				    tag: 'a',
+				    text: 'Recently Crated',
+				    attributes: {
+					href: '/@' + ctx.params.id + '/crate'
+				    }
+				}]
+			    }));
+			    data.crate.forEach(function(v) {
+				crate.appendChild(Vitamin.render(v));
+			    });
+			}
+
+			var recommended = Elem.create({ className: 'recommended' });
+			if (data.recommended.length) {
+			    recommended.appendChild(Elem.create({
+				className: 'h _d',
+				childs: [{
+				    tag: 'a',
+				    text: 'Most recommended prescriptions',
+				    attributes: {
+					href: '/@' + ctx.params.id + '/prescriptions'
+				    }
+				}]
+			    }));
+			    data.recommended.forEach(function(p) {
+				recommended.appendChild(Prescription.render(p));
+			    });
+			}
+
+			var recommendations = Elem.create({ className: 'recommendations' });
+			if (data.recommendations.length) {
+			    recommendations.appendChild(Elem.create({
+				className: 'h _d',
+				childs: [{
+				    tag: 'a',
+				    text: 'Recommendations',
+				    attributes: {
+					href: '/@' + ctx.params.id + '/recommendations'
+				    }
+				}]
+			    }));
+			    data.recommendations.forEach(function(p) {
+				recommendations.appendChild(Prescription.render(p));
+			    });
+			}
+
+			frag.appendChild(recommended);
+			frag.appendChild(recommendations);
+			frag.appendChild(crate);
+
+			View.scrollOff();
+
+		    } else {
+
+			if (data.length < 10) View.scrollOff();
+			offset += data.length;
+
+			if (!!offset && self.filter && !filterLoaded) {
+
+			    document.querySelector('.filter-container').classList.add('visible');
+
+			    var f = document.querySelector('.filters');
+			    f.innerHTML = doT.template(View.tmpl('/filter/search.html'))({placeholder: ctx.params.subpath });
+
+			    if (ctx.params.subpath === 'crate') {
+				var loadedTags;
+
+				document.querySelector('.filter-container .icon').addEventListener('click', function() {
+
+				    if (loadedTags) {
+					return;
+				    }
+
+				    User.read(ctx.params.id, 'tags', {}, function(err, data) {
+					if (err) Log.error(err);
+
+					data.forEach(function(t) {
+					    var a = Elem.create({
+						tag: 'a',
+						className: 'tag',
+						text: t.value
+					    });
+					    a.onclick = function(e) {
+						var active = e.target.classList.contains('active');
+
+						if (active) {
+						    tags.splice(tags.indexOf(t.value), 1);
+						    load({ tags: tags });
+						} else {
+						    tags.push(t.value);
+						    load({ tags: tags });
+						}
+
+						e.target.classList.toggle('active', !active);
+					    };
+					    f.appendChild(a);
+					});
+					loadedTags = true;
+				    });
+				});
+			    }
+			    filterLoaded = true;
+			}
+
+			if (offset && !headingLoaded && ctx.params.subpath === 'crate') {
+			    var shuffleParams = {
+				limit: 1,
+				order_by: 'rand'
+			    };
+
+			    if (params.q) shuffleParams.q = params.q;
+			    if (params.tags) shuffleParams.tags = params.tags;
+
+			    var heading = Vitamins.renderHeading({
+				shuffle: {
+				    title: '@' + ctx.state.user.username + '\'s crate',
+				    path: '/user/' + ctx.state.user.username + '/crate',
+				    params: shuffleParams
+				}
+			    });
+			    frag.appendChild(heading);
+
+			    headingLoaded = true;
+			}
+			
+			data.forEach(function(d) {
+			    switch(type) {
+			    case 'vitamin':
+				frag.appendChild(Vitamin.render(d));
+				break;
+
+			    case 'prescription':
+				frag.appendChild(Prescription.render(d));
+				break;
+
+			    case 'page':
+				frag.appendChild(Page.render(d, { subscribe: true }));
+				break;
+
+			    case 'user':
+				frag.appendChild(User.render(d, { subscribe: true, bio: true }));
+				break;
+			    }
+			});
+		    }
+
+		    l.appendChild(frag);
+		}
+
+		delete r.dataset.loading;
+	    });
+
+	};
+
+	var opts = {
+	    id: '/user/read.html',
+	    data: ctx.state.user,
+	    load: load
+	};
+
+	if (['crate','listens','imports'].indexOf(ctx.params.subpath) !== -1)
+	    opts.filter = true;
+
+	View.render(opts);
+
+	document.getElementById('user').appendChild(User.render(ctx.state.user, {
+	    single: true,
+	    subscribe: true,
+	    bio: true,
+	    editable: ctx.state.user.isOwner
+	}));
+	
+    };
+
+    page('/@:id/:subpath?', init, read);
+
+})();

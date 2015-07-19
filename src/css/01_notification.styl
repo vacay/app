@@ -1,0 +1,44 @@
+@import '00_variables.styl'
+@import 'nib'
+
+#n
+    fixed bottom 15px left 15px
+    z-index 10010    
+
+.n
+    padding 0 24px
+    line-height 48px
+    min-width 288px
+    max-width 568px
+    color white
+    background #323232
+    height 50px
+    box-shadow 0 2px 5px 0 rgba(0, 0, 0, 0.26)
+    transform translate3d(0,200%,0)
+    transition all 400ms cubic-bezier(0.25, 0.8, 0.25, 1)
+    &.enter
+        transform translate3d(0,0,0)
+
+    &.action
+        padding-right 0
+
+    button
+        padding 0 24px 0 48px
+        line-height 48px
+        color white
+        font-weight 500
+        text-transform uppercase
+
+@media (min-width: $smallMin)
+    .n
+        border-radius 2px
+        margin 6px 0
+
+@media (max-width: $extraSmallMax)
+    #n
+        bottom 0
+        left 0
+        right 0
+
+    .n button
+        padding-left 24px

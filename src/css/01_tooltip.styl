@@ -1,0 +1,36 @@
+@import '00_variables.styl'
+@import 'nib'
+
+[title]
+    position relative
+
+[title]:after
+    absolute top 100% left 50%
+    content attr(title)
+    color white
+    background #616161
+    text-align center
+    overflow hidden
+    text-overflow ellipsis
+    width 80px
+    margin 10px 0 0 -40px
+    border-radius 2px
+    font-size 11px
+    padding 0 8px
+    line-height 22px
+    transform-origin top center
+    transform scale(0)
+    opacity 0
+    transition all 100ms cubic-bezier(0.55, 0, 0.55, 0.2)
+    pointer-events none
+    z-index 10006
+
+[title]:hover:after
+    opacity 0.9
+    transform scale(1)
+
+.t-left[title]:after
+    top 50%
+    left auto
+    right 100%
+    margin -11px 10px 0 0

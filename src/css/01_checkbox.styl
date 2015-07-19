@@ -1,0 +1,36 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.checkbox
+    position relative
+    border none
+    background transparent
+    vertical-align top
+    &:before
+        transition all 0.3s ease-in-out
+        content ""
+        position absolute
+        left 6px
+        top 6px
+        z-index 1
+        width 18px
+        height 18px
+        border 2px solid $border
+    &.indeterminate:before
+        background $border
+    &.indeterminate:after
+        content "-"
+        position absolute
+        left 6px
+        top 6px
+        text-align center
+        width 18px
+        height 18px
+        line-height 1rem
+        z-index 2
+    &.selected:before
+        transform rotate(-45deg)
+        height 9px
+        border-color $grey
+        border-top-style none
+        border-right-style none

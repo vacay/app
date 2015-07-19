@@ -1,0 +1,106 @@
+@import '00_variables.styl'
+@import 'nib'
+
+#toolbar
+    fixed top 85px right 10px
+    display none
+    z-index 5
+    a
+        width 45px
+        height 45px
+        line-height 23px
+        text-align center
+        padding 10px
+        background $bg
+        vertical-align top
+        position relative
+        border 1px solid $border
+        display block
+        border-radius 999em
+        box-shadow 0 1px 0 rgba(0,0,0,0.1)
+        + a
+            margin-top 5px
+        &.active
+            border-color #666
+
+#user-icon
+    background-size cover !important
+
+#user-icon[style] i
+    display none
+
+#toolbar-trigger
+    fixed right 10px bottom 70px
+    display none
+    height 50px
+    width 50px
+    padding 13px
+    border-radius 999em
+    background-color #666
+    box-shadow 0 2px 5px 0 rgba(0,0,0,.26)
+    z-index 5
+    &:before
+    &:after
+    span
+        background white
+        content ''
+        display block
+        height 2px
+        margin 6px 0
+        transition all .2s ease-out
+        width 24px
+    &:before
+        margin-top 3px
+
+.menu-open #toolbar-trigger
+    &:before
+        transform rotate(45deg) translate3d(5px,5px,0)
+    span
+        opacity 0
+    &:after
+        transform rotate(-45deg) translate3d(6px,-6px,0)
+
+body.mouse #toolbar a:hover
+    background white
+
+body.authenticated #toolbar
+    display block
+
+@media (max-width: $extraSmallMax)
+    .authenticated #toolbar-trigger
+        display block
+    #toolbar
+        pointer-events none
+        top auto
+        right 12px
+        bottom 130px
+        a
+            border none
+            background-color #666
+            color white
+            box-shadow 0 2px 5px 0 rgba(0,0,0,.26)
+            opacity 0
+            transform scale(0)
+            transition all 100ms cubic-bezier(.55,0,.55,.2)
+            transition-delay 0ms
+    .menu-open
+        #toolbar-trigger
+            background-color #d3e478
+            color #666
+        #toolbar
+            pointer-events all
+            a
+                opacity 1
+                transform scale(1)
+        #user-icon
+            transition-delay 35ms
+        #search-icon
+            transition-delay 70ms
+        #home-icon
+            transition-delay 105ms
+
+    .n-visible
+        #toolbar-trigger
+            bottom 118px
+        #toolbar
+            bottom 178px

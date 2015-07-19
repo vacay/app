@@ -1,0 +1,45 @@
+nav.vertical
+    ul
+        li
+            a.play.t(data-active='{{=it.playing}}')
+                span.f
+                    i.icon-play
+                    span Play
+                span.o
+                    i.icon-pause
+                    span Pause
+        li
+            a.crate.t(data-active='{{=it.crated}}')
+                span.f
+                    i.icon-crate
+                    span Crate
+                span.o
+                    i.icon-crate-dark
+                    span Crated
+        li
+            a.queue.t(data-active='{{=it.queued}}')
+                i.icon-add
+                span.f Queue
+                span.o Queued
+
+        li
+            a.show-drafts
+                i.icon-prescription
+                span Add to Prescription
+
+        {{? it.crated && it.offlineMode}}
+        li
+            a.offline
+
+        {{?? !it.offlineMode}}
+        li.hide-mobile
+            a(href='http://s3.amazonaws.com/vacay/production/vitamins/{{=it.id}}.mp3', target='_blank', download='{{=it.title}}.mp3')
+                i.icon-download
+                span Download
+
+        {{?}}
+
+        li
+            a(href='/vitamin/{{=it.id}}')
+                i.icon-open-in-new
+                span Go to Page

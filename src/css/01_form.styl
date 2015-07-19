@@ -1,0 +1,33 @@
+@import '00_variables.styl'
+@import 'nib'
+
+form
+    position relative
+
+input
+textarea
+    width 100%
+    border-radius 0
+    border none
+    background-color transparent
+    box-shadow none
+    font-weight 300
+    padding 10px 0
+    margin 0
+    &.pill
+        margin 10px 0
+        background white
+        border 1px solid $border
+        border-radius 2px
+    &:hover
+    &:focus
+        box-shadow none
+        outline none
+
+input[type="search"]::-webkit-search-cancel-button
+    margin-right 10px
+
+@media (max-width: $extraSmallMax)
+    input.pill
+        padding 10px 2.5%
+        width 95%

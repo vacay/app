@@ -1,0 +1,40 @@
+{
+    "name": "vacay-app",
+    "author": "admin <admin@vacay.io>",
+    "description": "A music community & platform.",
+    "version": "0.0.1",
+    "private": true,
+    "repository": {
+	"type": "git",
+	"url": "https://github.com/vacay/app"
+    },
+    "homepage": "http://vacay.io/",
+    "licenses": "MIT",
+    "main": "index.html",
+    "scripts": {
+	"test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "devDependencies": {
+	"cca": "^0.7.4",
+	"connect-modrewrite": "^0.8.1",
+	"cordova": "^5.2.0",
+	"grunt": "^0.4.5",
+	"grunt-contrib-clean": "^0.6.0",
+	"grunt-contrib-concat": "^0.5.1",
+	"grunt-contrib-connect": "^0.10.1",
+	"grunt-contrib-copy": "^0.8.0",
+	"grunt-contrib-cssmin": "^0.12.3",
+	"grunt-contrib-htmlmin": "^0.4.0",
+	"grunt-contrib-jade": "^0.14.1",
+	"grunt-contrib-jshint": "^0.11.2",
+	"grunt-contrib-stylus": "^0.21.0",
+	"grunt-contrib-uglify": "^0.9.1",
+	"grunt-contrib-watch": "^0.6.1",
+	"grunt-cordovacli": "^0.8.2",
+	"grunt-inline": "^0.3.4",
+	"grunt-inline-angular-templates": "^0.1.5",
+	"grunt-static-inline": "^0.1.6",
+	"grunt-string-replace": "^1.2.0",
+	"nw-builder": "^2.0.2"
+    }
+}

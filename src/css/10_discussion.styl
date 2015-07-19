@@ -1,0 +1,62 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.discussion
+    min-height 60px
+
+.comments
+    position relative
+    border-top 1px solid $border
+    margin-top 30px
+    &:before
+        absolute top bottom left
+        display block
+        content ""
+        width 1px
+        background-color $border
+        z-index -1
+    &:empty
+        display none
+
+.comment
+    width auto
+    max-width 550px
+    margin 15px 0 15px 20px
+    padding 0
+    .i
+        padding 0
+    .i-body
+        margin 0 0 15px
+        min-height 20px
+    .user
+        line-height 30px
+        vertical-align middle
+        a
+            display inline-block
+    .avatar
+        position absolute
+        left -35px
+        img
+            width 30px
+            height 30px
+
+.comment
+.discussion
+    .save
+        display none
+
+    &.editable > .actions
+    &.editing > .actions
+        .save
+            display inline-block
+        .rnd            
+        .reply
+            display none
+
+.mouse .discussion:hover
+    .i
+        background #fcfcfc
+    > a.i-title
+        color blue
+        text-decoration underline
+    

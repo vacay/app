@@ -1,0 +1,101 @@
+@import '00_variables.styl'
+@import 'nib'
+
+$success = #51b364
+$failure = #cc1100
+
+button
+    position relative
+    border 1px solid rgba(0,0,0,0.15)
+    padding 10px
+    display inline-block
+    background transparent
+    background-image none
+    min-width 30px
+    min-height 30px
+    vertical-align middle
+    text-align center
+    color rgba(0,0,0,0.44)
+    font-weight 200
+
+    + button
+    i + span
+        margin-left 5px
+
+    &.rnd
+        border-radius 999em
+
+    &.icon
+        border none
+        width 30px
+        height 30px
+        padding 0
+        i
+            color rgba(0,0,0,0.8)
+            margin 0 auto
+            line-height 26px
+            font-size 19px
+
+    &.success
+        color $success
+        border-color $success
+        i
+            color $success
+
+    &.failure
+        color $failure
+        border-color $failure
+        i
+            color $failure
+
+    &:disabled
+    &[disabled]
+    &.disabled
+        cursor not-allowed
+        pointer-events none
+        opacity 0.2
+
+    &.active
+        background $text
+        color white
+        &.failure
+            background $failure
+        &.success
+            background #57ad68
+            border-color #57ad68
+            i
+                color white
+
+    &.link
+        padding 5px 7px
+        background transparent
+        border-color transparent
+
+.xs
+    padding 2px 5px
+    border-radius 1px
+    min-height 0
+
+.sm
+    padding 5px 10px
+    font-size 12px
+    line-height 1.5
+
+.btn-switch
+    display inline-block
+    border 1px solid $border
+    border-radius 999em
+    button
+        border 0
+    button + button
+        margin 0
+    button:first-child
+        border-radius 999em 0 0 999em
+    button:last-child
+        border-radius 0 999em 999em 0
+    &.active .on
+    &:not(.active) .off
+        opacity 1
+        background $success
+        color white
+        box-shadow 0 0 0 1px $success

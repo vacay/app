@@ -1,0 +1,74 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.md-loading
+    width 50px
+    height 50px
+    display block
+    position relative
+    margin 45px auto
+    overflow hidden
+
+    .md-inner
+        width 50px
+        height 50px
+        position relative
+
+        .md-gap
+            position absolute
+            left 24px
+            right 24px
+            top 0
+            bottom 0
+            border-top 3px solid #d3e478
+            box-sizing border-box
+
+        .md-left
+        .md-right
+            position absolute
+            top 0
+            height 50px
+            width 25px
+            overflow hidden
+
+            .md-half-circle
+                position absolute
+                top 0
+                width 50px
+                height 50px
+                box-sizing border-box
+                border-width 3px
+                border-style solid
+                border-color #d3e478 #d3e478 transparent
+                border-radius 50%
+        .md-left
+            left 0
+            .md-half-circle
+                left 0
+                border-right-color transparent
+        .md-right
+            right 0
+            .md-half-circle
+                right 0
+                border-left-color transparent
+
+    &.indeterminate .md-spinner-wrapper
+        animation outer-rotate 2.91667s linear infinite
+        .md-inner
+            animation sporadic-rotate 5.25s cubic-bezier(0.35, 0, 0.25, 1) infinite
+            .md-left .md-half-circle
+            .md-right .md-half-circle
+                animation-iteration-count infinite
+                animation-duration 1.3125s
+                animation-timing-function cubic-bezier(0.35, 0, 0.25, 1)
+            .md-left .md-half-circle
+                animation-name left-wobble
+            .md-right .md-half-circle
+                animation-name right-wobble
+
+    &.determinate .md-inner .md-gap
+        border-bottom-width 5px
+        border-bottom-style solid
+
+button > .md-loading
+    margin 0

@@ -1,0 +1,25 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.filter-container
+    margin-bottom 15px
+    opacity 0
+
+    .reset
+        display none
+
+    .filters
+        display none
+
+    &.visible
+        opacity 1
+
+    &.show
+        .icon
+            background white
+            border 1px solid $border
+            border-radius 999em
+        .reset
+            display inline-block
+        .filters
+            display block

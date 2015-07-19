@@ -1,0 +1,63 @@
+button#p-icon.link.sm(onclick="document.body.classList.toggle('player-open')")
+    .bar
+    .bar
+    .bar
+    .bar
+    .bar
+    .badge
+
+.p-container.transition
+
+    #artwork
+        #yt-container
+        #brand [vacay]
+
+    .p-ctrls
+        #current-time.time
+        a.repeat(onclick="Player.toggleRepeat()")
+            i.icon-repeat
+        a.previous(onclick="Player.previous()")
+            i.icon-previous
+        a.play(onclick="Player.play()")
+            i.icon-pause
+            i.icon-play
+        a.next(onclick="Player.next()")
+            i.icon-next
+        a(onclick='document.querySelector(".p-container").classList.toggle("show-volume")')
+            i.icon-volume
+        #remaining-time.time
+        #volume
+            input(type='range', min='0', max='100', step='1')
+            .vol-val
+
+    .p-body.scroll
+
+        .rc
+            p audio will play elsewhere but you can control it from here
+            button.xs.rnd.failure(onclick="Player.setMaster()") play here instead
+
+        .p-live
+            .p-header.meta Listening Along With
+            .list
+
+        #nowplaying
+            .meta.p-header Now playing
+            .list
+
+        #previous
+            .p-header
+                span.meta Previously Played
+                a.meta.pull-right Full History
+            .list
+
+        #queue
+            .p-header
+                span.meta Up Next
+                a.meta.pull-right(onclick="Queue.clear()") clear
+            .list
+
+        #autoplay
+            span.p-header.meta autoplay from crate when up next is empty
+            span.btn-switch(onclick="Player.toggleAutoplay()")
+                button.xs.on on
+                button.xs.off off

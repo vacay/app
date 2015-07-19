@@ -1,0 +1,16 @@
+@import '00_variables.styl'
+@import 'nib'
+
+[contenteditable][placeholder]:empty
+    &:after
+        content attr(placeholder)
+        color rgba(0,0,0,0.4)
+
+    &:focus:after
+        content ""
+
+[contenteditable]
+    user-select auto !important
+
+[contenteditable='true']
+    background yellow !important

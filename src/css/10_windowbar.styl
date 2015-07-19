@@ -1,0 +1,49 @@
+@import '00_variables.styl'
+@import 'nib'
+
+#windowbar
+    fixed top left right
+    display none
+    height 25px
+    z-index 10001
+    button
+        width 15px
+        height 15px
+        min-width 15px
+        min-height 15px
+        padding 0
+        border-radius 100%
+
+.platform-nodewebkit #windowbar
+    display block
+    -webkit-user-select none
+    -webkit-app-region drag
+    cursor move
+    z-index 10003
+    background white
+
+#exit
+    fixed left 10px top 5px
+    background $red
+
+#minimize
+    fixed left 30px top 5px
+    background $orange
+
+#maximize
+    fixed left 55px top 5px
+    background $green
+
+#version
+    color #c8c8c8
+    fixed right 10px top 5px
+
+#back
+    fixed left 95px top 5px
+    border-radius 2px
+    line-height 10px
+
+#forward
+    fixed left 125px top 5px
+    border-radius 2px
+    line-height 10px    

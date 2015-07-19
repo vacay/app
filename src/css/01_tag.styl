@@ -1,0 +1,39 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.tag
+    position relative
+    color rgba(0,0,0,0.44)
+    background #fafafa
+    font-size 13px
+    font-weight 400
+    margin 0 8px 8px 0
+    display inline-block
+    line-height 25px
+    background white
+    border 1px solid $border
+    border-radius 2px
+    &.active
+        font-weight 900
+
+.tag a
+a.tag
+    padding 3px 10px
+    display inline-block
+
+.tags
+    .input
+        display inline-block
+        line-height 25px
+        min-width 100px
+    .remove
+        border-left 1px solid $border
+
+.tag.active
+.mouse .tag:hover
+    color $grey
+    border-color rgba(211,228,120,0.9)
+    background rgba(211,228,120,0.1)
+
+.mouse .remove:hover
+    color $red

@@ -1,0 +1,274 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.p-container
+    fixed top bottom
+    display none
+    overflow hidden
+    padding-bottom 45px
+    z-index 10001
+    background white
+
+.p-header
+    padding 10px 10px 0
+
+.platform-nodewebkit .p-container
+    top 25px
+    
+#brand
+    absolute top left
+    font-size 2.5em
+    font-weight 100
+    font-family 'Helvetica Neue',sans-serif
+    text-transform lowercase
+    color rgba(255,255,255,0.95)
+    text-align right
+    padding 10px
+ 
+.rc
+    background $bg
+    border-bottom 1px solid $border
+    padding 10px 0
+    font-size 10px
+    font-weight 500
+    text-align center
+    display none
+
+body.remote .rc
+    display block
+
+.p-body
+    absolute top 188px left right bottom
+    background rgba(255,255,255,0.9)
+
+#autoplay
+    margin-top 15px
+    padding 15px 2px
+    border-top 1px solid $border
+    text-align center
+
+.p-live
+    display none
+
+.p-live .user a
+    display inline-block
+
+#current-time
+    absolute bottom 10px left 10px
+
+#remaining-time
+    absolute bottom 10px right 10px
+
+.time
+    font-size 10px
+    font-family monospace
+
+#yt-container
+    width 100%
+    height 100%
+    &.hide
+        display none
+
+#artwork
+    background #666
+    background-position center
+    background-size cover
+    pointer-events none
+
+.p-ctrls
+    absolute left top right
+    background rgba(0,0,0,0.2)
+    color white
+    padding 10px
+    padding-top 122px    
+    text-align center
+    .play i.icon-pause
+        display none
+
+    a
+        width 50px
+        height 50px
+        font-size 25px
+        line-height 45px
+        text-align center
+        vertical-align middle
+        border none
+        display inline-block
+        i
+            vertical-align middle
+            line-height 30px
+        &.play
+            font-size 45px
+            line-height 45px
+            height 55px
+            width 55px
+            border-radius 100%
+        &.active
+            color $vacay
+        &[disabled]
+            opacity 0.2
+            cursor not-allowed
+
+#artwork
+.p-ctrls
+    height 188px
+        
+.playing .p-ctrls .play
+    i.icon-play
+        display none
+    i.icon-pause
+        display inline-block
+
+#p-icon
+    display none
+    fixed right 10px
+    width 45px
+    height 45px
+    z-index 10002
+    .badge
+        absolute top -4px right -4px
+        width 20px
+        height 20px
+        border-radius 100%
+        font-size 10px
+        background white
+        border 1px solid $bg
+    .bar
+        font-size 25px
+        background-color $grey
+        display inline-block
+        margin 0 0.05em
+        transition 0.5s
+        vertical-align middle
+        animation bump 1s linear infinite paused
+
+    .bar:nth-child(1)
+        width 0.1em
+        height 1em
+        animation-duration 1s
+
+    .bar:nth-child(2)
+        width 0.1em
+        height 0.7em
+        animation-duration 0.4s
+
+    .bar:nth-child(3)
+        width 0.1em
+        height 1em
+        animation-duration 0.65s
+
+    .bar:nth-child(4)
+        width 0.1em
+        height 0.7em
+        animation-duration 0.5s
+
+    .bar:nth-child(5)
+        width 0.1em
+        height 0.8em
+        animation-duration 0.65s
+
+body.authenticated
+    #p-icon
+    .p-container
+        display block
+
+body.playing #p-icon .bar
+    animation-play-state running
+
+body.remote #p-icon .bar
+    background-color $red
+
+body.live .p-live
+    display block
+
+@media (min-width: $smallMin)
+    .p-container
+        width 320px
+        right -320px
+        border-left 1px solid $border
+        box-shadow 0 1px 2px rgba(0,0,0,0.1)
+
+    #p-icon
+        top 30px
+        border 1px solid $border
+        border-radius 999em
+        box-shadow 0 1px 0 rgba(0,0,0,0.1)
+
+    .show-volume .p-ctrls
+        padding-top 87px
+
+    .player-open
+        #p-icon
+        #toolbar
+        #live
+        #live-icon
+        .p-container
+            transform translate3d(-320px,0,0)
+        main
+            right 385px
+
+@media (min-width: $largeMin)
+    .p-container
+        width 400px
+        right -400px
+        &.show-volume .p-ctrls
+            padding-top 134px
+
+    #artwork
+    .p-ctrls
+        height 235px
+
+    .p-ctrls
+        padding-top 169px
+
+    .p-body
+        top 235px
+        
+    .player-open
+        #p-icon
+        #toolbar
+        #live
+        #live-icon
+        .p-container
+            transform translate3d(-400px,0,0)
+        main
+            right 465px
+
+@media (max-width: $extraSmallMax)
+    #brand
+        display none
+    .p-container
+        width 100%
+        transform translateY(calc(100% - 60px))
+        transition all 250ms cubic-bezier(0.10,0.70,0.10,1)
+        &.show-volume
+            transform translateY(calc(100% - 160px))
+
+    #p-icon
+        bottom 5px
+        .bar
+            background white
+
+    .n-visible
+        .p-container
+            bottom 48px
+        #p-icon
+            bottom 53px
+
+    .p-ctrls
+        padding 2px
+
+    .player-open
+        #brand
+            display block
+        .p-ctrls
+            padding-top 122px
+        .show-volume .p-ctrls
+            padding-top 87px
+        .p-container
+            transform translateY(0)
+        #p-icon
+            background-color #666
+            color white
+            border-radius 999em
+            box-shadow 0 2px 5px 0 rgba(0,0,0,.26)

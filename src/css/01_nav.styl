@@ -1,0 +1,118 @@
+@import '00_variables.styl'
+@import 'nib'
+
+nav
+    width 100%
+    font-size 11px
+    ul
+        padding 0
+        margin 0
+        display block
+
+    li
+        position relative
+        display inline-block
+
+    a
+        padding 18px 10px        
+        text-transform uppercase
+        display block
+        border none
+        &.active
+            color #444
+
+    .label
+        display block
+        font-size 7px
+        letter-spacing .1em
+        padding 0 0 7px 0
+
+    .row
+        li
+            text-align center
+        li:not(:last-child)
+            border-right 1px solid $border
+
+    &.vertical
+        width auto
+        li
+            display block
+            &:first-child
+                margin-top 0
+
+    &.horizontal
+        margin-bottom 30px
+        white-space nowrap
+        overflow hidden
+        overflow-x auto
+        &:before
+            content ""
+            display block
+            absolute left bottom right
+            border-bottom 2px solid $border
+        li
+            vertical-align middle
+        a
+            border-bottom 2px solid transparent
+        a.active
+            font-weight 900
+            border-bottom 2px solid #666
+
+    &.horizontal-pill
+        padding-bottom 45px
+        a
+            padding 5px 10px
+            border-radius 10px
+            border 1px solid transparent
+        a.active
+            background white
+            font-weight 900
+            border-color $border
+
+    &.flex
+        margin-bottom 45px
+        li a
+            padding 10px
+
+        .badge
+            font-size 14px
+            font-weight 100
+            background transparent
+
+    &.justified
+        overflow visible
+        ul
+            width 100%
+            display table
+        li
+            display table-cell
+            width 1%
+            text-align center
+
+    &.light
+        background-color #fcfcfc
+        a
+            border none
+        a.active
+            border none
+            background-color $border
+
+    &.dark
+        background-color #191918
+        a.active
+            color white
+
+.mouse nav
+    a:hover
+        background $border
+        color #444
+    &.dark a:hover
+        color white
+
+@media (max-width: 63em)
+    nav .row li a
+        padding 10px 0
+    nav .row li.col-xs-3:nth-child(4)
+        border-right none
+    nav .row li.col-xs-3:nth-child(-n+4)
+        border-bottom 1px solid $border    

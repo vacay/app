@@ -1,0 +1,17 @@
+*.DS_Store
+
+android-release-key.keystore
+index.html
+
+dist
+hooks
+node_modules
+platforms
+plugins
+tmp
+www
+cache
+
+desktop/node_modules
+desktop/index.html
+desktop/webtorrent.js

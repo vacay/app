@@ -1,0 +1,68 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.user a
+    vertical-align middle
+    font-weight 400
+    display block
+    margin-bottom 5px
+    font-size 14px
+    i
+        absolute left top
+        display none
+        font-size 25px
+        text-align center
+        width 100%
+        line-height 45px
+        background rgba(0,0,0,0.2)
+        color white
+        border-radius 999em
+    &.active i.icon-pause
+        display block
+
+.touch .user
+.mouse .user:hover
+    a:not(.active) i.icon-play
+        display block
+
+.mouse .user:hover a.i-title
+    color blue
+    text-decoration underline
+
+#user
+    .avatar img
+        display block
+        width 100px
+        height 100px
+        margin 0 auto
+    em
+        margin 35px 0
+        display block
+    .i-body
+        margin-bottom 15px
+    .save
+        display none
+    .editable .save
+        display inline-block
+    .md-loading
+        display none
+        margin 0
+        absolute top left
+        width 100px
+        height 100px
+        .md-inner
+            width 100px
+            height 100px
+            .md-gap
+                left 49px
+                right 49px
+            .md-left
+            .md-right
+                height 100px
+                width 50px
+                .md-half-circle
+                    transition transform 0.1s linear
+                    width 100px
+                    height 100px
+        &.show
+            display block

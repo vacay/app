@@ -1,0 +1,36 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.setting
+    h4
+        font-weight 500
+
+    .save
+        display none
+
+    .editable .save
+        display inline-block
+
+    [data-invalid]:after
+        content attr(data-invalid)
+        color $red
+
+    span
+        color rgba(0,0,0,0.3)
+        
+    .username input
+        display inline-block
+        width 115px
+
+    .discussion
+        border-top 1px solid $border
+
+@media (max-width: $extraSmallMax)
+    .setting .i.i-right
+        .i-body
+            padding-right 0
+        .right
+            position relative
+            top auto
+            right auto
+            margin-top 15px

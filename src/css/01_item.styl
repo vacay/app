@@ -1,0 +1,58 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.i
+    position relative
+    z-index 2
+    display block
+    background white
+    padding 15px
+
+    &.selected
+        background rgba(211,228,120,0.1)
+        .i-body
+        .i-title
+            font-weight 500
+
+    &:before
+    &:after
+        content " "
+        display table
+    &:after
+        clear both
+
+    .left
+        absolute top 15px
+
+    .right
+        absolute top 15px right 45px
+
+.i-image
+    padding 0
+
+.i-body
+    display block
+    word-wrap break-word
+        
+.i-divider
+    border-top 1px solid $border
+    margin 15px 0
+
+.i-left .i-body
+    margin-left 55px
+    min-height 45px
+
+.i-right .i-body
+    padding-right 140px
+
+.i-handle
+    absolute top 5px right 5px bottom 5px
+    width 35px
+    background-image repeating-radial-gradient(center center, rgba(0,0,0,.2), rgba(0,0,0,.2) 1px, transparent 1px, transparent 100%)
+    background-size 3px 3px
+
+.i-select
+    absolute top 15px right 15px
+
+.i-select + .i-handle
+    top 45px

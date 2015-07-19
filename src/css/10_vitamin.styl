@@ -1,0 +1,100 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.vitamin
+    .play
+        width 45px
+        height 45px
+        i
+            absolute left top
+            display none
+            width 100%
+            line-height 45px
+            background rgba(0,0,0,0.2)
+            color white
+            border-radius 999em
+    &.nowplaying .play i.icon-play
+        display block
+    .icon-download
+        margin 0 10px
+        &.success
+            color green
+
+.mouse .vitamin .right
+    display none
+.mouse .vitamin:hover
+    background #fcfcfc
+    a.i-title
+        color blue
+        text-decoration underline
+    .right
+        display block
+
+.touch .vitamin
+.mouse .vitamin:not(.nowplaying):hover
+    .play i.icon-play
+        display block
+
+.vitamin .play[data-active='true']
+    i.icon-play
+    .f
+        display inline-block
+    i.icon-pause
+    .o
+        display none
+
+.playing .vitamin.nowplaying .play
+.playing .vitamin .play[data-active='true']
+    i.icon-play
+    .f
+        display none
+    i.icon-pause
+    .o
+        display inline-block
+
+.queue
+    i
+        display inline-block
+        transition all 100ms ease-in-out
+    &[data-active='true']
+        background transparent
+        border-color $red
+        i
+            transform rotateZ(-45deg)
+            color $red
+
+.mouse .vitamin.selected:not(#vitamin)
+    i-body
+        padding-right 50px
+    .right
+        display none
+
+#vitamin
+    border-bottom 1px solid $border
+    .i-body
+        padding-right 0
+        margin 30px
+    .i-title
+        font-size 30px
+        font-weight 100
+    .right
+    .left
+        relative top left right
+        display block
+    .play
+    .avatar img
+        height 200px
+        width 200px
+    .play i
+        line-height 200px
+        font-size 40px
+    .tags .input
+        text-align center
+
+@media (max-width: $extraSmallMax)
+    .vitamin.i-right
+        .i-body
+            padding-right 25px
+        .right
+            display none
+        

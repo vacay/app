@@ -1,0 +1,32 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.set-image
+    text-align center
+    position relative
+
+    .select
+        position absolute
+        display none
+        margin 15px
+        top 0
+        left 0
+        background-color rgba(255,255,255,0.9)
+
+    input
+        text-align center
+
+    form:after
+        content 'OR'
+        display block
+        width 100%
+        padding 15px
+
+    .inputs
+        display block
+
+    img[src] ~ .inputs
+        display none
+
+    img[src] ~ .select
+        display inline-block

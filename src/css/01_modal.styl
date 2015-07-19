@@ -1,0 +1,88 @@
+@import '00_variables.styl'
+@import 'nib'
+
+.modal
+    fixed top right bottom left
+    z-index 10003
+
+    .close
+        absolute top right 10px
+
+    header
+        width 100%
+        height 48px
+        line-height 48px
+        padding 0 10px
+        overflow hidden
+        white-space nowrap
+        text-overflow ellipsis
+        border-bottom 1px solid $border
+
+    .content
+        position relative
+        height 100%
+        width 100%
+        margin 0 auto
+        max-width 767px
+
+    li
+        height 48px
+        font-size 14px
+        line-height 48px
+        i
+            width 24px
+            font-size 18px
+            margin-right 32px
+            display inline-block
+            text-align center
+        i
+        span
+            vertical-align middle
+        a
+            padding 0 16px
+
+    &.context-menu
+        left auto
+        min-width 260px
+        overflow visible
+        .overlay
+            background rgba(255,255,255,0.5)
+        .content
+            background white
+            box-shadow 0 2px 4px -1px rgba(0,0,0,.14),0 4px 5px 0 rgba(0,0,0,.098),0 1px 10px 0 rgba(0,0,0,.084)
+            position absolute
+            height auto
+            animation scaleIn .1s cubic-bezier(0,0,0.265,1.55) 0s 1
+            transform-origin right top 0px
+        &.bottom .content
+            transform-origin right bottom 0px
+
+    &.action-sheet
+        .overlay
+            background rgba(0,0,0,0.2)
+        .content
+            absolute bottom
+            top auto
+            width 100%
+            height auto
+            padding 8px 0
+            background white
+            animation slideUp .5s cubic-bezier(0.1,0.7,0.1,1) forwards
+
+    &.confirm
+        .content
+            margin-top 10%
+            max-width 300px
+            animation flyin 300ms
+            p
+                font-size 18px
+                padding 10px
+                text-align center
+
+.overlay
+    fixed top right bottom left
+    background rgba(255,255,255,0.97)
+    -webkit-backface-visibility hidden
+    animation fadein 250ms
+            
+    
