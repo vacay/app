@@ -40,8 +40,8 @@ update: npm cordova
 ## Web
 deploy_web:
 	grunt web
-	rsync -av --delete ./www/index.html deploy@54.86.1.162:/home/deploy/vacay/index.html
-	rsync -av --delete ./resources/favicon.ico deploy@54.86.1.162:/home/deploy/vacay/favicon.ico
+	rsync -av --delete ./www/index.html deploy@52.21.6.168:/home/deploy/app/index.html
+	rsync -av --delete ./resources/favicon.ico deploy@52.21.6.168:/home/deploy/app/favicon.ico
 
 deploy_staging:
 	grunt web
