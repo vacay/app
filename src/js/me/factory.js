@@ -21,10 +21,17 @@
 
 	updateUI: function() {
 	    var url = '/@' + this.username;
-	    var btn = document.getElementById('user-icon');
+	    var p = document.querySelector('#user-icon');
+
+	    if (this.avatar) {
+		var avatar = Elem.create();
+		avatar.style.background = 'url(' + this.avatar + ') 50% 50% no-repeat';
+		p.appendChild(avatar);
+	    }
+
+	    var btn = Elem.create({ tag: 'a', text: url.substring(1)});
 	    btn.href = url + '/crate';
-	    if (this.avatar)
-		btn.style.background = 'url(' + this.avatar + ') 50% 50% no-repeat';
+	    p.appendChild(btn);
 
 	    document.querySelector('#previous a').href = url + '/listens';
 	},
@@ -51,17 +58,13 @@
 
 	    WS.connect();
 
-	    document.body.classList.toggle('authenticated', true);
+	    var btn = document.getElementById('auth-btn');
+	    btn.innerHTML = 'Log out';
+	    btn.onclick = function() { Auth.signout(); };
+	    document.body.classList.toggle('no-auth', false);
 
 	    this.updateUI();
-
-	    //TODO - intro
-	    if (Utils.isUrl(App.initialPath.substring(1))) {
-		page('/search?q=' + App.initialPath.substring(1));
-	    } else {
-		//TODO - do not always reload page
-		page(['/landing', '/offline'].indexOf(App.initialPath) === -1 ? App.initialPath : '/');
-	    }
+	    Modal.closeAll();
 
 	    if (Platform.isNative()) Offline.init();
 	},
@@ -75,9 +78,12 @@
 		pages: []
 	    };
 
-	    document.body.classList.remove('authenticated');
+	    document.querySelector('#user-icon').innerHTML = null;
+	    document.body.classList.toggle('no-auth', true);
 
-	    page('/landing');
+	    var btn = document.getElementById('auth-btn');
+	    btn.innerHTML = 'log in';
+	    btn.onclick = function() { Landing.show(); };
 	},
 
 	toggle: function(e) {

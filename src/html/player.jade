@@ -1,10 +1,10 @@
-button#p-icon.link.sm(onclick="document.body.classList.toggle('player-open')")
+#p-icon.trigger(onclick='View.trigger(this, "player")')
     .bar
     .bar
     .bar
     .bar
     .bar
-    .badge
+    .badge 0
 
 .p-container.transition
 
@@ -34,30 +34,31 @@ button#p-icon.link.sm(onclick="document.body.classList.toggle('player-open')")
 
         .rc
             p audio will play elsewhere but you can control it from here
-            button.xs.rnd.failure(onclick="Player.setMaster()") play here instead
+            .meta.pull-right
+            button.xs.link.failure(onclick="Player.setMaster()") play here instead
 
         .p-live
-            .p-header.meta Listening Along With
+            .p-header Listening Along With
             .list
 
         #nowplaying
-            .meta.p-header Now playing
+            .p-header Now playing
             .list
 
         #previous
             .p-header
-                span.meta Previously Played
-                a.meta.pull-right Full History
+                span Previously Played
+                a.meta.pull-right.hide-auth Full History
             .list
 
         #queue
             .p-header
-                span.meta Up Next
+                span Up Next
                 a.meta.pull-right(onclick="Queue.clear()") clear
             .list
 
-        #autoplay
-            span.p-header.meta autoplay from crate when up next is empty
+        #autoplay.hide-auth
+            span.meta autoplay from crate when up next is empty
             span.btn-switch(onclick="Player.toggleAutoplay()")
                 button.xs.on on
                 button.xs.off off

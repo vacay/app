@@ -18,12 +18,12 @@
 
             .inputs
                 input#email(type='email', placeholder='Email', required)
-                input#password(type='password', placeholder='Password', required)
+                input#password(type='password', placeholder='Password')
                 input.signup.reset.invite(type='password', placeholder='Confirm Password')
                 input#username.signup.invite(type='text', placeholder='Username')
                 input#name.signup.invite(type='text', placeholder='Name')
 
-                button.submit(type='submit') Login
+                button.submit(type='submit') submit
 
         button.sm.signin(onclick="Landing.set('signup')") sign up
         button.sm.signup(onclick="Landing.set('signin')") already have an account? login.

@@ -28,7 +28,7 @@
 
 	    elem.appendChild(body);
 
-	    if (data.user.username) {
+	    if (Me.id && data.user.username) {
 
 		var actions = Elem.create({ className: 'i actions' });
 

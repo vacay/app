@@ -15,10 +15,11 @@ nav
 
     a
         padding 18px 10px        
-        text-transform uppercase
+        text-transform lowercase
         display block
         border none
         &.active
+            background $border
             color #444
 
     .label
@@ -27,10 +28,10 @@ nav
         letter-spacing .1em
         padding 0 0 7px 0
 
-    .row
-        li
+    &.row
+        a
             text-align center
-        li:not(:last-child)
+        a:not(:last-child)
             border-right 1px solid $border
 
     &.vertical
@@ -59,7 +60,6 @@ nav
             border-bottom 2px solid #666
 
     &.horizontal-pill
-        padding-bottom 45px
         a
             padding 5px 10px
             border-radius 10px
@@ -70,7 +70,6 @@ nav
             border-color $border
 
     &.flex
-        margin-bottom 45px
         li a
             padding 10px
 
@@ -102,12 +101,20 @@ nav
         a.active
             color white
 
-.mouse nav
-    a:hover
-        background $border
-        color #444
-    &.dark a:hover
-        color white
+.trigger
+    cursor pointer
+    border 2px solid transparent
+    &.active
+    &:hover
+        border-color $border
+
+.mouse
+    nav
+        a:hover
+            background $border
+            color #444
+        &.dark a:hover
+            color white
 
 @media (max-width: 63em)
     nav .row li a

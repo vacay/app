@@ -1,16 +1,18 @@
-/* global page, App, Modal, soundManager, youtubeManager, Network, Shortcuts, FastClick, window, document, Auth, Log, Platform, Player, View, Loading, Updater */
+/* global page, App, Modal, soundManager, youtubeManager, Network, Shortcuts, FastClick, window, document, Auth, Log, Platform, Player, View, Loading, Updater, Elem */
 (function() {
     'use strict';
     var init = function() {
-	App.initialPath = window.location.pathname + window.location.search;
-
 	page.exit('*', function(ctx, next) {
 	    View.scrollOff();
 	    Modal.closeAll();
 	    View.main.innerHTML = null;
 	    View.main.appendChild(Loading.render({ indeterminate: true }));
 	    document.body.classList.remove('menu-open');
-	    if (window.innerWidth < 767) document.body.classList.remove('player-open');
+	    document.body.classList.remove('help-open');
+	    if (window.innerWidth < 900) document.body.classList.remove('player-open');
+	    Elem.each(document.querySelectorAll('#toolbar a'), function(e) {
+		e.classList.remove('active');
+	    });
 
 	    //TODO - clear multiselect
 
@@ -18,17 +20,23 @@
 	});
 
 	page('*', function(ctx, next) {
-	    //TODO - check auth and redirect if necessary
 	    next();
 	});
 
-	page('/', '/home');
 	page('*', '/');
 
 	Auth.init(function() {
 
 	    page.start({ dispatch: false });
 	    Log.info('initialization complete');
+
+	    if (Utils.isUrl(window.location.pathname.substring(1))) {
+		page('/search?q=' + window.location.pathname.substring(1));
+	    } else {
+		page(window.location.pathname);
+		var search = Location.search();
+		if (search.invite || search.reset) Landing.show(search);
+	    }
 
 	});
 

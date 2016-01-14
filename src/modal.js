@@ -66,17 +66,19 @@
 		content.appendChild(buttons);
 	    } else {
 
-		var header = Elem.create({
-		    tag: 'header',
-		    text: opts.header || 'Modal'
-		});
+		if (opts.header) {
+		    var header = Elem.create({
+			tag: 'header',
+			text: opts.header || 'Modal'
+		    });
 
-		content.insertBefore(header, content.firstChild);
+		    content.insertBefore(header, content.firstChild);
+		}
 
 		if (opts.close) {
 		    var close = Elem.create({
 			tag: 'button',
-			className: 'close link'
+			className: 'close'
 		    });
 
 		    close.onclick = this.close;

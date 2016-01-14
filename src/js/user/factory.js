@@ -81,7 +81,7 @@
 		return elem;
 	    }
 
-	    if (!opts.single) {
+	    if (!opts.avatarOnly) {
 		elem.classList.add('i', 'i-left');
 		avatar.classList.add('left');
 	    }
@@ -148,62 +148,68 @@
 		elem.appendChild(meta);
 	    }
 
-	    if (opts.live) {
-		var isLive = Player.data.users.filter(function(u) { return u.username === data.username; });
-		if (isLive.length) {
-		    var isListening = Player.data.room === 'u:' + data.username;
-		    var live = Elem.create({
-			tag: 'button',
-			className: 'rnd sm success right' + (isListening ? ' active' : ''),
-			text: isListening ? 'stop listening' : 'listen'
+	    if (Me.id && data.username !== Me.username) {
+		if (opts.live) {
+
+		    var isLive = Player.data.users.filter(function(u) {
+			return u.username === data.username;
 		    });
 
-		    live.onclick = function() {
-			if (live.classList.contains('active')) {
-			    Player.leave();
-			    live.innerHTML = 'Listen';
-			} else {
-			    Player.join(data.username);
-			    live.innerHTML = 'stop listening';
-			}
+		    if (isLive.length) {
+			var isListening = Player.data.room === 'u:' + data.username;
+			var live = Elem.create({
+			    tag: 'button',
+			    className: 'rnd sm success' + (opts.single ? '' : ' right') + (isListening ? ' active' : ''),
+			    text: isListening ? 'stop listening' : 'listen live'
+			});
 
-			live.classList.toggle('active');
-		    };
+			live.onclick = function() {
+			    if (live.classList.contains('active')) {
+				Player.leave();
+				live.innerHTML = 'listen live';
+			    } else {
+				Player.join('u:' + data.username);
+				live.innerHTML = 'stop listening';
+			    }
 
-		    elem.classList.add('i-right');
-		    elem.appendChild(live);
-		}
-	    }
+			    live.classList.toggle('active');
+			};
 
-	    if (opts.subscribe && data.username !== Me.username) {
-		var isSubscribed = Me.isSubscribed('users', data.id);
- 		var btn = Elem.create({
-		    tag: 'button',
-		    className: 'rnd sm success',
-		    text: isSubscribed ? 'subscribed' : 'subscribe'
-		});
-		btn.onclick = function() {
-		    var cb = function(err) {
-			if (err) Log.error(err);
-		    };
-
-		    if (btn.classList.contains('active')) {
-			Me.unsubscribe('users', data, cb);
-		    } else {
-			Me.subscribe('users', data, cb);
+			elem.classList.add('i-right');
+			elem.appendChild(live);
 		    }
-		    btn.classList.toggle('active');
-		};
-		btn.classList.toggle('active', isSubscribed);
-		
-		if (opts.single) {
-		    elem.appendChild(btn);
-		} else {
-		    elem.classList.add('i-right');
-		    btn.classList.add('pull-right');
-		    var right = Elem.create({ className: 'right' });
-		    right.appendChild(btn);
-		    elem.appendChild(right);
+		}
+
+		if (opts.subscribe) {
+		    var isSubscribed = Me.isSubscribed('users', data.id);
+		    var btn = Elem.create({
+			tag: 'button',
+			className: 'rnd sm success',
+			text: isSubscribed ? 'subscribed' : 'subscribe'
+		    });
+		    btn.onclick = function() {
+			var cb = function(err) {
+			    if (err) Log.error(err);
+			};
+
+			if (btn.classList.contains('active')) {
+			    Me.unsubscribe('users', data, cb);
+			} else {
+			    Me.subscribe('users', data, cb);
+			}
+			btn.classList.toggle('active');
+		    };
+		    btn.classList.toggle('active', isSubscribed);
+
+		    if (opts.single) {
+			elem.appendChild(btn);
+		    } else {
+			elem.classList.add('i-right');
+			btn.classList.add('pull-right');
+			var right = Elem.create({ className: 'right' });
+			right.appendChild(btn);
+			elem.appendChild(right);
+		    }
 		}
 	    }
 
@@ -277,26 +283,6 @@
 
 		avatar.appendChild(input);
 
-		var logout = Elem.create({
-		    tag: 'button',
-		    className: 'rnd sm',
-		    text: 'Logout'
-		});
-
-		logout.onclick = function() {
-		    Auth.signout();
-		};
-
-		var settings = Elem.create({
-		    tag: 'button',
-		    className: 'rnd sm',
-		    text: 'Settings'
-		});
-
-		settings.onclick = function() {
-		    page('/settings');
-		};
-
 		var edit = Elem.create({
 		    tag: 'button',
 		    className: 'rnd sm edit',
@@ -352,8 +338,6 @@
 
 		elem.appendChild(save);
 		elem.appendChild(edit);
-		elem.appendChild(settings);
-		elem.appendChild(logout);
 	    }
 
 	    return elem;

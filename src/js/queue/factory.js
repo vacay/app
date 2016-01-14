@@ -10,11 +10,15 @@
     return {
 	vitamins: [],
 
-	updateUI: function(id, state) {
+	updateVitaminUI: function(id, state) {
 	    var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .queue');
 	    Elem.each(divs, function(div) {
 		div.dataset.active = state;
 	    });
+	},
+
+	updateUI: function() {
+	    document.querySelector('#p-icon .badge').innerHTML = this.vitamins.length;
 	},
 
 	resetUI: function() {
@@ -24,6 +28,8 @@
 	    Elem.each(divs, function(div) {
 		div.dataset.active = false;
 	    });
+
+	    this.updateUI();
 	},
 
 	render: function() {
@@ -61,7 +67,7 @@
 	    var frag = document.createDocumentFragment();
 	    this.vitamins.forEach(function(v) {
 		frag.appendChild(Vitamin.render(v, { drag: true }));
-		self.updateUI(v.id, true);
+		self.updateVitaminUI(v.id, true);
 	    });
 
 	    elem.appendChild(frag);
@@ -69,7 +75,7 @@
 
 	broadcast: function(localOnly) {
 
-	    document.querySelector('#p-icon .badge').innerHTML = this.vitamins.length;
+	    this.updateUI();
 
 	    if (!localOnly) WS.emit('queue', { queue: this.vitamins });
 	},
@@ -81,7 +87,7 @@
 	    var elem = document.querySelector('#queue .list [data-id="' + v.id + '"]');
 	    elem.parentNode.removeChild(elem);
 
-	    this.updateUI(v.id, false);
+	    this.updateVitaminUI(v.id, false);
 
 	    return v;
 	},
@@ -99,7 +105,7 @@
 		var frag = document.createDocumentFragment();
 		data.forEach(function(v) {
 		    frag.appendChild(Vitamin.render(v, { drag: true }));
-		    self.updateUI(v.id, true);
+		    self.updateVitaminUI(v.id, true);
 		});
 
 		elem.appendChild(frag);		
@@ -107,7 +113,7 @@
 	    } else {
 		this.vitamins.push(data);
 		elem.appendChild(Vitamin.render(data, { drag: true }));
-		this.updateUI(data.id, true);
+		this.updateVitaminUI(data.id, true);
 	    }
 
 	    this.broadcast();
@@ -123,14 +129,14 @@
 		var frag = document.createDocumentFragment();
 		data.forEach(function(v) {
 		    frag.appendChild(Vitamin.render(v, { drag: true }));
-		    self.updateUI(v.id, true);
+		    self.updateVitaminUI(v.id, true);
 		});
 
 		elem.insertBefore(frag, elem.firstChild);
 		
 	    } else {
 		this.vitamins.unshift(data);
-		this.updateUI(data.id, true);
+		this.updateVitaminUI(data.id, true);
 		elem.insertBefore(Vitamin.render(data, { drag: true }), elem.firstChild);
 	    }
 	    this.broadcast();
@@ -143,7 +149,7 @@
 		var elem = document.querySelector('#queue .list [data-id="' + id + '"]');
 		elem.parentNode.removeChild(elem);
 
-		this.updateUI(id, false);
+		this.updateVitaminUI(id, false);
 
 		this.broadcast();
 	    }

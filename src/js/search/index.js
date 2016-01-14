@@ -159,6 +159,8 @@
 	var form = document.getElementById('search');
 	var input = form.firstChild;
 
+	View.active('[href="/search"]');
+
 	form.onsubmit = function() {
 
 	    var search = input.value;

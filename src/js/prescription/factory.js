@@ -79,7 +79,7 @@
 
 	    actions.appendChild(selectall);
 
-	    if (!isOwner) {
+	    if (!isOwner && Me.id) {
 		var recommend = Elem.create({
 		    tag: 'button',
 		    className: 'sm rnd success recommend',

@@ -1,4 +1,4 @@
-/* global User, page, Me, Location, Elem, User, Prescription, Vitamin, Page, document, View, doT, Log, Vitamins */
+/* global User, page, Me, Location, Elem, User, Prescription, Vitamin, Page, document, View, doT, Log, Vitamins, window */
 (function() {
 
     var init = function(ctx, next) {
@@ -96,9 +96,9 @@
 		if (typeof options.tags !== 'undefined') tags = options.tags;
 
 		if (options.reset) {
-		    document.querySelector('.filters input').value = q = null;
+		    document.querySelector('.filter-container input').value = q = null;
 		    tags = [];
-		    var ts = document.querySelectorAll('.filters .tag');
+		    var ts = document.querySelectorAll('.filter-tags .tag');
 		    Elem.each(ts, function(t) {
 			t.classList.remove('active');
 		    });
@@ -181,19 +181,27 @@
 
 			if (!!offset && self.filter && !filterLoaded) {
 
-			    document.querySelector('.filter-container').classList.add('visible');
-
-			    var f = document.querySelector('.filters');
+			    var f = document.querySelector('.filter-container');
 			    f.innerHTML = doT.template(View.tmpl('/filter/search.html'))({placeholder: ctx.params.subpath });
 
 			    if (ctx.params.subpath === 'crate') {
 				var loadedTags;
 
-				document.querySelector('.filter-container .icon').addEventListener('click', function() {
+				var fi = Elem.create({
+				    tag: 'button',
+				    className: 'link',
+				    text: 'load tags'
+				});
+				f.appendChild(fi);
+
+				fi.addEventListener('click', function() {
 
 				    if (loadedTags) {
 					return;
 				    }
+
+				    var ft = Elem.create({ className: 'filter-tags' });
+				    f.appendChild(ft);
 
 				    User.read(ctx.params.id, 'tags', {}, function(err, data) {
 					if (err) Log.error(err);
@@ -217,9 +225,10 @@
 
 						e.target.classList.toggle('active', !active);
 					    };
-					    f.appendChild(a);
+					    ft.appendChild(a);
 					});
 					loadedTags = true;
+					f.removeChild(fi);
 				    });
 				});
 			    }
@@ -272,6 +281,7 @@
 		}
 
 		delete r.dataset.loading;
+		View.active('.u [href="' + window.location.pathname + '"]');
 	    });
 
 	};
@@ -291,9 +301,9 @@
 	    single: true,
 	    subscribe: true,
 	    bio: true,
+	    live: true,
 	    editable: ctx.state.user.isOwner
 	}));
-	
     };
 
     page('/@:id/:subpath?', init, read);

@@ -9,14 +9,14 @@
 	    var l = r.querySelector('.list');
 
 	    if (opts) {
-		document.querySelector('.filters .' + closed).classList.remove('active');
+		document.querySelector('.filter-container .' + closed).classList.remove('active');
 
 		r.dataset.loading = true;
 		l.innerHTML = null;
 		offset = 0;		
 		closed = opts.reset ? false : opts.closed;
 
-		document.querySelector('.filters .' + closed).classList.add('active');
+		View.active('.filter-container .' + closed);
 	    } else {
 		opts = {};
 		if (closed) opts.closed = closed;
@@ -30,6 +30,7 @@
 		    offset += discussions.length;
 
 		    var frag = document.createDocumentFragment();
+		    frag.appendChild(Elem.create({className: 'i-divider'}));
 
 		    discussions.forEach(function(d) {
 			frag.appendChild(Discussion.render(d));
@@ -48,11 +49,8 @@
 	    filter: true
 	});
 
-	document.querySelector('.filter-container').classList.add('visible');
-	document.querySelector('.filters').innerHTML = View.tmpl('/discussion/filter.html');
-
-	document.querySelector('.filters .' + closed).classList.add('active');
-
+	document.querySelector('.filter-container').innerHTML = View.tmpl('/discussion/filter.html');
+	View.active('.filter-container .' + closed);
 	
     };
 

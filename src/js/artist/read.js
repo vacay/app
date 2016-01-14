@@ -1,4 +1,4 @@
-/* global page, Artist, View, Vitamin, document, Log, View, doT, Vitamins */
+/* global page, Artist, View, Vitamin, document, Log, View, doT, Vitamins, window */
 (function () {
 
     var init = function(ctx, next) {
@@ -51,9 +51,8 @@
 		    var frag = document.createDocumentFragment();
 
 		    if (offset && !filterLoaded) {
-			document.querySelector('.filter-container').classList.add('visible');
+			var f = document.querySelector('.filter-container');
 
-			var f = document.querySelector('.filters');
 			f.innerHTML = doT.template(View.tmpl('/filter/search.html'))({
 			    placeholder: subpath
 			});
@@ -88,6 +87,7 @@
 		}
 
 		delete r.dataset.loading;
+		View.active('.u [href="' + window.location.pathname + '"]');
 	    });
 	};
 	

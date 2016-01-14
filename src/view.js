@@ -38,7 +38,7 @@
 	    m.innerHTML = html;
 
 	    var river = Elem.create({
-		className: 'u u720',
+		className: opts.className || 'u u720',
 		attributes: {
 		    id: 'river'
 		}
@@ -57,7 +57,6 @@
 		m.addEventListener('scroll', this._listener);
 	    }
 	},
-
 	github: function(file, cb) {
 	    var url = 'https://api.github.com/repos/vacay/docs/contents/';
 	    var req = Request.get(url + file + '.md');
@@ -67,6 +66,13 @@
 	    }).error(function(res) {
 		cb(res, null);
 	    });
+	},
+	trigger: function(elem, type) {
+	    elem.classList.toggle('active');
+	    document.body.classList.toggle(type + '-open');
+	},
+	active: function(s) {
+	    document.querySelector(s).classList.add('active');
 	}
     };
 

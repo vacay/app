@@ -1,4 +1,4 @@
-/* global soundManager, youtubeManager, document, Queue, WS, Vitamin, Elem, window, Platform, Log, cordova, Network, App, User, Me, CONFIG, Image, localforage, UAParser, Notification, Auth */
+/* global soundManager, youtubeManager, document, Queue, WS, Vitamin, Elem, window, Platform, Log, cordova, Network, App, User, Me, CONFIG, Image, localforage, UAParser, Notification, Auth, View */
 (function(root, factory) {
 
     root.Player = factory(root);
@@ -87,6 +87,7 @@
 	    this.data.mode = null;
 
 	    this.updateLiveUsers();
+	    document.body.classList.toggle('remote', P.data.remote);
 	},
 
 	ytSound: null,
@@ -233,7 +234,7 @@
 			return 'u:' + o.username === P.data.room;
 		    })[0];
 		    elem.appendChild(User.render(user, { live: true }));
-		    document.querySelector('#live .user[data-username="' + P.data.room.slice(2) + '"] a').classList.add('active');
+		    View.active('#live .user[data-username="' + P.data.room.slice(2) + '"] a');
 		} else {
 		    var i = Elem.create({
 			className: 'i i-right'
@@ -273,9 +274,8 @@
 	    elem.innerHTML = null;
 	    var users = P.data.users.filter(function(u) { return u.username !== Me.username; });
 	    users.forEach(function(u) {
-		elem.appendChild(User.render(u, { avatarOnly: true, live: true }));
+		elem.appendChild(User.render(u, { avatarOnly: true }));
 	    });
-	    document.querySelector('#live-icon .badge').innerHTML = users.length;
 	},
 
 	updateTime: function() {
@@ -1032,7 +1032,7 @@
 		var result = parser.getResult();
 
 		if (result.ua)
-		    document.querySelector('.rc p').innerHTML = 'Audio will play from your ' + result.os.name + ' (' + result.browser.name + ') but you can control it from here';
+		    document.querySelector('.rc .meta').innerHTML = 'playing on ' + result.os.name + ' - ' + result.browser.name;
 
 		P.data.remote = !isMaster;
 		document.body.classList.toggle('remote', P.data.remote);

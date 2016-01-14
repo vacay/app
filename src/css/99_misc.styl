@@ -12,18 +12,20 @@
 .bookmarklet
     background-color #f6f6f6
     border-radius 5px
-    padding 5px 10px
+    padding 0 10px
     display inline-block
     cursor move
     border 1px solid $border
 
-.close:before
-    absolute top left
-    content '\0000D7'
-    font-size 45px
-    font-weight 100
-    width 45px
-    height 45px
+.close
+    padding 0
+    width 44px
+    height 44px
+    &:before
+        content '\0000D7'
+        font-size 30px
+        line-height 10px
+        font-weight 200
 
 .delete:before
     absolute top left
@@ -59,6 +61,7 @@ button
             display none
 
 body.mobile .hide-mobile
+body.no-auth .hide-auth
     display none
 
 .tip

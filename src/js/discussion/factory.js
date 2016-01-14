@@ -72,7 +72,7 @@
 
 		var actions = Elem.create({ className: 'i actions' });
 
-		if (data.id) {
+		if (data.id && Me.id) {
 		    var idx, v;
 		    var toggleVote = function(vote) {
 			idx = Utils.find(data.votes, Me.id, 'user_id');

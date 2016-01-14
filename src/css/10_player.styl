@@ -3,7 +3,6 @@
 
 .p-container
     fixed top bottom
-    display none
     overflow hidden
     padding-bottom 45px
     z-index 10001
@@ -11,6 +10,9 @@
 
 .p-header
     padding 10px 10px 0
+    border-top 1px solid $border
+    font-weight 900
+    line-height 1.2em
 
 .platform-nodewebkit .p-container
     top 25px
@@ -26,26 +28,25 @@
     padding 10px
  
 .rc
-    background $bg
-    border-bottom 1px solid $border
-    padding 10px 0
+    background yellow
+    padding 10px
     font-size 10px
     font-weight 500
-    text-align center
     display none
 
 body.remote .rc
     display block
 
 .p-body
-    absolute top 188px left right bottom
-    background rgba(255,255,255,0.9)
+    absolute top 200px left right bottom
 
 #autoplay
     margin-top 15px
     padding 15px 2px
     border-top 1px solid $border
     text-align center
+    span + span
+        margin-left 10px
 
 .p-live
     display none
@@ -79,16 +80,14 @@ body.remote .rc
     absolute left top right
     background rgba(0,0,0,0.2)
     color white
-    padding 10px
-    padding-top 122px    
     text-align center
     .play i.icon-pause
         display none
 
     a
-        width 50px
+        width 35px
         height 50px
-        font-size 25px
+        font-size 18px
         line-height 45px
         text-align center
         vertical-align middle
@@ -99,7 +98,6 @@ body.remote .rc
             line-height 30px
         &.play
             font-size 45px
-            line-height 45px
             height 55px
             width 55px
             border-radius 100%
@@ -111,7 +109,7 @@ body.remote .rc
 
 #artwork
 .p-ctrls
-    height 188px
+    height 200px
         
 .playing .p-ctrls .play
     i.icon-play
@@ -120,10 +118,10 @@ body.remote .rc
         display inline-block
 
 #p-icon
-    display none
     fixed right 10px
-    width 45px
-    height 45px
+    min-height 44px
+    border-radius 999em
+    padding 7px
     z-index 10002
     .badge
         absolute top -4px right -4px
@@ -135,7 +133,7 @@ body.remote .rc
         border 1px solid $bg
     .bar
         font-size 25px
-        background-color $grey
+        background-color #666
         display inline-block
         margin 0 0.05em
         transition 0.5s
@@ -167,11 +165,6 @@ body.remote .rc
         height 0.8em
         animation-duration 0.65s
 
-body.authenticated
-    #p-icon
-    .p-container
-        display block
-
 body.playing #p-icon .bar
     animation-play-state running
 
@@ -185,58 +178,31 @@ body.live .p-live
     .p-container
         width 320px
         right -320px
-        border-left 1px solid $border
-        box-shadow 0 1px 2px rgba(0,0,0,0.1)
-
-    #p-icon
-        top 30px
-        border 1px solid $border
-        border-radius 999em
-        box-shadow 0 1px 0 rgba(0,0,0,0.1)
-
-    .show-volume .p-ctrls
-        padding-top 87px
 
     .player-open
-        #p-icon
-        #toolbar
-        #live
-        #live-icon
         .p-container
             transform translate3d(-320px,0,0)
         main
-            right 385px
+            right 320px
+
+    #p-icon
+        top 30px
+
+    .p-ctrls a
+        margin-top 100px
 
 @media (min-width: $largeMin)
     .p-container
         width 400px
         right -400px
-        &.show-volume .p-ctrls
-            padding-top 134px
 
-    #artwork
-    .p-ctrls
-        height 235px
-
-    .p-ctrls
-        padding-top 169px
-
-    .p-body
-        top 235px
-        
     .player-open
-        #p-icon
-        #toolbar
-        #live
-        #live-icon
         .p-container
             transform translate3d(-400px,0,0)
         main
-            right 465px
+            right 400px
 
 @media (max-width: $extraSmallMax)
-    #brand
-        display none
     .p-container
         width 100%
         transform translateY(calc(100% - 60px))
@@ -256,19 +222,18 @@ body.live .p-live
             bottom 53px
 
     .p-ctrls
+        background rgba(0,0,0,0.7)
         padding 2px
 
     .player-open
         #brand
             display block
         .p-ctrls
+            background rgba(0,0,0,0.2)
             padding-top 122px
         .show-volume .p-ctrls
             padding-top 87px
         .p-container
             transform translateY(0)
-        #p-icon
-            background-color #666
-            color white
-            border-radius 999em
-            box-shadow 0 2px 5px 0 rgba(0,0,0,.26)
+        #p-icon .bar
+            background #666

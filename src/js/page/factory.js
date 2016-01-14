@@ -21,7 +21,7 @@
 	    data.displayURL = this.displayURL(data.url);
 	    elem.innerHTML = tmpl(data);
 
-	    if (opts.subscribe) {
+	    if (opts.subscribe && Me.id) {
 		var isSubscribed = Me.isSubscribed('pages', data.id);
 		var btn = Elem.create({
 		    tag: 'button',

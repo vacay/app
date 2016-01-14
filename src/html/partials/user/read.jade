@@ -1,43 +1,34 @@
 header.u.u720
     #user
 
-nav.u.u850.flex
-    ul.row
-        {{? it.public_crate === 1}}
-        li.col-xs-3.col-md
-            a.box(href='/@{{= it.username }}/crate')
-                span.label Crate
-                span.badge {{= (it.crateCount[0] && it.crateCount[0].count) || 0 }}
-        {{?}}
-        li.col-xs-3.col-md
-            a.box(href='/@{{= it.username }}/prescriptions')
-                span.label Prescriptions
-                span.badge {{= (it.prescriptionCount[0] && it.prescriptionCount[0].count) || 0 }}
-        li.col-xs-3.col-md
-            a.box(href='/@{{= it.username }}/recommendations')
-                span.label Recommendations
-                span.badge {{= (it.recommendationCount[0] && it.recommendationCount[0].count) || 0 }}
-        {{? it.public_listens === 1}}
-        li.col-xs-3.col-md
-            a.box(href='/@{{= it.username }}/listens')
-                span.label Listens
-                span.badge {{= (it.listenCount[0] && it.listenCount[0].count) || 0 }}
-        {{?}}
-        li.col-xs-3.col-md
-            a.box(href='/@{{= it.username }}/imports')
-                span.label Imports
-                span.badge {{= (it.importCount[0] && it.importCount[0].count) || 0 }}
-        {{? it.isOwner }}
-        li.isOwner.col-xs-3.col-md
-            a.box(href='/@{{= it.username }}/drafts')
-                span.label Drafts
-                span.badge {{= (it.draftCount[0] && it.draftCount[0].count) || 0 }}
-        {{?}}
-        li.col-xs-3.col-md
-            a.box(href='/@{{= it.username }}/pages')
-                span.label Pages
-                span.badge {{= (it.pageCount[0] && it.pageCount[0].count) || 0 }}
-        li.col-xs-3.col-md
-            a.box(href='/@{{= it.username }}/users')
-                span.label People
-                span.badge {{= (it.userCount[0] && it.userCount[0].count) || 0 }}
+nav.u.u720.flex.row
+    {{? it.public_crate === 1}}
+    a.col-xs-3.col-md(href='/@{{= it.username }}/crate')
+        span.label Crate
+        span.badge {{= (it.crateCount[0] && it.crateCount[0].count) || 0 }}
+    {{?}}
+    a.col-xs-3.col-md(href='/@{{= it.username }}/prescriptions')
+        span.label Prescriptions
+        span.badge {{= (it.prescriptionCount[0] && it.prescriptionCount[0].count) || 0 }}
+    a.col-xs-3.col-md(href='/@{{= it.username }}/recommendations')
+        span.label Recommendations
+        span.badge {{= (it.recommendationCount[0] && it.recommendationCount[0].count) || 0 }}
+    {{? it.public_listens === 1}}
+    a.col-xs-3.col-md(href='/@{{= it.username }}/listens')
+        span.label Listens
+        span.badge {{= (it.listenCount[0] && it.listenCount[0].count) || 0 }}
+    {{?}}
+    a.col-xs-3.col-md(href='/@{{= it.username }}/imports')
+        span.label Imports
+        span.badge {{= (it.importCount[0] && it.importCount[0].count) || 0 }}
+    {{? it.isOwner }}
+    a.isOwner.col-xs-3.col-md(href='/@{{= it.username }}/drafts')
+        span.label Drafts
+        span.badge {{= (it.draftCount[0] && it.draftCount[0].count) || 0 }}
+    {{?}}
+    a.col-xs-3.col-md(href='/@{{= it.username }}/pages')
+        span.label Pages
+        span.badge {{= (it.pageCount[0] && it.pageCount[0].count) || 0 }}
+    a.col-xs-3.col-md(href='/@{{= it.username }}/users')
+        span.label People
+        span.badge {{= (it.userCount[0] && it.userCount[0].count) || 0 }}

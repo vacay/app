@@ -22,9 +22,10 @@
 		    'data-id': data.id
 		}
 	    });
+
 	    data.artwork = this.getArtwork(data);
 	    data.time = data.duration ? Utils.duration(data.duration) : '';
-	    data.crated = Utils.exists(data.craters, Me.username, 'username');
+	    data.crated = data.craters ? Utils.exists(data.craters, Me.username, 'username') : false;
 	    data.queued = Queue.isQueued(data.id);
 	    data.bitrate = data.hosts[0].bitrate ? data.hosts[0].bitrate + 'kbps' : '';
 

@@ -3,13 +3,13 @@
 
 .vitamin
     .play
-        width 45px
-        height 45px
+        width 30px
+        height 30px
         i
             absolute left top
             display none
             width 100%
-            line-height 45px
+            line-height 30px
             background rgba(0,0,0,0.2)
             color white
             border-radius 999em
@@ -71,30 +71,42 @@
 
 #vitamin
     border-bottom 1px solid $border
+    .vitamin
+        min-height 230px
     .i-body
         padding-right 0
-        margin 30px
+        margin 30px 30px 30px 215px
     .i-title
-        font-size 30px
-        font-weight 100
-    .right
-    .left
-        relative top left right
-        display block
+        font-size 22px
     .play
     .avatar img
         height 200px
         width 200px
+        border-radius 0
     .play i
         line-height 200px
         font-size 40px
+        border-radius 0
     .tags .input
         text-align center
 
 @media (max-width: $extraSmallMax)
-    .vitamin.i-right
+    .vitamin
+        .play
+            width 45px
+            height 45px
+            i
+                line-height 45px
+
+        &.i-right
+            .i-body
+                padding-right 25px
+            .right
+                display none
+
+    #vitamin
+        .left
+            position relative
+            top 0
         .i-body
-            padding-right 25px
-        .right
-            display none
-        
+            margin-left 0

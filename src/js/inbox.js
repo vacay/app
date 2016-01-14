@@ -1,7 +1,7 @@
 /* global document, View, page, Me, Elem, Page, Vitamin, Prescription, Log */
 (function() {
 
-    page('/home', function() {
+    page('/inbox', function() {
 
 	var lv, lp, t = 'all';
 
@@ -9,15 +9,16 @@
 
 	    var r = document.getElementById('river');
 	    var l = r.querySelector('.list');
+	    l.setAttribute('empty', 'You need to subscribe to pages and users. Learn how.');
 
 	    if (options) {
-		document.querySelector('.filters .' + t).classList.remove('active');
+		document.querySelector('.filter-container .' + t).classList.remove('active');
 
 		r.dataset.loading = true;
 		lv = lp = l.innerHTML = null;
 		t = options.reset ? 'all' : options.t;
 
-		document.querySelector('.filters .' + t).classList.add('active');
+		View.active('.filter-container .' + t);
 	    } else {
 		options = {};
 		if (lv) options.lv = lv;
@@ -32,6 +33,7 @@
 
 		    var frag = document.createDocumentFragment();
 
+
 		    var previous_lv = lv;
 		    var previous_lp = lp;
 
@@ -39,11 +41,18 @@
 		    for ( ; i < items.length; i++) {
 			if (items[i].page_id) {
 			    if (last_page !== items[i].page_id) {
-				frag.appendChild(Elem.create({className: 'i-divider'}));
 				var subscribed = [];
-				items[i].pages.forEach(function(p) {
-				    if (Me.isSubscribed('pages', p.id)) subscribed.push(p);
-				});
+				if (Me.id) {
+				    items[i].pages.forEach(function(p) {
+					if (Me.isSubscribed('pages', p.id)) subscribed.push(p);
+				    });
+				} else {
+				    items[i].pages.sort(function(a, b) {
+					return new Date(b._pivot_created_at) - new Date(a._pivot_created_at);
+				    });
+				    subscribed = items[i].pages;
+				}
+				frag.appendChild(Elem.create({className: 'i-divider'}));
 				frag.appendChild(Page.render(subscribed[0]));
 				last_page = subscribed[0].id;
 			    }
@@ -54,7 +63,7 @@
 			    last_page = null;
 			}
 		    }
-		    
+
 		    lv = lp = null;
 		    i = items.length - 1;
 		    for ( ; i >= 0; i--) {
@@ -71,19 +80,21 @@
 
 		delete r.dataset.loading;
 	    });
-	};	
+	};
 
 	View.render({
-	    id: '/home/index.html',
 	    load: load,
 	    filter: true
 	});
 
-	document.querySelector('.filter-container').classList.add('visible');
-	document.querySelector('.filters').innerHTML = View.tmpl('/home/filter.html');
+	document.querySelector('.filter-container').innerHTML = View.tmpl('/inbox/filter.html');
 
-	document.querySelector('nav [href="/home"]').classList.add('active');
-	document.querySelector('.filters .' + t).classList.add('active');
+	View.active('[href="/inbox"]');
+	View.active('.filter-container .' + t);
+
+	if (!Me.id) {
+	    View.trigger(document.querySelector('.help'), 'help');
+	}
 
     });
 

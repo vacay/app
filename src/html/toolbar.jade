@@ -1,10 +1,19 @@
-#toolbar-trigger(onclick='document.body.classList.toggle("menu-open")')
+#toolbar-trigger.trigger(onclick='View.trigger(this, "menu")')
     span
-#toolbar
-    a#home-icon(href='/home')
-        i.icon-home
-    a#search-icon(href='/search')
-        i.icon-search
-    a#user-icon
-        i.icon-person
-    a#help-icon(href='/info') i
+nav#toolbar.vertical.scroll
+    ul
+        li
+            a(href='/') home
+        li
+            a(href='/inbox') inbox
+        li
+            a(href='/search') search
+        li
+            a(href='/about') about
+        li
+            a(href='/discussions') help
+
+    #user-icon
+    a#auth-btn(onclick='Landing.show()') log in
+    a.hide-auth(onclick='page("/settings")') settings
+    #live

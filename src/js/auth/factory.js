@@ -23,11 +23,6 @@
 		Me.init(res);
 		done();
 	    }).error(function(data, res) {
-		if (res.status === 401) {
-		    page('/landing');
-		} else {
-		    //TODO
-		}
 		done();
 	    });
 	},
@@ -55,6 +50,8 @@
 
 	    Player.reset();
 	    Queue.reset();
+
+	    page(window.location.pathname);
 	},
 
 	signup: function (params, cb) {
@@ -68,8 +65,8 @@
 	},
 
 	request: function(email, cb) {
-	    App.api('/auth/reset').get({ email: email }).success(function() {
-		//$rootScope.$broadcast('auth:request:success');
+	    App.api('/auth/reset').get({ email: email }).success(function(res) {
+		cb();
 	    }).error(function(res) {
 		cb(res);
 	    });

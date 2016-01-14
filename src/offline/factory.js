@@ -102,7 +102,7 @@
 	    sync();
 	    load(response);
 
-	    this.check();
+	    //this.check();
 	},
 
 	toggle: function(data) {

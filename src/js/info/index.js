@@ -1,11 +1,13 @@
 /* global View, page, Log, Discussion, document, Elem, showdown */
 (function() {
 
-    page('/info/:subpath?', function(ctx) {
+    page('/about/:subpath?', function(ctx) {
 
-	View.render();
+	View.render({ className: 'u u650' });
+	View.active('nav [href="/about"]');
 
 	var r = document.getElementById('river');
+	var l = r.querySelector('.list');
 
 	View.github(ctx.params.subpath || 'about', function(err, content) {
 	    if (err) Log.error(err);
@@ -13,14 +15,14 @@
 		var about = Elem.create({ className: '_m' });
 		var converter = new showdown.Converter();
 		about.innerHTML = converter.makeHtml(content);
-		r.appendChild(Elem.create({
+		r.insertBefore(Elem.create({
 		    className: 'h _d',
 		    childs: [{
 			tag: 'a',
 			text: 'About'
 		    }]
-		}));
-		r.appendChild(about);
+		}), l);
+		r.insertBefore(about, l);
 	    }
 	});
 
@@ -31,8 +33,6 @@
 	}, function(err, discussions) {
 	    if (err) Log.error(err);
 	    else {
-
-		var l = r.querySelector('.list');
 
 		var frag = document.createDocumentFragment();
 

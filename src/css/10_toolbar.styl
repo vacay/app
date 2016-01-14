@@ -2,105 +2,72 @@
 @import 'nib'
 
 #toolbar
-    fixed top 85px right 10px
-    display none
+    fixed top 0 left -100px bottom 0
+    padding 85px 0 15px
+    border-right 1px solid $border
+    width 95px
     z-index 5
+    background white
     a
-        width 45px
-        height 45px
-        line-height 23px
-        text-align center
-        padding 10px
-        background $bg
+        min-width 45px
+        padding 5px 10px
         vertical-align top
         position relative
-        border 1px solid $border
-        display block
-        border-radius 999em
-        box-shadow 0 1px 0 rgba(0,0,0,0.1)
-        + a
-            margin-top 5px
+        font-size 14px
         &.active
-            border-color #666
+            background transparent
+            color #444
+            font-weight 500
 
 #user-icon
-    background-size cover !important
-
-#user-icon[style] i
-    display none
+    margin 25px 0 15px
+    border-top 1px solid $border
+    div
+        margin-top 20px
+        margin-left 10px
+        width 45px
+        height 45px
+        border-radius 999em
+        background-size cover !important
+    a
+        font-weight 900
+        font-size 12px
+        margin-top 15px
 
 #toolbar-trigger
-    fixed right 10px bottom 70px
-    display none
-    height 50px
-    width 50px
-    padding 13px
+    fixed left 10px top 25px
+    padding 10px
     border-radius 999em
-    background-color #666
-    box-shadow 0 2px 5px 0 rgba(0,0,0,.26)
-    z-index 5
+    z-index 10001
     &:before
     &:after
     span
-        background white
+        background #666
         content ''
         display block
-        height 2px
-        margin 6px 0
+        height 3px
+        margin 3px 0
         transition all .2s ease-out
-        width 24px
+        width 20px
     &:before
-        margin-top 3px
+        margin-top 2px
 
 .menu-open #toolbar-trigger
     &:before
-        transform rotate(45deg) translate3d(5px,5px,0)
+        transform rotate(45deg) translate3d(4px,4px,0)
     span
         opacity 0
     &:after
-        transform rotate(-45deg) translate3d(6px,-6px,0)
+        transform rotate(-45deg) translate3d(4px,-4px,0)
 
-body.mouse #toolbar a:hover
-    background white
-
-body.authenticated #toolbar
-    display block
+.menu-open #toolbar
+    left 0
 
 @media (max-width: $extraSmallMax)
-    .authenticated #toolbar-trigger
-        display block
-    #toolbar
-        pointer-events none
+    #toolbar-trigger
         top auto
-        right 12px
-        bottom 130px
-        a
-            border none
-            background-color #666
-            color white
-            box-shadow 0 2px 5px 0 rgba(0,0,0,.26)
-            opacity 0
-            transform scale(0)
-            transition all 100ms cubic-bezier(.55,0,.55,.2)
-            transition-delay 0ms
-    .menu-open
-        #toolbar-trigger
-            background-color #d3e478
-            color #666
-        #toolbar
-            pointer-events all
-            a
-                opacity 1
-                transform scale(1)
-        #user-icon
-            transition-delay 35ms
-        #search-icon
-            transition-delay 70ms
-        #home-icon
-            transition-delay 105ms
-
-    .n-visible
-        #toolbar-trigger
-            bottom 118px
-        #toolbar
-            bottom 178px
+        bottom 5px
+        &:before
+        &:after
+        span
+            background white

@@ -1,17 +1,13 @@
 header.u.u720
     #artist
 
-nav.u.u850.flex
-    ul.row
-        li.col-xs-3.col-md
-            a.box(href='/artist/{{= it.id }}')
-                span.label All
-                span.badge {{= (it.vitaminCount[0] && it.vitaminCount[0].count) || 0 }}
-        li.col-xs-3.col-md
-            a.box(href='/artist/{{= it.id }}/originals')
-                span.label Originals
-                span.badge {{= (it.originalCount[0] && it.originalCount[0].count) || 0 }}
-        li.col-xs-3.col-md
-            a.box(href='/artist/{{= it.id }}/variations')
-                span.label Variations
-                span.badge {{= (it.variationCount[0] && it.variationCount[0].count) || 0 }}
+nav.u.u720.flex.row
+    a.col-xs.col-sm-2(href='/artist/{{= it.id }}')
+        span.label All
+        span.badge {{= (it.vitaminCount[0] && it.vitaminCount[0].count) || 0 }}
+    a.col-xs.col-sm-2(href='/artist/{{= it.id }}/originals')
+        span.label Originals
+        span.badge {{= (it.originalCount[0] && it.originalCount[0].count) || 0 }}
+    a.col-xs.col-sm-2(href='/artist/{{= it.id }}/variations')
+        span.label Variations
+        span.badge {{= (it.variationCount[0] && it.variationCount[0].count) || 0 }}

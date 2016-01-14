@@ -3,26 +3,20 @@ header.u.u720
         input.pill(type='search', placeholder='Search or type URL')
 
 {{? it.query }}
-nav.u.u850.flex
-    ul.row
-        li.col-xs-3.col-md
-            a.box(href='/search/vitamins?q={{= it.query }}')
-                span.label Vitamins
-                span.badge {{= (it.vitamins[0] && it.vitamins[0].count) || 0 }}
-        li.col-xs-3.col-md
-            a.box(href='/search/prescriptions?q={{= it.query }}')
-                span.label Prescriptions
-                span.badge {{= (it.prescriptions[0] && it.prescriptions[0].count) || 0 }}
-        li.col-xs-3.col-md
-            a.box(href='/search/users?q={{= it.query }}')
-                span.label People
-                span.badge {{= (it.users[0] && it.users[0].count) || 0 }}
-        li.col-xs-3.col-md
-            a.box(href='/search/artists?q={{= it.query }}')
-                span.label Artists
-                span.badge {{= (it.artists[0] && it.artists[0].count) || 0 }}
-        li.col-xs-3.col-md
-            a.box(href='/search/pages?q={{= it.query }}')
-                span.label Pages
-                span.badge {{= (it.pages[0] && it.pages[0].count) || 0 }}
+nav.u.u720.flex.row
+    a.col-xs-3.col-md(href='/search/vitamins?q={{= it.query }}')
+        span.label Vitamins
+        span.badge {{= (it.vitamins[0] && it.vitamins[0].count) || 0 }}
+    a.col-xs-3.col-md(href='/search/prescriptions?q={{= it.query }}')
+        span.label Prescriptions
+        span.badge {{= (it.prescriptions[0] && it.prescriptions[0].count) || 0 }}
+    a.col-xs-3.col-md(href='/search/users?q={{= it.query }}')
+        span.label People
+        span.badge {{= (it.users[0] && it.users[0].count) || 0 }}
+    a.col-xs-3.col-md(href='/search/artists?q={{= it.query }}')
+        span.label Artists
+        span.badge {{= (it.artists[0] && it.artists[0].count) || 0 }}
+    a.col-xs-3.col-md(href='/search/pages?q={{= it.query }}')
+        span.label Pages
+        span.badge {{= (it.pages[0] && it.pages[0].count) || 0 }}
 {{?}}

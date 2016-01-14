@@ -2,17 +2,17 @@
 @import 'nib'
 
 .filter-container
-    margin-bottom 15px
-    opacity 0
+    background #f0f0f0
+
+    nav
+        padding 5px 15px
+        border-bottom 1px solid $border
 
     .reset
         display none
 
     .filters
         display none
-
-    &.visible
-        opacity 1
 
     &.show
         .icon
@@ -23,3 +23,9 @@
             display inline-block
         .filters
             display block
+
+.help-container
+    display none
+
+body.help-open .help-container
+    display block
