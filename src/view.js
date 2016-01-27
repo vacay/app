@@ -8,9 +8,13 @@
     'use strict';
 
     var m = document.getElementById('main');
+    var title = document.getElementById('toolbar-title');
 
     return {
 	main: m,
+	title: function(s) {
+	    title.innerHTML = s;
+	},
 	_onScroll: function() {
 	    var r = document.getElementById('river');
 	    if (r.dataset.loading) return;
@@ -35,6 +39,7 @@
 	    if (opts.id) html = this.tmpl(opts.id);
 	    if (opts.data) html = doT.template(html)(opts.data);
 	    if (opts.filter) html += this.tmpl('/filter/container.html');
+	    if (opts.title) this.title(opts.title);
 	    m.innerHTML = html;
 
 	    var river = Elem.create({

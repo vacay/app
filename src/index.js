@@ -5,6 +5,7 @@
 	page.exit('*', function(ctx, next) {
 	    View.scrollOff();
 	    Modal.closeAll();
+	    View.title('');
 	    View.main.innerHTML = null;
 	    View.main.appendChild(Loading.render({ indeterminate: true }));
 	    document.body.classList.remove('menu-open');

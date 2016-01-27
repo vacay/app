@@ -84,7 +84,8 @@
 
 	View.render({
 	    load: load,
-	    filter: true
+	    filter: true,
+	    title: 'Inbox'
 	});
 
 	document.querySelector('.filter-container').innerHTML = View.tmpl('/inbox/filter.html');

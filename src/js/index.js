@@ -43,7 +43,7 @@
 	    });
 	};
 
-	View.render({ load: load, filter: true });
+	View.render({ load: load, filter: true, title: 'Home' });
 	document.querySelector('.filter-container').innerHTML = View.tmpl('/index/filter.html');
 	View.active('[href="/"]');
 	View.active('.filter-container .' + t);

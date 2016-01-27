@@ -289,7 +289,8 @@
 	var opts = {
 	    id: '/user/read.html',
 	    data: ctx.state.user,
-	    load: load
+	    load: load,
+	    title: '@' + ctx.params.id
 	};
 
 	if (['crate','listens','imports'].indexOf(ctx.params.subpath) !== -1)

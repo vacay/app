@@ -34,6 +34,12 @@
         font-size 12px
         margin-top 15px
 
+#toolbar-title
+    fixed left 60px top 25px
+    z-index 10001
+    line-height 44px
+    font-weight 500
+
 #toolbar-trigger
     fixed left 10px top 25px
     padding 10px
@@ -60,10 +66,15 @@
     &:after
         transform rotate(-45deg) translate3d(4px,-4px,0)
 
-.menu-open #toolbar
-    left 0
+.menu-open
+    #toolbar
+        left 0
+    #toolbar-title
+        display none
 
 @media (max-width: $extraSmallMax)
+    #toolbar-title
+        display none
     #toolbar-trigger
         top auto
         bottom 5px

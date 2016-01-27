@@ -3,7 +3,7 @@
 
     page('/about/:subpath?', function(ctx) {
 
-	View.render({ className: 'u u650' });
+	View.render({ className: 'u u650', title: 'About' });
 	View.active('nav [href="/about"]');
 
 	var r = document.getElementById('river');
