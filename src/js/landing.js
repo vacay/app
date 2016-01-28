@@ -25,13 +25,8 @@
 	var m = Elem.create({ html: View.tmpl('/landing.html')});
 
 	if (Platform.isMobile()) {
-	    var lan = document.getElementById('landing');
-	    var gif;
-
-	    if (Platform.isCordova())
-		gif = 'hero.gif';
-	    else
-		gif = 'https://dl.dropboxusercontent.com/u/26745309/assets/videos/landing.gif';
+	    var lan = m.querySelector('#landing');
+	    var gif = Platform.isCordova() ? 'hero.gif' : 'https://dl.dropboxusercontent.com/u/26745309/assets/videos/landing.gif';
 
 	    lan.style['background-image'] = 'url(' + (gif) + ')';
 	} else {
