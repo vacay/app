@@ -130,6 +130,27 @@
 	    };
 	},
 
+	updateArtwork: function(isYoutube) {
+	    var artwork = document.getElementById('artwork');
+
+	    artwork.style['background-image'] = null;
+	    document.getElementById('yt-container').classList.toggle('hide', !isYoutube);
+
+	    if (isYoutube) return;
+
+	    var hosts = P.data.nowplaying.hosts;
+
+	    for(var i=0; i<hosts.length; i++) {
+		if (hosts[i].artwork_url) {
+		    var url = hosts[i].artwork_url.indexOf('.sndcdn.com') === -1 ?
+			    hosts[i].artwork_url :
+			    hosts[i].artwork_url.replace('-large', '-t500x500');
+		    artwork.style['background-image'] = 'url(' + url + ')';
+		    break;
+		}
+	    }
+	},
+
 	updateNowplaying: function() {
 	    // set mode if applicable
 	    var l = document.querySelector('#nowplaying .list');
@@ -156,27 +177,7 @@
 	    // Nowplaying
 	    l.appendChild(Vitamin.render(P.data.nowplaying));
 
-	    // Artwork
-	    var isYoutube = !!(P.lastSound && P.lastSound.videoId);
-	    var artwork = document.getElementById('artwork');
-
-	    artwork.style['background-image'] = null;
-	    document.getElementById('yt-container').classList.toggle('hide', !isYoutube);
-
-	    if (!isYoutube) {
-		var hosts = P.data.nowplaying.hosts;
-
-		for(var i=0; i<hosts.length; i++) {
-		    if (hosts[i].artwork_url) {
-			var url = hosts[i].artwork_url.indexOf('.sndcdn.com') === -1 ?
-				hosts[i].artwork_url :
-				hosts[i].artwork_url.replace('-large', '-t500x500');
-			artwork.style['background-image'] = 'url(' + url + ')';
-			break;
-		    }
-		}
-	    }
-
+	    this.updateArtwork();
 
 	    // Vitamin Styling
 	    var ds = document.querySelectorAll('.vitamin.nowplaying');
@@ -709,6 +710,7 @@
 
 		    if (soundURL.indexOf('youtube') !== -1) {
 			thisSound = P.createYTSound(soundURL);
+			P.updateArtwork(true);
 		    } else {
 			thisSound = P.createSMSound(soundURL);
 		    }
