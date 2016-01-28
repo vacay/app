@@ -62,6 +62,7 @@
 
     var P = {
 	data: {
+	    playInit: false,
 	    autoplay: false,
 	    remote: null,
 	    repeat: false,
@@ -410,6 +411,7 @@
 	    },
 	    whileplaying: function () {
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
+		P.data.playInit = true;
 
 		var i, d = null;
 
@@ -708,7 +710,7 @@
 
 		    soundURL = host.url;
 
-		    if (soundURL.indexOf('youtube') !== -1) {
+		    if (soundURL.indexOf('youtube.com') !== -1) {
 			thisSound = P.createYTSound(soundURL);
 			P.updateArtwork(true);
 		    } else {
@@ -743,7 +745,10 @@
 	},
 
 	getHosts: function(vitamin, cb) {
-	    if (vitamin.loadedHosts) {
+	    //TODO - hacky fix for iOS preventing loading outside of onclick
+	    if (Platform.isMobile() && !P.data.playInit) {
+		cb();
+	    } else if (vitamin.loadedHosts) {
 		cb();
 	    } else {
 		Vitamin.read(vitamin.id, 'stream', {}, function(err, hosts) {
@@ -778,7 +783,7 @@
 		});
 	    } else if (ytIdx !== -1 && (!Platform.isMobile() || hosts[ytIdx].stream_url)) {
 		return cb(null, {
-		    url: hosts[ytIdx].url,
+		    url: Platform.isMobile() ? hosts[ytIdx].stream_url : hosts[ytIdx].url,
 		    idx: ytIdx
 		});
 	    } else {
