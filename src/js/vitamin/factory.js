@@ -157,6 +157,11 @@
 		Prescription.showDrafts(data.id);
 	    };
 
+	    elem.querySelector('.edit-title').onclick = function(e) {
+		Modal.close(e);
+		Vitamin.showEdit(data);
+	    };
+
 	    if (o.offlineMode && o.crated) {
 		var offline = elem.querySelector('.offline');
 		offline.onclick = function(e) {
@@ -226,9 +231,12 @@
 	    App.api('/vitamin/' + id).put({
 		title: title
 	    }).success(function() {
-		//analytics.track('vitamin:update');
-	    }).error(function() {
-		//$rootScope.$broadcast('vitamin:update', id, original);
+		var elems = document.querySelectorAll('.vitamin[data-id="' + id + '"] .i-title');
+		Elem.each(elems, function(ele) {
+		    ele.innerHTML = title;
+		});
+	    }).error(function(err) {
+		Log.error(err, title);
 	    });
 	},
 
@@ -321,50 +329,84 @@
 	    });
 	},
 
-	getLastfmTracks: function(fpId, cb) {
-	    var lfmUrl = 'https://ws.audioscrobbler.com/2.0/?' + [
-		'method=track.getfingerprintmetadata',
-		'fingerprintid=' + encodeURIComponent(fpId),
-		'api_key=362fa9fa7f6246d30a5095ebfefb46b0',
-		'format=json'
-	    ].join('&');
-
-	    var request = Request.get(lfmUrl);
-
-	    request.success(function(data) {
-		if (data.error) return cb(data.message, null);
-		if (data.tracks && data.tracks.track) {
-		    if (!angular.isArray(data.tracks.track)) data.tracks.track = [data.tracks.track];
-		    return cb(null, data.tracks.track);
-		}
-		return cb('lastfm api response missing tracks', data);
-	    });
-
-	    request.error(function(data) {
-		if (data.error) {
-		    cb(data.message, null);
-		    return;
-		}
-		cb('lastfm api error', null);
-	    });
-	},
-
 	getEchonestTracks: function(id, cb) {
 	    var enUrl = 'https://developer.echonest.com/api/v4/song/profile?' + [
 		'id=' + id,
-		'api_key=YNYFKJ25QRGXMD3XZ',
-		'format=jsonp',
-		'callback=JSON_CALLBACK'
+		'api_key=YNYFKJ25QRGXMD3XZ'
 	    ].join('&');
 
-	    var request = $http.jsonp(enUrl);
-
-	    request.success(function(data) {
+	    Request.get(enUrl).success(function(data) {
 		cb(null, data.response.songs);
+	    }).error(function(err, res) {
+		cb('echonest api error', res);
+	    });
+	},
+
+	showEdit: function(data) {
+	    console.log(data);
+
+	    var elem = Elem.create();
+	    var form = Elem.create({
+		tag: 'form',
+		className: 'i',
+		childs: [{
+		    tag: 'label',
+		    text: 'artist - title (remix)'
+		}, {
+		    tag: 'input',
+		    className: 'pill',
+		    attributes: {
+			type: 'text',
+			value: data.displayTitle
+		    }
+		}, {
+		    className: 'meta',
+		    text: 'Note: No quotations, brackets, album/release information. Only variation info should be in paranthesis (i.e. remix, cover, live).'
+		}]
+	    });
+	    var h = Elem.create({
+		className: 'h _d',
+		childs: [{
+		    tag: 'a',
+		    text: 'Related'
+		}]
+	    });
+	    var list = Elem.create({ className: 'list' });
+
+	    elem.appendChild(form);
+	    elem.appendChild(h);
+	    elem.appendChild(list);
+
+	    form.onsubmit = function(e) {
+		var newTitle = e.target.querySelector('input').value;
+		Modal.close(e);
+		Vitamin.update(data.id, newTitle, data.displayTitle);
+		return false;
+	    };
+
+	    data.hosts.forEach(function(h) {
+		list.appendChild(Elem.create({
+		    className: 'i',
+		    text: h.vitamin_title
+		}));
 	    });
 
-	    request.error(function(data) {
-		cb('echonest api error', data);
+	    if (data.echonest_id) {
+		this.getEchonestTracks(data.echonest_id, function(err, res) {
+		    if (err) Log.error(err, data);
+		    res.forEach(function(h) {
+			list.appendChild(Elem.create({
+			    className: 'i',
+			    text: h.artist_name + ' - ' + h.title
+			}));
+		    });
+		});
+	    }
+
+	    Modal.show({
+		elem: elem,
+		header: 'Edit Title',
+		close: true
 	    });
 	},
 
