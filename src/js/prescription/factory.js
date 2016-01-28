@@ -25,6 +25,9 @@
 		}
 	    });
 
+	    var vitamins = Elem.create({ className: 'list' });
+
+
 	    if (data.image_url) {
 		var image_url;
 		if (data.image_url.indexOf('/tmp') === -1)
@@ -235,18 +238,50 @@
 		};
 
 		actions.appendChild(setImage);
+
+		var drag = dragula([vitamins], {
+		    direction: 'vertical',
+		    moves: function(el, container, handle) {
+			if (!Elem.getClosest(el, '.vitamin'))
+			    return false;
+
+			if (Platform.isTouchDevice() && !handle.classList.contains('i-handle'))
+			    return false;
+
+			return true;
+		    }
+		}).on('drop', function(el) {
+		    var id = parseInt(el.dataset.id, 10);
+		    var newIdx = [].indexOf.call(el.parentNode.children, el);
+		    var prevIdx = Utils.find(data.vitamins, id);
+
+		    var vitamin = data.vitamins.splice(prevIdx, 1)[0];
+		    data.vitamins.splice(newIdx, 0, vitamin);
+
+		    var vits = [];
+		    for (var i=0; i<data.vitamins.length; i++) {
+			vits.push({
+			    vitamin_id: data.vitamins[i].id,
+			    order: i
+			});
+		    }
+
+		    Prescription.update(data.id, {
+			vitamins: vits
+		    }, function(err) {
+			if (err) {
+			    //TODO
+			    Log.error(err);
+			}
+		    });
+		});
 	    }
 
 	    elem.appendChild(actions);
 
-	    var vitamins = Elem.create({
-		className: 'list'
-	    });
-
 	    data.vitamins.forEach(function(v) {
-		//TODO - drag to reorder
 		//TODO - remove button
-		vitamins.appendChild(Vitamin.render(v, { editable: isOwner }));
+		vitamins.appendChild(Vitamin.render(v, { editable: isOwner, drag: isOwner }));
 	    });
 
 	    elem.appendChild(vitamins);
