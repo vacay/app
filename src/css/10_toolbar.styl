@@ -2,22 +2,43 @@
 @import 'nib'
 
 #toolbar
-    fixed top 0 left -100px bottom 0
-    padding 85px 0 15px
-    border-right 1px solid $border
-    width 95px
-    z-index 5
-    background white
-    a
-        min-width 45px
-        padding 5px 10px
-        vertical-align top
-        position relative
-        font-size 14px
-        &.active
-            background transparent
-            color #444
-            font-weight 500
+    fixed left top bottom
+    z-index 10001
+    .trigger
+        fixed left 10px top 25px
+        padding 10px
+        border-radius 999em
+        z-index 10001
+        &:before
+        &:after
+        span
+            background #666
+            content ''
+            display block
+            height 3px
+            margin 3px 0
+            transition all .2s ease-out
+            width 20px
+        &:before
+            margin-top 2px
+
+    nav
+        fixed top 0 left -100px bottom 0
+        padding 85px 0 15px
+        border-right 1px solid $border
+        width 95px
+        z-index 5
+        background white
+        a
+            min-width 45px
+            padding 5px 10px
+            vertical-align top
+            position relative
+            font-size 14px
+            &.active
+                background transparent
+                color #444
+                font-weight 500
 
 #user-icon
     margin 25px 0 15px
@@ -40,45 +61,37 @@
     line-height 44px
     font-weight 500
 
-#toolbar-trigger
-    fixed left 10px top 25px
-    padding 10px
-    border-radius 999em
-    z-index 10001
-    &:before
-    &:after
-    span
-        background #666
-        content ''
-        display block
-        height 3px
-        margin 3px 0
-        transition all .2s ease-out
-        width 20px
-    &:before
-        margin-top 2px
-
-.menu-open #toolbar-trigger
-    &:before
-        transform rotate(45deg) translate3d(4px,4px,0)
-    span
-        opacity 0
-    &:after
-        transform rotate(-45deg) translate3d(4px,-4px,0)
-
-.menu-open
-    #toolbar
+.menu-open #toolbar
+    nav
         left 0
+
+    .trigger
+        &:before
+            transform rotate(45deg) translate3d(4px,4px,0)
+        span
+            opacity 0
+        &:after
+            transform rotate(-45deg) translate3d(4px,-4px,0)
+
     #toolbar-title
         display none
 
 @media (max-width: $extraSmallMax)
+    #toolbar
+        pointer-events none
+
+        nav
+            pointer-events auto
+            bottom 60px
+
+        .trigger
+            pointer-events auto
+            top auto
+            bottom 5px
+            &:before
+            &:after
+            span
+                background white
+
     #toolbar-title
         display none
-    #toolbar-trigger
-        top auto
-        bottom 5px
-        &:before
-        &:after
-        span
-            background white

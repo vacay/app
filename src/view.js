@@ -9,6 +9,21 @@
 
     var m = document.getElementById('main');
     var title = document.getElementById('toolbar-title');
+    var toolbar = document.getElementById('toolbar');
+
+    if (!Platform.isMobile()) {
+	toolbar.addEventListener('mouseenter', function(e) {
+	    document.body.classList.toggle('menu-open', true);
+	});
+
+	toolbar.addEventListener('mouseleave', function(e) {
+	    document.body.classList.toggle('menu-open', false);
+	});
+
+	window.addEventListener('resize', function() {
+	    View.updateToolbar();
+	});
+    }
 
     return {
 	main: m,
@@ -52,8 +67,10 @@
 	    var list = Elem.create({ className: 'list cf' });
 	    river.appendChild(list);
 	    river.appendChild(Loading.render({ indeterminate: true }));
-
 	    m.appendChild(river);
+
+	    this.updateToolbar();
+
 
 	    if (opts.load) {
 		opts.load();
@@ -75,9 +92,15 @@
 	trigger: function(elem, type) {
 	    elem.classList.toggle('active');
 	    document.body.classList.toggle(type + '-open');
+	    this.updateToolbar();
 	},
 	active: function(s) {
 	    document.querySelector(s).classList.add('active');
+	},
+	updateToolbar: function() {
+	    var width = (m.offsetWidth - river.offsetWidth) / 2;
+	    console.log(width);
+	    document.getElementById('toolbar').style.width = width + 'px';
 	}
     };
 
