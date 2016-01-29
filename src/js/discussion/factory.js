@@ -20,6 +20,7 @@
 	    opts = opts || {};
 
 	    var elem = Elem.create({ className: 'c discussion' });
+	    elem.dataset.id = data.id;
 
 	    var author = User.render(data.user);
 	    elem.appendChild(author);
@@ -34,30 +35,11 @@
 	    else o.attributes.placeholder = 'Write a title for your discussion';
 
 	    var title = Elem.create(o);
-	    elem.appendChild(title);	    
-
-	    // meta
-	    var meta = Elem.create({ className: 'i' });
-
-	    var date = Elem.create({
-		tag: 'span',
-		className: 'meta',
-		text: Utils.fromNow(data.updated_at)
-	    });
-
-	    var commentCount = Elem.create({
-		tag: 'span',
-		className: 'meta',
-		text: data.total_comments + ' comment' + (data.total_comments === 1 ? '' : 's')
-	    });
-	    meta.appendChild(date);
-	    meta.appendChild(commentCount);
-	    elem.appendChild(meta);
+	    elem.appendChild(title);
 
 	    if (opts.single) {
 		var text;
 
-		// description
 		var converter = new showdown.Converter();
 		var description = Elem.create({ className: 'i' });
 		description.setAttribute('placeholder', 'What would you like to discuss?');
@@ -69,177 +51,201 @@
 		    description.contentEditable = 'true';
 		    title.contentEditable = 'true';
 		}
+	    }
 
-		var actions = Elem.create({ className: 'i actions' });
+	    var meta = Elem.create({
+		className: 'i',
+		childs: [{
+		    tag: 'span',
+		    className: 'meta votes'
+		}, {
+		    tag: 'span',
+		    className: 'meta',
+		    text: Utils.fromNow(data.updated_at)
+		}, {
+		    tag: 'span',
+		    className: 'meta',
+		    text: data.total_comments + ' comment' + (data.total_comments === 1 ? '' : 's')
+		}]
+	    });
+	    elem.appendChild(meta);
 
-		if (data.id && Me.id) {
-		    var idx, v;
-		    var toggleVote = function(vote) {
-			idx = Utils.find(data.votes, Me.id, 'user_id');
-			v = data.votes[idx];
-			if (v && v.vote === vote) {
-			    data.votes.splice(idx, 1);
-			    Discussion.vote.destroy(data.id, function(err) {
-				if (err) Log.error(err);
-			    });
-			} else {
-			    if (idx === -1) {
-				data.votes.push({
-				    user_id: Me.id,
-				    vote: vote
-				});
-			    } else {
-				vote === 1 ? downvote.classList.remove('active') : upvote.classList.remove('active');
-				data.votes[idx].vote = vote;
-			    }
-			    Discussion.vote.create(data.id, {
-				vote: vote
-			    }, function(err) {
-				if (err) Log.error(err);
-			    });
-			}		
-		    };
+	    Discussion.updateVoteUI(elem, data.votes);
 
-		    var upvote = Elem.create({
-			tag: 'button',
-			className: 'xs rnd success',
-			text: '+'
-		    });
-		    upvote.onclick = function(e) {
-			e.target.classList.toggle('active');
-			toggleVote(1);
-		    };
-		    actions.appendChild(upvote);
+	    var actions = Elem.create({ className: 'i actions' });
 
-		    var downvote = Elem.create({
-			tag: 'button',
-			className: 'xs rnd failure',
-			text: '-'
-		    });
-		    downvote.onclick = function(e) {
-			e.target.classList.toggle('active');
-			toggleVote(-1);
-		    };
-		    actions.appendChild(downvote);
-
+	    if (data.id && Me.id) {
+		var idx, v;
+		var toggleVote = function(vote) {
 		    idx = Utils.find(data.votes, Me.id, 'user_id');
 		    v = data.votes[idx];
-		    if (v)
-			v.vote === 1 ? upvote.classList.add('active') : downvote.classList.add('active');
-
-		    var reply = Elem.create({
-			tag: 'button',
-			className: 'link reply',
-			text: 'reply'
-		    });
-		    reply.onclick = function() {
-			var comment = Comment.render({
-			    body: null,
-			    user: Me.data,
-			    parent_id: null,
-			    discussion_id: data.id,
-			    votes: [],
-			    comments: [],
-			    created_at: new Date()		    
+		    if (v && v.vote === vote) {
+			data.votes.splice(idx, 1);
+			Discussion.vote.destroy(data.id, function(err) {
+			    if (err) Log.error(err);
 			});
-			var i = Elem.create({ className: 'c' });
-			i.appendChild(comment);
+		    } else {
+			if (idx === -1) {
+			    data.votes.push({
+				user_id: Me.id,
+				vote: vote
+			    });
+			} else {
+			    vote === 1 ? downvote.classList.remove('active') : upvote.classList.remove('active');
+			    data.votes[idx].vote = vote;
+			}
+			Discussion.vote.create(data.id, {
+			    vote: vote
+			}, function(err) {
+			    if (err) Log.error(err);
+			});
+		    }
 
-			comments.insertBefore(i, comments.firstChild);
-		    };
-		    actions.appendChild(reply);
-		}
+		    Discussion.updateVoteUI(elem, data.votes);
+		};
 
-		if (data.user.username === Me.username) {
-		    var publish = Elem.create({
-			tag: 'button',
-			className: 'link save',
-			text: data.id ? 'save' : 'publish'
+		var upvote = Elem.create({
+		    tag: 'button',
+		    className: 'xs rnd success',
+		    text: '+'
+		});
+		upvote.onclick = function(e) {
+		    e.target.classList.toggle('active');
+		    toggleVote(1);
+		};
+		actions.appendChild(upvote);
+
+		var downvote = Elem.create({
+		    tag: 'button',
+		    className: 'xs rnd failure',
+		    text: '-'
+		});
+		downvote.onclick = function(e) {
+		    e.target.classList.toggle('active');
+		    toggleVote(-1);
+		};
+		actions.appendChild(downvote);
+
+		idx = Utils.find(data.votes, Me.id, 'user_id');
+		v = data.votes[idx];
+		if (v)
+		    v.vote === 1 ? upvote.classList.add('active') : downvote.classList.add('active');
+
+		var reply = Elem.create({
+		    tag: 'button',
+		    className: 'link reply',
+		    text: 'reply'
+		});
+		reply.onclick = function() {
+		    var comment = Comment.render({
+			body: null,
+			user: Me.data,
+			parent_id: null,
+			discussion_id: data.id,
+			votes: [],
+			comments: [],
+			created_at: new Date()
 		    });
-		    publish.onclick = function() {
+		    var i = Elem.create({ className: 'c' });
+		    i.appendChild(comment);
 
-			var editable = elem.classList.contains('editable');
-			var t = Elem.text(title);
-			var b;
+		    comments.insertBefore(i, comments.firstChild);
+		};
+		actions.appendChild(reply);
+	    }
 
-			if (editable) {
-			    b = Elem.text(description);
-			    description.innerHTML = Markdown.html(b);
-			} else {
-			    b = text;
-			}
+	    if (data.user.username === Me.username) {
+		var publish = Elem.create({
+		    tag: 'button',
+		    className: 'link save',
+		    text: data.id ? 'save' : 'publish'
+		});
+		publish.onclick = function() {
 
-			if (!t) {
-			    Notification.show({msg: 'Your discussion title is empty'});
-			    return;
-			}
+		    var editable = elem.classList.contains('editable');
+		    var t = Elem.text(title);
+		    var b;
 
-			if (!b) {
-			    Notification.show({msg: 'Your discussion description is empty'});
-			    return;
-			}
+		    if (editable) {
+			b = Elem.text(description);
+			description.innerHTML = Markdown.html(b);
+		    } else {
+			b = text;
+		    }
 
-			if (data.id) {
-			    Discussion.update(data.id, {
-				title: t,
-				description: b
-			    }, function(err, discussion) {
-				if (err) Log.error(err);
-				data.description = discussion.description;
-			    });
-			} else {
-			    Discussion.create({
-				title: t,
-				description: b
-			    }, function(err, discussion) {
-				if (err) Log.error(err);
-				page('/discussion/' + discussion.id);
-			    });
-			}
+		    if (!t) {
+			Notification.show({msg: 'Your discussion title is empty'});
+			return;
+		    }
 
-			text = null;
-			edit.innerHTML = 'edit';
-			title.contentEditable = 'false';
+		    if (!b) {
+			Notification.show({msg: 'Your discussion description is empty'});
+			return;
+		    }
+
+		    if (data.id) {
+			Discussion.update(data.id, {
+			    title: t,
+			    description: b
+			}, function(err, discussion) {
+			    if (err) Log.error(err);
+			    data.description = discussion.description;
+			});
+		    } else {
+			Discussion.create({
+			    title: t,
+			    description: b
+			}, function(err, discussion) {
+			    if (err) Log.error(err);
+			    page('/discussion/' + discussion.id);
+			});
+		    }
+
+		    text = null;
+		    edit.innerHTML = 'edit';
+		    title.contentEditable = 'false';
+		    description.contentEditable = 'false';
+		    elem.classList.remove('editable');
+		    elem.classList.remove('editing');
+		};
+		actions.appendChild(publish);
+
+		var edit = Elem.create({
+		    tag: 'button',
+		    className: 'link',
+		    text: data.id ? 'edit' : 'preview'
+		});
+		edit.onclick = function(e) {
+
+		    var editable = !elem.classList.contains('editable');
+
+		    if (editable) {
+			e.target.innerHTML = 'preview';
+			description.innerHTML = null;
+			description.innerHTML = Markdown.text(text || data.description);
+			description.contentEditable = 'true';
+			title.contentEditable = 'true';
+		    } else {
+			e.target.innerHTML = 'edit';
 			description.contentEditable = 'false';
-			elem.classList.remove('editable');
-			elem.classList.remove('editing');
-		    };
-		    actions.appendChild(publish);
 
-		    var edit = Elem.create({
-			tag: 'button',
-			className: 'link',
-			text: data.id ? 'edit' : 'preview'
-		    });
-		    edit.onclick = function(e) {
+			var c = Elem.text(description);
+			if (c !== data.description) text = c;
 
-			var editable = !elem.classList.contains('editable');
+			description.innerHTML = Markdown.html(c);
 
-			if (editable) {
-			    e.target.innerHTML = 'preview';
-			    description.innerHTML = null;
-			    description.innerHTML = Markdown.text(text || data.description);
-			    description.contentEditable = 'true';
-			    title.contentEditable = 'true';
-			} else {
-			    e.target.innerHTML = 'edit';
-			    description.contentEditable = 'false';
+			title.contentEditable = 'false';
+			title.textContent = data.title;
+		    }
 
-			    var c = Elem.text(description);
-			    if (c !== data.description) text = c;
+		    elem.classList.toggle('editable', editable);
+		    elem.classList.toggle('editing', text);
+		};
+		actions.appendChild(edit);
 
-			    description.innerHTML = Markdown.html(c);
+	    }
 
-			    title.contentEditable = 'false';
-			    title.textContent = data.title;
-			}
-
-			elem.classList.toggle('editable', editable);
-			elem.classList.toggle('editing', text);
-		    };
-		    actions.appendChild(edit);
-
-		}
+	    if (opts.single) {
 
 		elem.appendChild(actions);
 
@@ -259,6 +265,12 @@
 
 	    return elem;
 	    
+	},
+
+	updateVoteUI: function(elem, votes) {
+	    var count = 0;
+	    votes.forEach(function(v) { count += v.vote; });
+	    elem.querySelector('.votes').innerHTML = count + ' Point' + (count > 1 ? 's' : '');
 	},
 
 	browse: function(params, cb) {

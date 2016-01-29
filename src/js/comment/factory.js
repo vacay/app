@@ -28,6 +28,20 @@
 
 	    elem.appendChild(body);
 
+	    var meta = Elem.create({
+		className: 'i',
+		childs: [{
+		    tag: 'span',
+		    className: 'meta votes'
+		}, {
+		    tag: 'span',
+		    className: 'meta',
+		    text: Utils.fromNow(data.updated_at)
+		}]
+	    });
+	    elem.appendChild(meta);
+	    Discussion.updateVoteUI(elem, data.votes);
+
 	    if (Me.id && data.user.username) {
 
 		var actions = Elem.create({ className: 'i actions' });
@@ -55,7 +69,8 @@
 			}, function(err) {
 			    if (err) Log.error(err);
 			});
-		    }		
+		    }
+		    Discussion.updateVoteUI(elem, data.votes);
 		};
 
 		var upvote = Elem.create({
