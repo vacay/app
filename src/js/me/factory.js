@@ -22,6 +22,7 @@
 	updateUI: function() {
 	    var url = '/@' + this.username;
 	    var p = document.querySelector('#user-icon');
+	    p.innerHTML = null;
 
 	    if (this.avatar) {
 		var avatar = Elem.create();
@@ -29,9 +30,13 @@
 		p.appendChild(avatar);
 	    }
 
-	    var btn = Elem.create({ tag: 'a', text: url.substring(1)});
-	    btn.href = url + '/crate';
-	    p.appendChild(btn);
+	    var crate_btn = Elem.create({ tag: 'a', text: url.substring(1)});
+	    crate_btn.href = url + '/crate';
+	    p.appendChild(crate_btn);
+
+	    var drafts_btn = Elem.create({ tag: 'a', text: 'drafts' });
+	    drafts_btn.href = url + '/drafts';
+	    p.appendChild(drafts_btn);
 
 	    document.querySelector('#previous a').href = url + '/listens';
 	},

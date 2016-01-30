@@ -99,7 +99,6 @@
 	},
 	updateToolbar: function() {
 	    var width = (m.offsetWidth - river.offsetWidth) / 2;
-	    console.log(width);
 	    document.getElementById('toolbar').style.width = width + 'px';
 	}
     };
