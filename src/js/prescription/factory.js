@@ -19,14 +19,17 @@
 	    var isOwner = data.prescriber.username === Me.username;
 
 	    var elem = Elem.create({
-		className: 'c prescription',
+		className: 'c prescription' + (opts.single ? '' : ' simple'),
 		attributes: {
 		    'data-id': data.id
 		}
 	    });
 
-	    var vitamins = Elem.create({ className: 'list' });
+	    data.prescriber.published_at = data.published_at;
+	    var prescriber = User.render(data.prescriber);
+	    elem.appendChild(prescriber);
 
+	    var vitamins = Elem.create({ className: 'list' });
 
 	    if (data.image_url) {
 		var image_url;
@@ -47,10 +50,6 @@
 		elem.appendChild(img);
 	    }
 
-	    data.prescriber.published_at = data.published_at;
-	    var prescriber = User.render(data.prescriber);
-	    elem.appendChild(prescriber);
-
 	    //TODO - markdown
 	    var description = Elem.create({
 		className: 'i description',
@@ -58,20 +57,22 @@
 	    });
 	    elem.appendChild(description);
 
-	    var actions = Elem.create({ className: 'i i-actions' });
+	    var recommendations = Elem.create({ className: 'i recommendations' });
+	    var actions = Elem.create({ className: 'i i-actions p-actions' });
+	    var vitamin_actions = Elem.create({ className: 'i i-actions list-actions'});
+
+	    elem.appendChild(recommendations);
 
 	    //TODO - play all / queue all
 	    var selectall = Elem.create({
 		tag: 'button',
 		className: 'checkbox link pull-right'
 	    });
-
-	    var vitamin_ids = [];
-	    for (var i=0; i<data.vitamins.length; i++) {
-		vitamin_ids.push(data.vitamins[i].id);
-	    }
-
 	    selectall.onclick = function() {
+		var vitamin_ids = [];
+		for (var i=0; i<data.vitamins.length; i++) {
+		    vitamin_ids.push(data.vitamins[i].id);
+		}
 		var state = Utils.exists(Multi.vitamins, vitamin_ids[0]);
 		if (!state || Multi.indeterminate(state, vitamin_ids)) {
 		    Multi.add(data.vitamins);
@@ -79,37 +80,11 @@
 		    Multi.remove(data.vitamins);
 		}
 	    };
-
-	    actions.appendChild(selectall);
-
-	    if (!isOwner && Me.id) {
-		var recommend = Elem.create({
-		    tag: 'button',
-		    className: 'sm rnd success recommend',
-		    text: '',
-		    childs: [{
-			tag: 'i',
-			className: 'icon-heart'
-		    }, {
-			tag: 'span',
-			className: 'active',
-			text: 'Recommended'
-		    }, {
-			tag: 'span',
-			className: 'inactive',
-			text: 'Recommend'
-		    }]
-		});
-		recommend.onclick = function(e) {
-		    Prescription.toggleVote(e);
-		};
-		recommend.classList.toggle('active', Utils.exists(data.votes, Me.id, 'user_id'));
-		actions.appendChild(recommend);
-	    }
+	    vitamin_actions.appendChild(selectall);
 
 	    var users = [];
 	    var additional = [];
-	    for (i=0; i<data.votes.length; i++) {
+	    for (var i=0; i<data.votes.length; i++) {
 		if (Me.isSubscribed('users', data.votes[i].user_id)) {
 		    users.push(data.votes[i]);
 		} else {
@@ -118,24 +93,108 @@
 	    }
 	    users = users.concat(additional.splice(0, (4 - users.length)));
 
-	    users.forEach(function(u) {
-		actions.appendChild(User.render(u.user, { avatarOnly: true }));
-	    });
-
 	    if (additional.length) {
 		var count = Elem.create({
 		    tag: 'button',
-		    className: 'sm rnd',
+		    className: 'sm link',
 		    text: '+' + additional.length
 		});
-		actions.appendChild(count);
+		recommendations.appendChild(count);
 	    }
 
+	    users.forEach(function(u) {
+		recommendations.appendChild(User.render(u.user, { avatarOnly: true }));
+	    });
+
+	    var recommend = Elem.create({
+		tag: 'button',
+		className: 'sm rnd success recommend',
+		text: '',
+		childs: [{
+		    tag: 'span',
+		    className: 'active',
+		    text: 'Recommended'
+		}, {
+		    tag: 'span',
+		    className: 'inactive',
+		    text: 'Recommend'
+		}]
+	    });
+	    if (!isOwner && Me.id) {
+		recommend.onclick = function(e) {
+		    Prescription.toggleVote(e);
+		};
+		recommend.classList.toggle('active', Utils.exists(data.votes, Me.id, 'user_id'));
+	    } else {
+		recommend.classList.add('disabled');
+	    }
+	    recommendations.appendChild(recommend);
+
 	    if (isOwner) {
+		var save = Elem.create({
+		    tag: 'button',
+		    className: 'sm link success save',
+		    text: 'save'
+		});
+
+		save.onclick = function(e) {
+
+		    var cb = function(err) {
+			if (err) Log.error(err);
+			//TODO
+		    };
+
+		    Prescription.update(data.id, {
+			description: Elem.text(description)
+		    }, cb);
+
+		    edit.innerHTML = 'edit';
+		    description.contentEditable = 'false';
+
+		    e.target.parentNode.classList.toggle('editable', false);
+		};
+		actions.appendChild(save);
+
+		var edit = Elem.create({
+		    tag: 'button',
+		    className: 'sm link',
+		    text: 'edit'
+		});
+
+		edit.onclick = function(e) {
+		    var editable = !e.target.parentNode.classList.contains('editable');
+
+		    if (editable) {
+			e.target.innerHTML = 'cancel';
+			description.contentEditable = 'true';
+			description.dataset.prev = Elem.text(description);
+		    } else {
+			e.target.innerHTML = 'edit';
+			description.contentEditable = 'false';
+			description.innerHTML = description.dataset.prev;
+		    }
+
+		    e.target.parentNode.classList.toggle('editable', editable);
+		};
+
+		actions.appendChild(edit);
+
+		var setImage = Elem.create({
+		    tag: 'button',
+		    className: 'sm link',
+		    text: 'set image'
+		});
+
+		setImage.onclick = function() {
+		    self.setImage(data.id);
+		};
+
+		actions.appendChild(setImage);
+
 		if (!data.published_at) {
 		    var publish = Elem.create({
 			tag: 'button',
-			className: 'sm link success pull-right',
+			className: 'sm link success',
 			text: 'publish'
 		    });
 		    publish.onclick = function() {
@@ -161,7 +220,7 @@
 
 		var del = Elem.create({
 		    tag: 'button',
-		    className: 'sm link failure pull-right',
+		    className: 'sm link failure',
 		    text: 'delete'
 		});
 		del.onclick = function() {
@@ -178,66 +237,6 @@
 		    });
 		};
 		actions.appendChild(del);
-
-		var edit = Elem.create({
-		    tag: 'button',
-		    className: 'sm link pull-right',
-		    text: 'edit'
-		});
-
-		edit.onclick = function(e) {
-		    var editable = !e.target.parentNode.classList.contains('editable');
-
-		    if (editable) {
-			e.target.innerHTML = 'cancel';
-			description.contentEditable = 'true';
-			description.dataset.prev = Elem.text(description);
-		    } else {
-			e.target.innerHTML = 'edit';
-			description.contentEditable = 'false';
-			description.innerHTML = description.dataset.prev;
-		    }
-
-		    e.target.parentNode.classList.toggle('editable', editable);
-		};
-
-		actions.appendChild(edit);
-
-		var save = Elem.create({
-		    tag: 'button',
-		    className: 'sm link success pull-right save',
-		    text: 'save'
-		});
-
-		save.onclick = function(e) {
-
-		    var cb = function(err) {
-			if (err) Log.error(err);
-			//TODO
-		    };
-
-		    Prescription.update(data.id, {
-			description: Elem.text(description)
-		    }, cb);
-
-		    edit.innerHTML = 'edit';
-		    description.contentEditable = 'false';
-
-		    e.target.parentNode.classList.toggle('editable', false);
-		};
-		actions.appendChild(save);
-
-		var setImage = Elem.create({
-		    tag: 'button',
-		    className: 'sm link pull-right',
-		    text: 'set image'
-		});
-
-		setImage.onclick = function() {
-		    self.setImage(data.id);
-		};
-
-		actions.appendChild(setImage);
 
 		var drag = dragula([vitamins], {
 		    direction: 'vertical',
@@ -277,7 +276,23 @@
 		});
 	    }
 
+	    if (!opts.single) {
+		var expand = Elem.create({
+		    tag: 'button',
+		    className: 'sm link',
+		    text: 'expand'
+		});
+
+		expand.onclick = function() {
+		    elem.classList.toggle('simple');
+		    expand.innerHTML = elem.classList.contains('simple') ? 'expand' : 'collapse';
+		};
+
+		actions.appendChild(expand);
+	    }
+
 	    elem.appendChild(actions);
+	    elem.appendChild(vitamin_actions);
 
 	    data.vitamins.forEach(function(v) {
 		//TODO - remove button
