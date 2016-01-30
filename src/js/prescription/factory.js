@@ -483,12 +483,12 @@
 
 	    Elem.each(elements, function(elem, index) {
 		vitamins.push({
-		    vitamin_id: elem.dataset.id,
+		    vitamin_id: parseInt(elem.dataset.id, 10),
 		    order: index
 		});
 	    });
 
-	    vitamins.splice(Utils.find(vitamins, id), 1);
+	    vitamins.splice(Utils.find(vitamins, id, 'vitamin_id'), 1);
 
 	    Prescription.update(prescription.dataset.id, {
 		vitamins: vitamins
