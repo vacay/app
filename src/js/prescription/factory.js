@@ -59,14 +59,24 @@
 
 	    var recommendations = Elem.create({ className: 'i recommendations' });
 	    var actions = Elem.create({ className: 'i i-actions p-actions' });
-	    var vitamin_actions = Elem.create({ className: 'i i-actions list-actions'});
+	    var list_actions = Elem.create({ className: 'i i-actions list-actions'});
 
 	    elem.appendChild(recommendations);
 
 	    //TODO - play all / queue all
+	    var playall = Elem.create({
+		tag: 'button',
+		className: 'link icon',
+		html: '<i class="icon-play"></i>'
+	    });
+	    playall.onclick = function() {
+		Player.play(data.vitamins);
+	    };
+	    list_actions.appendChild(playall);
+
 	    var selectall = Elem.create({
 		tag: 'button',
-		className: 'checkbox link pull-right'
+		className: 'checkbox pull-right'
 	    });
 	    selectall.onclick = function() {
 		var vitamin_ids = [];
@@ -80,7 +90,7 @@
 		    Multi.remove(data.vitamins);
 		}
 	    };
-	    vitamin_actions.appendChild(selectall);
+	    list_actions.appendChild(selectall);
 
 	    var users = [];
 	    var additional = [];
@@ -292,7 +302,7 @@
 	    }
 
 	    elem.appendChild(actions);
-	    elem.appendChild(vitamin_actions);
+	    elem.appendChild(list_actions);
 
 	    data.vitamins.forEach(function(v) {
 		//TODO - remove button
