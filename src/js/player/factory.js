@@ -633,8 +633,6 @@
 
 	    if (P.data.room && P.data.room.charAt(0) === 'u') P.leave();
 
-	    if (!P.lastSound || !P.data.history.length ) return;
-
 	    if (P.lastSound.position > 3000) {
 		P.lastSound.setPosition(0);
 		P.lastSound.resume();

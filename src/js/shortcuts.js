@@ -31,6 +31,11 @@
 		return false;
 	    });
 
+	    Mousetrap.bind('c', function() {
+		if (Me.username) page('/@' + Me.username + '/crate');
+		return false;
+	    });
+
 	}
     };
 });
