@@ -275,6 +275,32 @@
 		}
 	    });
 
+	    var np = Player.data.nowplaying;
+	    if (np.id === data.id) {
+		if (!crated) {
+		    np.craters.push({
+			username: Me.username
+		    });
+		} else {
+		    var idx = Utils.find(np.craters, Me.username, 'username');
+		    Player.data.nowplaying.craters.splice(idx, 1);
+		}
+		Player.broadcast.nowplaying();
+	    }
+
+	    if (Queue.isQueued(data.id)) {
+		var qv = Queue.vitamins[Utils.find(Queue.vitamins, data.id)];
+		if (!crated) {
+		    qv.craters.push({
+			username: Me.username
+		    });
+		} else {
+		    var idx2 = Utils.find(qv.craters, Me.username, 'username');
+		    qv.craters.splice(idx2, 1);
+		}
+		Queue.broadcast();
+	    }
+
 	    var cb = function(err) {
 		if (err) {
 		    data.crated = crated;

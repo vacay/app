@@ -726,12 +726,7 @@
 		    // record play count & history
 
 		    if (Network.online) {
-			WS.emit('player:nowplaying', {
-			    nowplaying: P.data.nowplaying,
-			    user: Me.getData(),
-			    room: P.data.room,
-			    mode: P.data.mode
-			});
+			P.broadcast.nowplaying();
 		    }
 		});
 	    }
@@ -979,6 +974,17 @@
 
 	setMaster: function() {
 	    WS.emit('set:master');
+	},
+
+	broadcast: {
+	    nowplaying: function() {
+		WS.emit('player:nowplaying', {
+		    nowplaying: P.data.nowplaying,
+		    user: Me.getData(),
+		    room: P.data.room,
+		    mode: P.data.mode
+		});
+	    }
 	},
 
 	init: function () {
