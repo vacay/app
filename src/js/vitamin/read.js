@@ -80,6 +80,19 @@
 			});
 		    }
 
+		    if (data.prescriptions.length) {
+			frag.appendChild(Elem.create({
+			    className: 'h _d',
+			    childs: [{
+				tag: 'a',
+				text: 'Prescriptions'
+			    }]
+			}));
+			data.prescriptions.forEach(function(p) {
+			    frag.appendChild(Prescription.render(p));
+			});
+		    }
+
 		    l.appendChild(frag);
 		}
 
