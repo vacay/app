@@ -254,7 +254,7 @@
 			if (!Elem.getClosest(el, '.vitamin'))
 			    return false;
 
-			if (Platform.isTouchDevice() && !handle.classList.contains('i-handle'))
+			if (!handle.classList.contains('i-handle'))
 			    return false;
 
 			return true;

@@ -57,8 +57,12 @@
 	    };
 
 	    elem.querySelector('.i-body').onclick = function(e) {
-		if (window.innerWidth < 767) self.more(e, data);
-		else page('/vitamin/' + data.id);
+		if (window.innerWidth < 767) {
+		    e.preventDefault();
+		    e.stopPropagation();
+		    self.more(e, data);
+		    return false;
+		}
 	    };
 
 	    elem.querySelector('.more').onclick = function(e) {
@@ -101,7 +105,7 @@
 
 	    elem.appendChild(multi);
 
-	    if (opts.drag && Platform.isTouchDevice()) {
+	    if (opts.drag) {
 		var handle = Elem.create({
 		    className: 'i-handle'
 		});

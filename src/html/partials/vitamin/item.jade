@@ -5,7 +5,7 @@
         i.icon-pause
 
 .i-body.cursor
-    h5.i-title {{=it.displayTitle}}
+    a.i-title(href='/vitamin/{{=it.id}}') {{=it.displayTitle}}
     p.i-description
         small.meta {{=it.time}}
         small.meta {{=it.bitrate}}
