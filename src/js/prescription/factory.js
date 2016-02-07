@@ -52,18 +52,19 @@
 	    //TODO - markdown
 	    var description = Elem.create({
 		className: 'i description',
-		text: data.description,
-		childs: [{
-		    childs: [{
-			tag: 'small',
-			text: Utils.fromNow(data.published_at)
-		    }, {
-			tag: 'small',
-			text: data.vitamins.length + ' Vitamins'
-		    }]
-		}]
+		text: data.description
 	    });
 	    elem.appendChild(description);
+	    elem.appendChild(Elem.create({
+		className: 'i description',
+		childs: [{
+		    tag: 'small',
+		    text: Utils.fromNow(data.published_at)
+		}, {
+		    tag: 'small',
+		    text: data.vitamins.length + ' Vitamins'
+		}]
+	    }));
 
 	    var recommendations = Elem.create({ className: 'i recommendations' });
 	    var actions = Elem.create({ className: 'i i-actions p-actions' });
