@@ -30,7 +30,6 @@
 		    offset += discussions.length;
 
 		    var frag = document.createDocumentFragment();
-		    frag.appendChild(Elem.create({className: 'i-divider'}));
 
 		    discussions.forEach(function(d) {
 			frag.appendChild(Discussion.render(d));

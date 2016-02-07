@@ -3,41 +3,27 @@
 
     page('/', function() {
 
-	var t = 'featured', offset = 0;
+	var offset = 0;
 	
-	var load = function(opts) {
+	var load = function() {
 	    var r = document.getElementById('river');
 	    var l = r.querySelector('.list');
 
-	    var params = {};
-
-	    if (opts) {
-		document.querySelector('.filter-container .' + t).classList.remove('active');
-		r.dataset.loading = true;
-		l.innerHTML = null;
-		offset = 0;
-		if (opts.t) t = opts.t;
-		View.active('.filter-container .' + t);
-	    }
-
-	    params.offset = offset;
-	    params.featured = t === 'featured';
-
-	    Prescription.browse(params, function(err, prescriptions) {
-		if (err) Log.error(err);
-		else {
-		    if (prescriptions.length < 10) View.scrollOff();
-		    offset += prescriptions.length;
-
-		    var frag = document.createDocumentFragment();
-		    frag.appendChild(Elem.create({className: 'i-divider'}));
-
-		    prescriptions.forEach(function(p) {
-			frag.appendChild(Prescription.render(p));
-		    });
-
-		    l.appendChild(frag);
+	    Prescription.browse({ offset: offset }, function(err, prescriptions) {
+		if (err) {
+		    Log.error(err);
+		    //TODO - loading error
+		    return;
 		}
+
+		if (prescriptions.length < 10) View.scrollOff();
+		offset += prescriptions.length;
+
+		var frag = document.createDocumentFragment();
+		prescriptions.forEach(function(p) {
+		    frag.appendChild(Prescription.render(p));
+		});
+		l.appendChild(frag);
 
 		delete r.dataset.loading;
 	    });
@@ -46,7 +32,6 @@
 	View.render({ load: load, filter: true, title: 'Home' });
 	document.querySelector('.filter-container').innerHTML = View.tmpl('/index/filter.html');
 	View.active('[href="/"]');
-	View.active('.filter-container .' + t);
 
 	if (!Me.id) {
 	    View.trigger('help');
