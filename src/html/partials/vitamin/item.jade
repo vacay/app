@@ -7,8 +7,10 @@
 .i-body.cursor
     a.i-title(href='/vitamin/{{=it.id}}') {{=it.displayTitle}}
     p.i-description
-        small.meta {{=it.time}}
-        small.meta {{=it.bitrate}}
+        small {{=it.time}}
+        {{? it.bitrate }}
+        small {{=it.bitrate}}
+        {{?}}
 
 .right
     button.icon.crate.success.t.hide-auth(data-active='{{=it.crated}}', title='crate')

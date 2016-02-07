@@ -390,7 +390,7 @@
 			value: data.displayTitle
 		    }
 		}, {
-		    className: 'meta',
+		    tag: 'small',
 		    text: 'Note: No quotations, brackets, album/release information. Only variation info should be in paranthesis (i.e. remix, cover, live).'
 		}]
 	    });

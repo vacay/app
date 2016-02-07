@@ -121,7 +121,8 @@
 	var account = Elem.create({
 	    className: 'c setting',
 	    childs: [{
-		className: 'i meta',
+		tag: 'small',
+		className: 'i',
 		text: 'Account'
 	    }]
 	});
@@ -178,7 +179,8 @@
 	var privacy = Elem.create({
 	    className: 'c setting',
 	    childs: [{
-		className: 'i meta',
+		tag: 'small',
+		className: 'i',
 		text: 'Privacy'
 	    }]
 	});
@@ -231,10 +233,9 @@
 	var notifications = Elem.create({
 	    className: 'c setting',
 	    childs: [{
-		className: 'i meta',
-		text: 'Notifications',
-		childs: [{
-		}]
+		tag: 'small',
+		className: 'i',
+		text: 'Notifications'
 	    }]
 	});
 

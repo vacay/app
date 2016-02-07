@@ -25,10 +25,6 @@
 		}
 	    });
 
-	    data.prescriber.published_at = data.published_at;
-	    var prescriber = User.render(data.prescriber);
-	    elem.appendChild(prescriber);
-
 	    var vitamins = Elem.create({ className: 'list' });
 
 	    if (data.image_url) {
@@ -50,10 +46,22 @@
 		elem.appendChild(img);
 	    }
 
+	    var prescriber = User.render(data.prescriber);
+	    elem.appendChild(prescriber);
+
 	    //TODO - markdown
 	    var description = Elem.create({
 		className: 'i description',
-		text: data.description
+		text: data.description,
+		childs: [{
+		    childs: [{
+			tag: 'small',
+			text: Utils.fromNow(data.published_at)
+		    }, {
+			tag: 'small',
+			text: data.vitamins.length + ' Vitamins'
+		    }]
+		}]
 	    });
 	    elem.appendChild(description);
 

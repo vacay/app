@@ -40,6 +40,7 @@
 	    var o = {
 
 		tag: opts.single ? 'h1' : 'a',
+		className: 'i-title',
 		attributes: {},
 		text: data.name
 	    };
@@ -50,7 +51,7 @@
 	    body.appendChild(name);
 
 	    var meta = Elem.create({
-		className: 'meta',
+		tag: 'small',
 		text: data.artist_location || ''
 	    });
 	    body.appendChild(meta);

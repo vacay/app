@@ -248,8 +248,7 @@
 		    i.appendChild(body);
 
 		    var p = Elem.create({
-			tag: 'p',
-			className: 'meta',
+			tag: 'small',
 			text: P.data.room.slice(2)
 		    });
 		    body.appendChild(p);
@@ -1043,7 +1042,7 @@
 		var result = parser.getResult();
 
 		if (result.ua)
-		    document.querySelector('.rc .meta').innerHTML = 'playing on ' + result.os.name + ' - ' + result.browser.name;
+		    document.querySelector('.rc small').innerHTML = 'playing on ' + result.os.name + ' - ' + result.browser.name;
 
 		P.data.remote = !isMaster;
 		document.body.classList.toggle('remote', P.data.remote);

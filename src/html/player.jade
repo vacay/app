@@ -34,7 +34,7 @@
 
         .rc
             p audio will play elsewhere but you can control it from here
-            .meta.pull-right
+            small.pull-right
             button.xs.link.failure(onclick="Player.setMaster()") play here instead
 
         .p-live
@@ -48,17 +48,17 @@
         #previous
             .p-header
                 span Previously Played
-                a.meta.pull-right.hide-auth Full History
+                a.small.pull-right.hide-auth Full History
             .list
 
         #queue
             .p-header
                 span Up Next
-                a.meta.pull-right(onclick="Queue.clear()") clear
+                a.small.pull-right(onclick="Queue.clear()") clear
             .list
 
         #autoplay.hide-auth
-            span.meta autoplay from crate when up next is empty
+            small autoplay from crate when up next is empty
             span.btn-switch(onclick="Player.toggleAutoplay()")
                 button.xs.on on
                 button.xs.off off

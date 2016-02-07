@@ -45,7 +45,6 @@
 		    //TODO - href
 		    var dos = Elem.create({
 			tag: 'small',
-			className: 'meta',
 			text: '  @' + data.username
 		    });
 
@@ -102,8 +101,7 @@
 
 	    if (data.location || opts.editable) {
 		var location = Elem.create({
-		    tag: 'p',
-		    className: 'meta',
+		    tag: 'small',
 		    text: data.location
 		});
 		if (opts.editable) location.setAttribute('placeholder', 'Your location');
@@ -119,27 +117,18 @@
 		body.appendChild(bio);
 	    }
 
-	    if (data.published_at) {
-		elem.appendChild(Elem.create({
-		    className: 'pull-right meta',
-		    text: Utils.fromNow(data.published_at)
-		}));
-	    }
-
 	    elem.appendChild(body);
 
 	    if (opts.single) {
 		var meta = Elem.create({ className: 'i-body' });
 
 		var joined = Elem.create({
-		    tag: 'span',
-		    className: 'meta',
+		    tag: 'small',
 		    text: 'Joined ' + new Date(data.created_at).toDateString()
 		});
 
 		var seen = Elem.create({
-		    tag: 'span',
-		    className: 'meta',
+		    tag: 'small',
 		    text: 'Last seen ' + Utils.fromNow(data.last_visit)
 		});
 

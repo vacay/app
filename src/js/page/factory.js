@@ -51,10 +51,7 @@
 	    }
 
 	    if (data.title) {
-		var title = Elem.create({
-		    tag: 'p',
-		    className: 'meta'
-		});
+		var title = Elem.create({ tag: 'small' });
 		title.innerHTML = data.title;
 		elem.querySelector('.i-body').appendChild(title);
 	    }

@@ -31,11 +31,10 @@
 	    var meta = Elem.create({
 		className: 'i',
 		childs: [{
-		    tag: 'span',
-		    className: 'meta votes'
+		    tag: 'small',
+		    className: 'votes'
 		}, {
-		    tag: 'span',
-		    className: 'meta',
+		    tag: 'small',
 		    text: Utils.fromNow(data.updated_at)
 		}]
 	    });
