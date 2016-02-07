@@ -1,23 +1,26 @@
 @import '00_variables.styl'
 @import 'nib'
 
-.user a
-    vertical-align middle
-    font-weight 400
-    display block
-    font-size 14px
-    i
-        absolute left top
-        display none
-        font-size 25px
-        text-align center
-        width 100%
-        line-height 45px
-        background rgba(0,0,0,0.2)
-        color white
-        border-radius 999em
-    &.active i.icon-pause
+.user
+    small
         display block
+    a
+        vertical-align middle
+        font-weight 400
+        display block
+        font-size 14px
+        i
+            absolute left top
+            display none
+            font-size 25px
+            text-align center
+            width 100%
+            line-height 45px
+            background rgba(0,0,0,0.2)
+            color white
+            border-radius 999em
+        &.active i.icon-pause
+            display block
 
 .touch .user
 .mouse .user:hover
