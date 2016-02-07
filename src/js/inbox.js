@@ -94,7 +94,7 @@
 	View.active('.filter-container .' + t);
 
 	if (!Me.id) {
-	    View.trigger(document.querySelector('.help'), 'help');
+	    View.trigger('help');
 	}
 
     });

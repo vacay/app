@@ -1,11 +1,7 @@
-nav.horizontal-pill
+nav.horizontal-pill.cf
     ul
-        li
-            a.all(onclick='View.load({ t: "all" })') all
-        li
-            a.featured(onclick='View.load({ t: "featured" })') featured
         li.pull-right
-            a.help(onclick='View.trigger(this, "help")') ?            
+            a.help-trigger(onclick='View.trigger("help")') ?
 
 .help-container.i
     | Welcome to vacay. <a href="/about" class="link">Start here.</a>

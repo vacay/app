@@ -89,8 +89,8 @@
 		cb(res, null);
 	    });
 	},
-	trigger: function(elem, type) {
-	    elem.classList.toggle('active');
+	trigger: function(type) {
+	    document.querySelector('.' + type + '-trigger').classList.toggle('active');
 	    document.body.classList.toggle(type + '-open');
 	    this.updateToolbar();
 	},
