@@ -9,7 +9,10 @@
 	    var r = document.getElementById('river');
 	    var l = r.querySelector('.list');
 
-	    Prescription.browse({ offset: offset }, function(err, prescriptions) {
+	    Prescription.browse({
+		featured: true,
+		offset: offset
+	    }, function(err, prescriptions) {
 		if (err) {
 		    Log.error(err);
 		    //TODO - loading error
