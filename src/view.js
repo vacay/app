@@ -71,7 +71,6 @@
 
 	    this.updateToolbar();
 
-
 	    if (opts.load) {
 		opts.load();
 		this.load = opts.load;
@@ -98,7 +97,9 @@
 	    document.querySelector(s).classList.add('active');
 	},
 	updateToolbar: function() {
-	    var width = (m.offsetWidth - river.offsetWidth) / 2;
+	    var r = document.getElementById('river');
+	    if (!r) return;
+	    var width = (m.offsetWidth - r.offsetWidth) / 2;
 	    document.getElementById('toolbar').style.width = width + 'px';
 	}
     };
