@@ -59,10 +59,6 @@ release_minor_desktop:
 release_major_desktop:
 	@$(call release,major)
 
-emulate_desktop:
-	grunt desktop
-	DEBUG=* $(NW) desktop
-
 run_desktop:
 	DEBUG=* $(NW) desktop
 
