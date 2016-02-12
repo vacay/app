@@ -48,6 +48,9 @@ module.exports = function(grunt) {
 	    vendor: {
 		files: {
 		    'tmp/vendor.js': [
+			'bower_components/localforage/dist/localforage.nopromises.min.js',
+			'bower_components/async/lib/async.js',
+
 			'bower_components/page/page.js',
 			'bower_components/soundmanager/script/soundmanager2-nodebug-jsmin.js',
 			'bower_components/youtubemanager2/lib/youtubemanager.js',
@@ -90,9 +93,7 @@ module.exports = function(grunt) {
 	    },
 	    js: {
 		files: {
-		    'tmp/app.js' : [
-			'src/js/**/*.js'
-		    ]
+		    'tmp/app.js' : [ 'src/offline/*.js', 'src/js/**/*.js' , 'src/desktop/*.js']
 		}
 	    },
 	    index: {
@@ -103,32 +104,11 @@ module.exports = function(grunt) {
 		    ]
 		}
 	    },
-	    offline: {
-		files: {
-		    'tmp/vendor.js': [
-			'bower_components/localforage/dist/localforage.nopromises.min.js',
-			'bower_components/async/lib/async.js',
-			'tmp/vendor.js'
-		    ],
-		    'tmp/app.js': [
-			'src/offline/*.js',
-			'tmp/app.js'
-		    ]
-		}
-	    },
 	    mobile: {
 		files: {
 		    'tmp/app.js': [
 			'tmp/app.js',
 			'src/mobile/*.js'
-		    ]
-		}
-	    },
-	    desktop: {
-		files: {
-		    'tmp/app.js': [
-			'tmp/app.js',
-			'src/desktop/*.js'
 		    ]
 		}
 	    }
@@ -217,6 +197,11 @@ module.exports = function(grunt) {
 		    flatten: true,
 		    src: 'src/webtorrent.js',
 		    dest: 'desktop/'
+		}, {
+		    expand: true,
+		    flatten: true,
+		    src: 'tmp/desktop.js',
+		    dest: 'desktop/'
 		}]
 	    },
 	    hero: {
@@ -253,7 +238,14 @@ module.exports = function(grunt) {
 
 	watch: {
 	    index: {
-		files: ['gruntfile.js', 'config/**/*.js', 'src/html/**/*.jade', 'src/**/*.js', 'bower_components/**/*', 'src/css/**/*'],
+		files: [
+		    'gruntfile.js',
+		    'config/**/*.js',
+		    'src/html/**/*.jade',
+		    'src/**/*.js',
+		    'bower_components/**/*',
+		    'src/css/**/*'
+		],
 		tasks: ['default']
 	    }
 	},
@@ -293,7 +285,7 @@ module.exports = function(grunt) {
 		    name: 'vacay',
 		    path: './',
 		    command: 'build',
-		    platforms: [ 'ios', 'android' ]
+		    platforms: [ 'ios'/*, 'android'*/ ]
 		}
 	    }
 	},
@@ -348,7 +340,8 @@ module.exports = function(grunt) {
 	'inline_angular_templates',
 	'staticinline',
 	'inline',
-	'htmlmin'
+	'htmlmin',
+	'copy'
     ]);
 
     grunt.registerTask('default', [
@@ -357,9 +350,7 @@ module.exports = function(grunt) {
 	'concat:production',
 	'jade:index',
 
-	'after',
-
-	'copy:index'
+	'after'
     ]);
 
     grunt.registerTask('web', [
@@ -369,23 +360,7 @@ module.exports = function(grunt) {
 	'jade:index',
 
 	'uglify',
-	'after',
-
-	'copy:index'
-    ]);
-
-    grunt.registerTask('desktop', [
-	'base',
-
-	'concat:production',
-	'concat:offline',
-	'concat:desktop',
-	'jade:index',
-
-	'after',
-
-	'copy:desktop'
-
+	'after'
     ]);
 
     grunt.registerTask('mobile', [
@@ -399,10 +374,6 @@ module.exports = function(grunt) {
 	'string-replace',
 
 	'after',
-
-	'copy:index',
-	'copy:hero',
-	'copy:icon',
 
 	'cordovacli'
     ]);
