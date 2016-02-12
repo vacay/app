@@ -327,7 +327,7 @@
 	    App.api('/prescriptions').get(params).success(function(res) {
 		cb(null, res.data);
 	    }).error(function(res) {
-		cb(res, null);
+		cb(res || 'Failed to load /api/prescriptions', null);
 	    });
 	},
 
