@@ -67,8 +67,8 @@
 	    }));
 
 	    var recommendations = Elem.create({ className: 'i recommendations' });
-	    var actions = Elem.create({ className: 'i i-actions p-actions' });
-	    var list_actions = Elem.create({ className: 'i i-actions list-actions'});
+	    var actions = Elem.create({ className: 'i p-actions' });
+	    var list_actions = Elem.create({ className: 'i l-actions'});
 
 	    elem.appendChild(recommendations);
 

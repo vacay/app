@@ -6,6 +6,8 @@
 })(this, function() {
 
     'use strict';
+
+    if (!Platform.isNodeWebkit()) return {};
     
     var gui = require('nw.gui');    
     var copyPath, execPath;

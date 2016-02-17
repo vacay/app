@@ -28,7 +28,7 @@
 
 		var state = Utils.exists(self.vitamins, ids[0]);
 
-		var ch = p.querySelector('.i-actions .checkbox');
+		var ch = p.querySelector('.checkbox');
 
 		if (self.indeterminate(state, ids)) {
 		    ch.classList.add('indeterminate');
