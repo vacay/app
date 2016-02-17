@@ -22,12 +22,6 @@ nav
             background $border
             color #444
 
-    .label
-        display block
-        font-size 7px
-        letter-spacing .1em
-        padding 0 0 7px 0
-
     &.row
         a
             text-align center
@@ -74,9 +68,7 @@ nav
             padding 10px
 
         .badge
-            font-size 14px
-            font-weight 100
-            background transparent
+            font-weight 600
 
     &.justified
         overflow visible
@@ -117,9 +109,10 @@ nav
             color white
 
 @media (max-width: 63em)
-    nav .row li a
-        padding 10px 0
-    nav .row li.col-xs-3:nth-child(4)
+    nav .label
+        display block
+        padding-bottom 5px
+    nav.row .col-xs-3:nth-child(4)
         border-right none
-    nav .row li.col-xs-3:nth-child(-n+4)
+    nav.row .col-xs-3:nth-child(-n+4)
         border-bottom 1px solid $border    
