@@ -8,6 +8,57 @@
     'use strict';
 
     return {
+	filter: function(opts) {
+	    var container = Elem.create({ className: 'tags' });
+
+	    var selected = Elem.create({ className: 'selected-tags' });
+	    container.appendChild(selected);
+
+	    var list = Elem.create({ className: 'tags' });
+	    container.appendChild(list);
+
+	    var tags = [];
+
+	    User.read(opts.username, 'tags', {}, function(err, data) {
+		if (err) Log.error(err);
+
+		data.forEach(function(t, index) {
+		    var a = Elem.create({
+			tag: 'a',
+			className: 'tag',
+			text: t.value
+		    });
+		    a.onclick = function(e) {
+			var active = e.target.classList.contains('active');
+
+			a.remove();
+
+			if (active) {
+			    list.insertBefore(a, list.children[index]);
+			    tags.splice(tags.indexOf(t.value), 1);
+			    View.load({ tags: tags });
+			} else {
+			    selected.appendChild(a);
+			    tags.push(t.value);
+			    View.load({ tags: tags });
+			}
+
+			e.target.classList.toggle('active', !active);
+		    };
+
+		    if (opts.tag === t.value) {
+			a.classList.toggle('active', true);
+			tags.push(t.value);
+			selected.appendChild(a);
+		    } else {
+			list.appendChild(a);
+		    }
+		});
+	    });
+
+	    return container;
+	},
+
 	render: function() {
 	    var self = this;
 	    var tag = Elem.create({ className: 'i-body tags' });

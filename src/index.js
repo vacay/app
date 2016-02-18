@@ -34,7 +34,7 @@
 	    if (Utils.isUrl(window.location.pathname.substring(1))) {
 		page('/search?q=' + window.location.pathname.substring(1));
 	    } else {
-		page(window.location.pathname);
+		page(window.location.pathname + window.location.search);
 		var search = Location.search();
 		if (search.invite || search.reset) Landing.show(search);
 	    }

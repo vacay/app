@@ -10,7 +10,6 @@
 		    page('/');
 		    return ;
 		}
-
 		ctx.state.user = user;
 		ctx.save();
 		next();
@@ -182,55 +181,13 @@
 			if (!!offset && self.filter && !filterLoaded) {
 
 			    var f = document.querySelector('.filter-container');
-			    f.innerHTML = doT.template(View.tmpl('/filter/search.html'))({placeholder: ctx.params.subpath });
+			    f.innerHTML = doT.template(View.tmpl('/filter/search.html'))({ placeholder: ctx.params.subpath });
 
 			    if (ctx.params.subpath === 'crate') {
-				var loadedTags;
-
-				var fi = Elem.create({
-				    tag: 'button',
-				    className: 'link',
-				    text: 'load tags'
-				});
-				f.appendChild(fi);
-
-				fi.addEventListener('click', function() {
-
-				    if (loadedTags) {
-					return;
-				    }
-
-				    var ft = Elem.create({ className: 'filter-tags' });
-				    f.appendChild(ft);
-
-				    User.read(ctx.params.id, 'tags', {}, function(err, data) {
-					if (err) Log.error(err);
-
-					data.forEach(function(t) {
-					    var a = Elem.create({
-						tag: 'a',
-						className: 'tag',
-						text: t.value
-					    });
-					    a.onclick = function(e) {
-						var active = e.target.classList.contains('active');
-
-						if (active) {
-						    tags.splice(tags.indexOf(t.value), 1);
-						    load({ tags: tags });
-						} else {
-						    tags.push(t.value);
-						    load({ tags: tags });
-						}
-
-						e.target.classList.toggle('active', !active);
-					    };
-					    ft.appendChild(a);
-					});
-					loadedTags = true;
-					f.removeChild(fi);
-				    });
-				});
+				f.appendChild(Tags.filter({
+				    username: ctx.state.user.username,
+				    tag: tags[0]
+				}));
 			    }
 			    filterLoaded = true;
 			}
