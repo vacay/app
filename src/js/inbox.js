@@ -3,39 +3,22 @@
 
     page('/inbox', function() {
 
-	var lv, lp, t = 'all';
+	var lv = 0;
 
-	var load = function(options) {
+	var load = function() {
 
 	    var r = document.getElementById('river');
 	    var l = r.querySelector('.list');
-	    l.setAttribute('empty', 'You need to subscribe to pages and users. Learn how.');
+	    l.setAttribute('empty', 'You need to subscribe to pages. Learn how.');
 
-	    if (options) {
-		document.querySelector('.filter-container .' + t).classList.remove('active');
-
-		r.dataset.loading = true;
-		lv = lp = l.innerHTML = null;
-		t = options.reset ? 'all' : options.t;
-
-		View.active('.filter-container .' + t);
-	    } else {
-		options = {};
-		if (lv) options.lv = lv;
-		if (lp) options.lp = lp;
-		if (t) options.t = t;
-	    }
-
-	    Me.inbox(options, function(err, items) {
+	    Me.inbox({ lv: lv }, function(err, items) {
 		if (err) Log.error(err);
 		else {
-		    if (items.length < 20) View.scrollOff();
+		    if (items.length < 50) View.scrollOff();
 
 		    var frag = document.createDocumentFragment();
 
-
 		    var previous_lv = lv;
-		    var previous_lp = lp;
 
 		    var last_page, i =0;
 		    for ( ; i < items.length; i++) {
@@ -64,16 +47,14 @@
 			}
 		    }
 
-		    lv = lp = null;
+		    lv =  null;
 		    i = items.length - 1;
 		    for ( ; i >= 0; i--) {
 			if (!lv && items[i].page_id) lv = items[i].join_id;
-			if (!lp && items[i].prescriber_id) lp = items[i].id;
-			if (lv && lp) break;
+			if (lv) break;
 		    }
 
 		    if (!lv && previous_lv) lv = previous_lv;
-		    if (!lp && previous_lp) lp = previous_lp;
 
 		    l.appendChild(frag);
 		}
@@ -91,7 +72,6 @@
 	document.querySelector('.filter-container').innerHTML = View.tmpl('/inbox/filter.html');
 
 	View.active('[href="/inbox"]');
-	View.active('.filter-container .' + t);
 
 	if (!Me.id) {
 	    View.trigger('help');
