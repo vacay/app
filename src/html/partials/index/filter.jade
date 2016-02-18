@@ -1,7 +1,13 @@
 nav.horizontal-pill.cf
     ul
+        li.hide-auth
+            a.subscriptions(onclick='View.load({ t: "subscriptions" })') home
+        li
+            a.featured(onclick='View.load({ t: "featured" })') featured
+        li
+            a.all(onclick='View.load({ t: "all" })') latest
         li.pull-right
             a.help-trigger(onclick='View.trigger("help")') ?
 
 .help-container.i
-    | Welcome to vacay. <a href="/about" class="link">Start here.</a>
+    | Welcome to vacay. <a href="/about" class="link">Start here.</a> Below you can find prescriptions (mixtapes) from the community meant to keep you healthy. Sign up to setup your own feed by subscribing to users.

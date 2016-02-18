@@ -48,6 +48,10 @@
 	scrollOff: function() {
 	    m.removeEventListener('scroll', this._listener);
 	},
+	scrollOn: function() {
+	    this._listener = window.Throttle(this._onScroll.bind(this));
+	    m.addEventListener('scroll', this._listener);
+	},
 	render: function(opts) {
 	    opts = opts || {};
 	    var html = '';
@@ -74,8 +78,7 @@
 	    if (opts.load) {
 		opts.load();
 		this.load = opts.load;
-		this._listener = window.Throttle(this._onScroll.bind(this));
-		m.addEventListener('scroll', this._listener);
+		this.scrollOn();
 	    }
 	},
 	github: function(file, cb) {
