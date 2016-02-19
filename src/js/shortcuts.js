@@ -32,7 +32,12 @@
 	    });
 
 	    Mousetrap.bind('c', function() {
-		if (Me.username) page('/@' + Me.username + '/crate');
+		if (Me.id) page('/@' + Me.username + '/crate');
+		return false;
+	    });
+
+	    Mousetrap.bind('d', function() {
+		if (Me.id) page('/@' + Me.username + '/drafts');
 		return false;
 	    });
 
