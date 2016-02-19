@@ -49,6 +49,7 @@
 	    m.removeEventListener('scroll', this._listener);
 	},
 	scrollOn: function() {
+	    this.scrollOff();
 	    this._listener = window.Throttle(this._onScroll.bind(this));
 	    m.addEventListener('scroll', this._listener);
 	},
