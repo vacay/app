@@ -8,40 +8,10 @@
     'use strict';
 
     return {
+	used: null,
 	limit: window.localStorage.limit || 1000000000, // 1 gb
-	check: function() {
-	    var jobs = 0;
-	    var available = 0;
-	    var unavailable = 0;
-
-	    localforage.iterate(function(v) {
-
-		if (v.filename) {
-		    available ++;
-
-		    if (!v.offline) Downloader.remove(v);
-		    else {
-			//TODO - make sure file is there
-		    }
-
-		} else {
-
-		    unavailable++;
-
-		    if (v.offline && jobs < 50) {
-			jobs++;
-			Downloader.save(v);
-		    } else {
-			//TODO - make sure file does not exist
-		    }
-		}
-
-	    }, function() {
-		Log.debug('download jobs queued: ', jobs);
-		Log.debug('available offline: ', available);
-		Log.debug('unavailable offline: ', unavailable);
-		Log.debug('total: ', available + unavailable);
-	    });	    
+	setLimit: function(limit) {
+	    this.limit = window.localStorage.limit = limit;
 	},
 	init: function() {
 	    var offset = 0;
@@ -49,25 +19,33 @@
 
 	    Log.info('last sync:', Utils.fromNow(lastSync));
 
+	    // Remove any stale crates
 	    var sync = function() {
 		localforage.keys(function(err, ids) {
-		    if (err) Log.error(err);
-
-		    if (ids.length) {
-			Me.sync({
-			    ids: ids
-			}, function(err, vitamins) {
-			    if (err) Log.error(err);
-			    else {
-				for (var i=0; i<vitamins.length; i++) {
-				    localforage.removeItem(vitamins[i].id.toString(), Log.error);
-				}
-			    }
-			});
+		    if (err) {
+			Log.error(err);
+			return;
 		    }
+
+		    if (!ids.length) return;
+
+		    Me.sync({
+			ids: ids
+		    }, function(err, vitamins) {
+			if (err) {
+			    Log.error(err);
+			    return;
+			}
+
+			for (var i=0; i<vitamins.length; i++) {
+			    //TODO - remove file
+			    localforage.removeItem(vitamins[i].id.toString(), Log.error);
+			}
+		    });
 		});
 	    };
 
+	    // get any new crates
 	    var load = function(cb) {
 		User.read(Me.username, 'crate', {
 		    order_by: 'asc',
@@ -76,7 +54,6 @@
 		    offset: offset
 		}, cb);
 	    };
-
 	    var response = function(err, results) {
 		if (err) {
 		    Log.error(err);
@@ -97,8 +74,6 @@
 		}
 	    };
 
-	    //TODO - check crate count
-
 	    sync();
 	    load(response);
 
@@ -109,7 +84,7 @@
 	    var self = this;
 	    localforage.getItem(data.id.toString()).then(function(v) {
 		v.offline = !v.offline;
-		self.update(null, v);
+		self.updateUI(null, v);
 		localforage.setItem(data.id.toString(), v, function(err, o) {
 		    if (err) Log.error(err);
 		    v.offline ? Downloader.save(o) : Downloader.remove(o);
@@ -118,7 +93,7 @@
 
 	},
 
-	update: function(err, data) {
+	updateUI: function(err, data) {
 	    if (err) {
 		if (err === 'Exceeded limit') {
 		    // TODO

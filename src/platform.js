@@ -241,15 +241,25 @@
 
     // setup listeners to know when the device is ready to go
     var onDOMLoad = function() {
-	if(platform.isCordova()) {
+	if (platform.isCordova()) {
+	    var mobile_script = document.createElement('script');
+	    mobile_script.setAttribute('src','mobile.js');
+	    document.body.appendChild(mobile_script);
 	    // the window and scripts are fully loaded, and a cordova/phonegap
 	    // object exists then let's listen for the deviceready
 	    document.addEventListener('deviceready', onPlatformReady, false);
 	} else {
+
+	    if (platform.isNodeWebkit()) {
+		var desktop_script = document.createElement('script');
+		desktop_script.setAttribute('src','desktop.js');
+		document.body.appendChild(desktop_script);
+	    }
 	    // the window and scripts are fully loaded, but the window object doesn't have the
 	    // cordova/phonegap object, so its just a browser, not a webview wrapped w/ cordova
 	    onPlatformReady();
 	}
+
 	document.removeEventListener('DOMContentLoaded', onDOMLoad, false);
     };
 

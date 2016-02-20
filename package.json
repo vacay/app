@@ -34,7 +34,6 @@
 	"grunt-inline": "^0.3.4",
 	"grunt-inline-angular-templates": "^0.1.5",
 	"grunt-static-inline": "^0.1.6",
-	"grunt-string-replace": "^1.2.0",
 	"nw-builder": "^2.0.2"
     }
 }

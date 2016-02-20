@@ -15,3 +15,4 @@ cache
 desktop/node_modules
 desktop/index.html
 desktop/webtorrent.js
+desktop/desktop.js

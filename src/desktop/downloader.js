@@ -8,8 +8,6 @@
 
     'use strict';
 
-    if (!Platform.isNodeWebkit()) return {};
-
     var gui = require('nw.gui');
     var fs = require('fs');
     

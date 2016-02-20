@@ -93,7 +93,7 @@ module.exports = function(grunt) {
 	    },
 	    js: {
 		files: {
-		    'tmp/app.js' : [ 'src/offline/*.js', 'src/js/**/*.js' , 'src/desktop/*.js']
+		    'tmp/app.js' : [ 'src/offline/*.js', 'src/js/**/*.js' ]
 		}
 	    },
 	    index: {
@@ -104,12 +104,14 @@ module.exports = function(grunt) {
 		    ]
 		}
 	    },
+	    desktop: {
+		files: {
+		    'tmp/desktop.js': [ 'src/desktop/*.js' ]
+		}
+	    },
 	    mobile: {
 		files: {
-		    'tmp/app.js': [
-			'tmp/app.js',
-			'src/mobile/*.js'
-		    ]
+		    'tmp/mobile.js': [ 'src/mobile/*.js' ]
 		}
 	    }
 	},
@@ -197,6 +199,19 @@ module.exports = function(grunt) {
 		    flatten: true,
 		    src: 'src/webtorrent.js',
 		    dest: 'desktop/'
+		}, {
+		    expand: true,
+		    flatten: true,
+		    src: 'tmp/desktop.js',
+		    dest: 'desktop/'
+		}]
+	    },
+	    mobile: {
+		files: [{
+		    expand: true,
+		    flatten: true,
+		    src: 'tmp/mobile.js',
+		    dest: 'www/'
 		}]
 	    },
 	    hero: {
@@ -214,20 +229,6 @@ module.exports = function(grunt) {
 		    src: 'resources/icon.png',
 		    dest: 'www/'
 		}]
-	    }
-	},
-
-	'string-replace': {
-	    inline: {
-		files: {
-		    'tmp/index.html': 'tmp/index.html'
-		},
-		options: {
-		    replacements: [{
-			pattern: '</html>',
-			replacement: '<script src="cordova.js"></script></html>'
-		    }]
-		}
 	    }
 	},
 
@@ -326,7 +327,9 @@ module.exports = function(grunt) {
 	'stylus',
 	'cssmin',
 	'concat:vendor',
-	'concat:js'
+	'concat:js',
+	'concat:mobile',
+	'concat:desktop'
     ]);
 
     grunt.registerTask('after', [
@@ -358,21 +361,6 @@ module.exports = function(grunt) {
 	'after'
     ]);
 
-    grunt.registerTask('mobile', [
-	'base',
-
-	'concat:production',
-	'concat:offline',
-	'concat:mobile',
-
-	'jade:index',
-	'string-replace',
-
-	'after',
-
-	'cordovacli'
-    ]);
-
     grunt.loadNpmTasks('grunt-contrib-clean');    
     grunt.loadNpmTasks('grunt-contrib-stylus');
     grunt.loadNpmTasks('grunt-contrib-jade');
@@ -388,6 +376,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-inline-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-cordovacli');
-    grunt.loadNpmTasks('grunt-string-replace');
 
 };	

@@ -3,8 +3,6 @@
 
     'use strict';
 
-    if (!Platform.isNodeWebkit()) return;
-
     var gui = require('nw.gui');
     var win = gui.Window.get();
     var mb = new gui.Menu({ type:'menubar' });
