@@ -84,46 +84,62 @@
 	    var self = this;
 	    localforage.getItem(data.id.toString()).then(function(v) {
 		v.offline = !v.offline;
-		self.updateUI(null, v);
+		self.updateUI(v);
 		localforage.setItem(data.id.toString(), v, function(err, o) {
 		    if (err) Log.error(err);
-		    v.offline ? Downloader.save(o) : Downloader.remove(o);
+		    if (v.offline) {
+			Downloader.save(o);
+		    } else {
+			Downloader.remove(o);
+		    }
 		});
 	    });
 
 	},
 
-	updateUI: function(err, data) {
-	    if (err) {
-		if (err === 'Exceeded limit') {
-		    // TODO
-		    return;
-		}
+	updateProgress: function(id, progress) {
+	    var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .statusbar .position');
+	    Elem.each(divs, function(div) {
+		console.log(progress);
+		div.style.width = progress.toFixed() + '%';
+	    });
+	},
 
-		Log.error(err);
-		return;
-	    }
+	updateUI: function(data) {
+	    var divs = document.querySelectorAll('.vitamin[data-id="' + data.id + '"] .i-description');
+
+	    Elem.each(divs, function(div) {
+
+		var progress = div.querySelector('.statusbar');
+		var icon = div.querySelector('i');
+
+		if (data.offline) {
+		    if (!icon) {
+			Elem.create({tag: 'i', className: 'icon-download', parent: div });
+		    }
+
+		    if (data.filename) {
+			icon.classList.add('success');
+			div.removeChild(progress);
+		    }
+
+		    if (!progress) {
+			Elem.create({
+			    className: 'statusbar',
+			    parent: div,
+			    childs: [{
+				className: 'position'
+			    }]
+			});
+		    }
+
+		} else {
+		    div.removeChild(icon);
+		}
+	    });
 
 	    localforage.setItem(data.id.toString(), data, function(err) {
 		if (err) Log.error(err);
-
-		var divs = document.querySelectorAll('.vitamin[data-id="' + data.id + '"] .i-description');
-
-		// update UI
-		Elem.each(divs, function(div) {
-
-		    var icon = div.querySelector('i');
-
-		    if (data.offline) {
-			if (!icon)
-			    div.appendChild(Elem.create({tag: 'i', className: 'icon-download'}));
-			else if (data.filename)
-			    icon.classList.add('success');
-		    } else {
-			div.removeChild(icon);
-		    }
-		});
-		
 	    });
 
 	}

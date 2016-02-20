@@ -3,15 +3,12 @@
 
     page('/offline', function() {
 
-	if (Network.online) page('/');
-
 	var offset = 0;
 	var load = function(options) {
 
 	    var r = document.getElementById('river');
 	    var l = r.querySelector('.list');
 	    var f = document.createDocumentFragment();
-	    
 
 	    async.waterfall([
 		function(next) {

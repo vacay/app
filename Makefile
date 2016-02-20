@@ -63,7 +63,7 @@ run_desktop:
 	DEBUG=* $(NW) desktop
 
 build_desktop:
-	grunt desktop
+	grunt
 	if [ -d './dist/vacay/osx32' ]; then rm -rf ./dist/vacay/osx32; fi
 	node build/nw.js
 	cp resources/mac/ffmpegsumo.so "dist/vacay/osx32/vacay.app/Contents/Frameworks/node-webkit Framework.framework/Libraries/"
@@ -75,7 +75,7 @@ deploy_desktop: build_desktop
 
 ## Mobile
 build_mobile: update
-	grunt mobile
+	grunt web
 
 emulate_ios: build_mobile
 	cordova emulate ios

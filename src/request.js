@@ -76,6 +76,9 @@
     };
 
     return {
+	head: function(url) {
+	    return xhr('HEAD', url);
+	},
 	get: function(url, data) {
 	    if (data) url += '?' + serialize(data);
 	    return xhr('GET', url);

@@ -8,7 +8,7 @@
     'use strict';
 
     function onFSSuccess(fileSystem) {
-        Log.debug(fileSystem.name);
+        Log.debug('Data Path:', fileSystem.nativeURL);
     }
 
     function onFSFailure(err) {
@@ -52,6 +52,13 @@
     function download(data, cb) {
 	var id = data.vitamin.id;
 
+	// check if we should be using data
+	if (Network.connection.type !== 'wifi') {
+	    q.pause();
+	    cb('network connection is not wifi');
+	    return;
+	}
+
 	async.waterfall([
 	    // get streams
 	    function(next) {
@@ -65,34 +72,63 @@
 		});
 
 		var stream_urls = pluck(filtered, 'stream_url');
-		if (stream_urls.length) next(null, stream_urls[0]);
-		else next('missing stream_url');
+
+		stream_urls.push('https://s3.amazonaws.com/vacay/' + CONFIG.env + '/vitamins/' + id + '.mp3');
+
+		Log.debug('streams: ', stream_urls);
+
+		if (!stream_urls.length) {
+		    next('missing stream_url');
+		    return;
+		}
+
+		var count = 0;
+		var stream_url;
+		async.whilst(function() {
+		    return count < stream_urls.length && !stream_url;
+		}, function(cb) {
+		    var url = stream_urls[count];
+		    count++;
+		    Request.head(url).success(function(res) {
+			stream_url = url;
+			cb();
+		    }).error(function(res) {
+			cb();
+		    });
+		}, function(err, url) {
+		    console.log(stream_url);
+		    next(err, stream_url);
+		});
 	    },
 
 	    //save stream
 	    function(url, next) {
 
-		//TODO - validate space
-
-		if (Network.connection.type !== 'wifi') {
-		    q.pause();
-		    next('network connection is not wifi');
+		if (!url) {
+		    next('missing stream_url');
 		    return;
 		}
 
+		//TODO - validate limit
 		Log.debug('downloading: ', url);
-		var fileTransfer = new FileTransfer();
+		var ft = new FileTransfer();
 		var uri = encodeURI(url);
 		var store = cordova.file.dataDirectory;
 		var fileURL = store + id + '.mp3';
 
-		fileTransfer.download(uri, fileURL, function(entry) {
+		ft.download(uri, fileURL, function(entry) {
 		    Log.debug('saved: ', entry.toURL());
 		    next(null, entry.toURL());
 		}, function(err) {
 		    Log.error(err);
 		    next(err);
 		});
+
+		ft.onprogress = function(e) {
+		    if (e.lengthComputable) {
+			Offline.updateProgress(id, (e.loaded / e.total * 100));
+		    }
+		};
 	    }
 	], cb);
     }
@@ -106,7 +142,7 @@
 
 	download(data, function(err, filename) {
 	    data.vitamin.filename = filename;
-	    Offline.update(err, data.vitamin);
+	    Offline.updateUI(data.vitamin);
 	    done(err);
 	});
     }
@@ -146,7 +182,7 @@
 
 		entry.remove(function() {
 		    delete v.filename;
-		    Offline.update(null, v);
+		    Offline.updateUI(v);
 		}, function(err) {
 		    Log.error(err);
 		});
@@ -155,7 +191,7 @@
 
 		if (err.code === FileError.NOT_FOUND_ERR) {
 		    delete v.filename;
-		    Offline.update(null, v);
+		    Offline.updateUI(v);
 		    return;
 		}
 

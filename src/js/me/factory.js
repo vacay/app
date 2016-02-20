@@ -38,6 +38,12 @@
 	    drafts_btn.href = url + '/drafts';
 	    p.appendChild(drafts_btn);
 
+	    if (Platform.isNative()) {
+		var offline_btn = Elem.create({ tag: 'a', text: 'offline' });
+		offline_btn.href = '/offline';
+		p.appendChild(offline_btn);
+	    }
+
 	    document.querySelector('#previous a').href = url + '/listens';
 	},
 

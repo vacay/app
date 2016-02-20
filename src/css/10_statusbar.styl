@@ -13,30 +13,28 @@
         cursor crosshair
         &.disabled
             cursor not-allowed
-    .statusbar
-        position relative
-        height 1px
-        background-color rgba(200, 200, 200, 1)
-        overflow hidden
-        cursor -moz-grab
-        cursor grab
     &.dragging
         .statusbar
             cursor -moz-grabbing
             cursor grabbing
+
+.statusbar
+    position relative
+    height 3px
+    background-color rgba(200, 200, 200, 1)
+    overflow hidden
+    cursor -moz-grab
+    cursor grab
+
+.statusbar .position
+    background-color $vacay
 
 .statusbar .position
 .statusbar .loading
     position absolute
     left 0
     top 0
-    height 1px
-
-.statusbar .position
-    background-color $red
-
-body.playing .statusbar .position
-    background-color $vacay
+    height 3px
 
 .statusbar .loading
     background-color $grey
@@ -52,6 +50,11 @@ body.playing .statusbar .position
     .statusbar .position
     .statusbar .loading
         height 3px
+    .statusbar .position
+        background-color $red
+
+body.playing #statusbar .statusbar .position
+    background-color $vacay
 
 .platform-nodewebkit #statusbar
     top 25px
