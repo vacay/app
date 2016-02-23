@@ -6,8 +6,7 @@
 
 .prescription
     .recommendations
-        padding 5px 15px 10px
-        text-align right
+        float left
         .avatar
             display inline-block
             margin-right 5px
@@ -20,7 +19,7 @@
         height 400px
     .description
         min-height 19px
-        padding 0 15px
+        padding 5px 25px
         line-height 1.42857
     .description[contenteditable='true']
         background yellow
@@ -37,15 +36,20 @@
     .editable .save
         display inline-block
 
+    .list
+        border-top 1px solid $border
     &.simple
-        .l-actions
         .list
             display none
 
-.p-actions
+.o-actions
+    padding 15px 25px
     text-align right
+
+.p-actions
     border-top 1px solid $border
-    margin 0 15px
-    padding 5px 0
+    margin 0 25px
+    padding 10px 0
+    text-align right
     &:empty
         display none

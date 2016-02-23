@@ -47,6 +47,10 @@
 		opts.parent.appendChild(el);
 	    }
 
+	    if (opts.onclick) {
+		el.onclick = opts.onclick;
+	    }
+
 	    return el;
 	},
 

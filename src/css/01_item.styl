@@ -1,16 +1,19 @@
 @import '00_variables.styl'
 @import 'nib'
 
+.mouse .i:hover
+    a.i-title
+        color blue
+        text-decoration underline
+
+.mouse .list > .i:hover
+    background-color #fcfcfc
+
 .i
     position relative
     display block
     background white
     padding 15px
-
-    &.selected
-        background rgba(211,228,120,0.1)
-        .i-title
-            font-weight 300
 
     &:before
     &:after
@@ -20,10 +23,15 @@
         clear both
 
     .left
-        absolute top 15px
+        absolute top left
 
     .right
-        absolute top 15px right 45px
+        absolute top right
+
+    &.selected
+        background yellow
+        .i-title
+            font-weight 300
 
 .i-image
     padding 0
@@ -47,14 +55,10 @@
     padding-right 140px
 
 .i-handle
-    absolute top 5px right 5px bottom 5px
-    width 35px
+    display inline-block
+    vertical-align middle
+    width 25px
+    height 30px
     background-image repeating-radial-gradient(center center, rgba(0,0,0,.2), rgba(0,0,0,.2) 1px, transparent 1px, transparent 100%)
     background-size 3px 3px
     cursor move
-
-.i-select
-    absolute top 15px right 15px
-
-.i-select + .i-handle
-    top 45px

@@ -66,40 +66,31 @@
 		}]
 	    }));
 
-	    var recommendations = Elem.create({ className: 'i recommendations' });
+	    var recommendations = Elem.create({ className: 'recommendations' });
 	    var actions = Elem.create({ className: 'i p-actions' });
-	    var list_actions = Elem.create({ className: 'i l-actions'});
 
-	    elem.appendChild(recommendations);
+	    actions.appendChild(recommendations);
 
 	    //TODO - play all / queue all
-	    var playall = Elem.create({
+	    Elem.create({
 		tag: 'button',
 		className: 'link icon',
-		html: '<i class="icon-play"></i>'
-	    });
-	    playall.onclick = function() {
+		html: '<i class="icon-play"></i>',
+		parent: actions
+	    }).onclick = function() {
 		Player.play(data.vitamins);
 	    };
-	    list_actions.appendChild(playall);
 
-	    var selectall = Elem.create({
-		tag: 'button',
-		className: 'checkbox pull-right'
-	    });
-	    selectall.onclick = function() {
-		var vitamin_ids = [];
-		for (var i=0; i<data.vitamins.length; i++) {
-		    vitamin_ids.push(data.vitamins[i].id);
-		}
-		var state = Utils.exists(Multi.vitamins, vitamin_ids[0]);
-		if (!state || Multi.indeterminate(state, vitamin_ids)) {
-		    Multi.add(data.vitamins);
-		} else {
-		    Multi.remove(data.vitamins);
-		}
-	    };
-	    list_actions.appendChild(selectall);
+	    if (!opts.single) {
+		Elem.create({
+		    tag: 'button',
+		    className: 'link icon',
+		    text: '...',
+		    parent: actions
+		}).onclick = function() {
+		    elem.classList.toggle('simple');
+		};
+	    }
 
 	    var users = [];
 	    var additional = [];
@@ -149,14 +140,15 @@
 	    }
 	    recommendations.appendChild(recommend);
 
+	    var owner_actions = Elem.create({ className: 'i o-actions' });
+
 	    if (isOwner) {
 		var save = Elem.create({
 		    tag: 'button',
 		    className: 'sm link success save',
-		    text: 'save'
-		});
-
-		save.onclick = function(e) {
+		    text: 'save',
+		    parent: owner_actions
+		}).onclick = function(e) {
 
 		    var cb = function(err) {
 			if (err) Log.error(err);
@@ -172,15 +164,13 @@
 
 		    e.target.parentNode.classList.toggle('editable', false);
 		};
-		actions.appendChild(save);
 
 		var edit = Elem.create({
 		    tag: 'button',
 		    className: 'sm link',
-		    text: 'edit'
-		});
-
-		edit.onclick = function(e) {
+		    text: 'edit',
+		    parent: owner_actions
+		}).onclick = function(e) {
 		    var editable = !e.target.parentNode.classList.contains('editable');
 
 		    if (editable) {
@@ -196,27 +186,22 @@
 		    e.target.parentNode.classList.toggle('editable', editable);
 		};
 
-		actions.appendChild(edit);
-
 		var setImage = Elem.create({
 		    tag: 'button',
 		    className: 'sm link',
-		    text: 'set image'
-		});
-
-		setImage.onclick = function() {
+		    text: 'set image',
+		    parent: owner_actions
+		}).onclick = function() {
 		    self.setImage(data.id);
 		};
-
-		actions.appendChild(setImage);
 
 		if (!data.published_at) {
 		    var publish = Elem.create({
 			tag: 'button',
 			className: 'sm link success',
-			text: 'publish'
-		    });
-		    publish.onclick = function() {
+			text: 'publish',
+			parent: owner_actions
+		    }).onclick = function() {
 			Modal.show({
 			    confirm: {
 				message: 'Are you sure you want to publish?',
@@ -234,15 +219,14 @@
 			    }
 			});
 		    };
-		    actions.appendChild(publish);
 		}
 
 		var del = Elem.create({
 		    tag: 'button',
 		    className: 'sm link failure',
-		    text: 'delete'
-		});
-		del.onclick = function() {
+		    text: 'delete',
+		    parent: owner_actions
+		}).onclick = function() {
 		    Modal.show({
 			confirm: {
 			    message: 'Are you sure you want to delete?',
@@ -255,7 +239,6 @@
 			}
 		    });
 		};
-		actions.appendChild(del);
 
 		var drag = dragula([vitamins], {
 		    direction: 'vertical',
@@ -295,23 +278,8 @@
 		});
 	    }
 
-	    if (!opts.single) {
-		var expand = Elem.create({
-		    tag: 'button',
-		    className: 'sm link',
-		    text: 'expand'
-		});
-
-		expand.onclick = function() {
-		    elem.classList.toggle('simple');
-		    expand.innerHTML = elem.classList.contains('simple') ? 'expand' : 'collapse';
-		};
-
-		actions.appendChild(expand);
-	    }
-
+	    elem.appendChild(owner_actions);
 	    elem.appendChild(actions);
-	    elem.appendChild(list_actions);
 
 	    data.vitamins.forEach(function(v) {
 		//TODO - remove button

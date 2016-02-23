@@ -61,7 +61,7 @@
 
 	render: function() {
 	    var self = this;
-	    var tag = Elem.create({ className: 'i-body tags' });
+	    var tag = Elem.create({ className: 'tags' });
 	    var tags = Elem.create({
 		tag: 'span',
 		className: 'current'

@@ -44,30 +44,23 @@
 
 	    elem.innerHTML = tmpl(data);
 
-	    elem.querySelector('.play').onclick = function() {
-		Player.play(data);
-	    };
+	    var actions = elem.querySelector('.right');
 
-	    elem.querySelector('.crate').onclick = function() {
-		self.toggleCrate(data);
-	    };
-
-	    elem.querySelector('.queue').onclick = function() {
-		Queue.toggle(data);
-	    };
-
+	    elem.querySelector('.play').onclick = function() { Player.play(data); };
+	    elem.querySelector('.crate').onclick = function() { self.toggleCrate(data); };
+	    elem.querySelector('.queue').onclick = function() { Queue.toggle(data); };
 	    elem.querySelector('.i-body').onclick = function(e) {
 		if (window.innerWidth < 767) {
 		    e.preventDefault();
 		    e.stopPropagation();
 		    self.more(e, data);
 		    return false;
+		} else if (!e.target.classList.contains('i-title')) {
+		    Multi.toggle(data);
 		}
 	    };
 
-	    elem.querySelector('.more').onclick = function(e) {
-		self.more(e, data);
-	    };
+	    elem.querySelector('.more').onclick = function(e) { self.more(e, data); };
 
 	    elem.classList.toggle('nowplaying', Player.isPlaying(data.id));
 
@@ -83,33 +76,29 @@
 	    }
 
 	    if (opts.editable) {
-		var remove = Elem.create({
+		Elem.create({
 		    tag: 'button',
-		    className: 'icon failure delete'
+		    className: 'icon failure delete',
+		    parent: actions,
+		    attributes: { title: 'remove'},
+		    onclick: Prescription.removeVitamin
 		});
-		remove.title = 'remove';
-
-		remove.onclick = Prescription.removeVitamin;
-		// TODO - onclick delete from prescription
-		elem.querySelector('.right').appendChild(remove);
 	    }
 
 	    var multi = Elem.create({
 		tag: 'button',
-		className: 'i-select checkbox'
+		className: 'i-select checkbox',
+		parent: actions,
+		onclick: function() {
+		    Multi.toggle(data);
+		}
 	    });
 
-	    multi.onclick = function() {
-		Multi.toggle(data);
-	    };
-
-	    elem.appendChild(multi);
-
 	    if (opts.drag) {
-		var handle = Elem.create({
-		    className: 'i-handle'
+		Elem.create({
+		    className: 'i-handle',
+		    parent: actions
 		});
-		elem.appendChild(handle);
 	    }
 
 	    if (Platform.isNative() && data.crated) {
@@ -178,16 +167,16 @@
 		});
 	    }
 
-	    var getStyle, bottom;
+	    var getStyle, bottom, modal_height = 290;
 	    if (contextmenu) {
-		bottom = (e.y + 336) > window.innerHeight;
+		bottom = (e.y + modal_height) > window.innerHeight;
 		getStyle = function() {
 		    var style = {
 			right: (window.innerWidth - e.x) + 'px'
 		    };
 
 		    if (bottom) {
-			style.top = (e.y - 336) + 'px';
+			style.top = (e.y - modal_height) + 'px';
 		    } else {
 			style.top = e.y + 'px';
 		    }
@@ -379,6 +368,7 @@
 	    var form = Elem.create({
 		tag: 'form',
 		className: 'i',
+		parent: elem,
 		childs: [{
 		    tag: 'label',
 		    text: 'artist - title (remix)'
@@ -396,16 +386,16 @@
 	    });
 	    var h = Elem.create({
 		className: 'h _d',
+		parent: elem,
 		childs: [{
 		    tag: 'a',
 		    text: 'Related'
 		}]
 	    });
-	    var list = Elem.create({ className: 'list' });
-
-	    elem.appendChild(form);
-	    elem.appendChild(h);
-	    elem.appendChild(list);
+	    var list = Elem.create({
+		className: 'list',
+		parent: elem
+	    });
 
 	    form.onsubmit = function(e) {
 		var newTitle = e.target.querySelector('input').value;
@@ -415,20 +405,22 @@
 	    };
 
 	    data.hosts.forEach(function(h) {
-		list.appendChild(Elem.create({
+		Elem.create({
 		    className: 'i',
-		    text: h.vitamin_title
-		}));
+		    text: h.vitamin_title,
+		    parent: list
+		});
 	    });
 
 	    if (data.echonest_id) {
 		this.getEchonestTracks(data.echonest_id, function(err, res) {
 		    if (err) Log.error(err, data);
 		    res.forEach(function(h) {
-			list.appendChild(Elem.create({
+			Elem.create({
 			    className: 'i',
-			    text: h.artist_name + ' - ' + h.title
-			}));
+			    text: h.artist_name + ' - ' + h.title,
+			    parent: list
+			});
 		    });
 		});
 	    }

@@ -9,8 +9,7 @@
     background white
 
 .p-header
-    padding 10px 10px 0
-    border-top 1px solid $border
+    padding 35px 10px 10px
     font-weight 900
     line-height 1.2em
 
@@ -43,7 +42,6 @@ body.remote .rc
 #autoplay
     margin-top 15px
     padding 15px 2px
-    border-top 1px solid $border
     text-align center
     small + span
         margin-left 10px
@@ -78,7 +76,7 @@ body.remote .rc
 
 .p-ctrls
     absolute left top right
-    background rgba(0,0,0,0.2)
+    background rgba(0,0,0,0.3)
     color white
     text-align center
     .play i.icon-pause
@@ -174,6 +172,9 @@ body.remote #p-icon .bar
 body.live .p-live
     display block
 
+.player-open #p-icon
+    background $border
+
 @media (min-width: $smallMin)
     .p-container
         width 320px
@@ -190,6 +191,12 @@ body.live .p-live
 
     .p-ctrls a
         margin-top 75px
+
+    body.mouse .p-container
+        .p-ctrls
+            display none
+        &:hover .p-ctrls
+            display block
 
 @media (min-width: $largeMin)
     .p-container

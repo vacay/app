@@ -120,7 +120,7 @@
 	    elem.appendChild(body);
 
 	    if (opts.single) {
-		var meta = Elem.create({ className: 'pull-right' });
+		var meta = Elem.create();
 
 		var joined = Elem.create({
 		    tag: 'small',
