@@ -177,6 +177,7 @@
 	},
 
 	create: function(id, params, cb) {
+	    //TODO - if native - update localforage
 	    var self = this;
 	    var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .current');
 
@@ -198,6 +199,7 @@
 	},
 
 	destroy: function(id, params, cb) {
+	    //TODO - if native - update localforage
 	    var self = this;
 	    var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .tag[data-value="' + params.value + '"]');
 

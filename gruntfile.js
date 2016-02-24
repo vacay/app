@@ -197,7 +197,7 @@ module.exports = function(grunt) {
 		}, {
 		    expand: true,
 		    flatten: true,
-		    src: 'src/webtorrent.js',
+		    src: 'src/worker.js',
 		    dest: 'desktop/'
 		}, {
 		    expand: true,

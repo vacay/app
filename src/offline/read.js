@@ -43,8 +43,20 @@
 	};
 	
 	View.render({
-	    load: load
+	    load: load,
+	    filter: true
 	});
+
+	Elem.create({
+	    tag: 'button',
+	    className: 'sm rnd pull-right',
+	    text: 'clear',
+	    parent: document.querySelector('.filter-container'),
+	    onclick: function() {
+		Offline.clear();
+	    }
+	});
+
     });
 
 })();

@@ -1,15 +1,9 @@
 /* global require, process, console, __dirname */
 
 var async = require('async');
-var WebTorrent = require('webtorrent');
-var client = new WebTorrent({
-    dht: false,
-    maxPeers: 50
-});
-
 var mkdirp = require('mkdirp');
 var request = require('request');
-var nt = require('nt');
+var progress = require('request-progress');
 var fs = require('fs');
 
 function pluck(array, property) {
@@ -23,55 +17,15 @@ function pluck(array, property) {
 }
 
 var download = function(data, done) {
-    var tmp = data.root || __dirname;
-
-    var torrent_url = data.torrent_file;
     var id = data.vitamin.id;
     var token = data.token;
 
-    var filename, folder, metadata;
+    var filename = id + '.mp3';
 
     async.waterfall([
-	// TODO - save torrent file/metadata locally
-	// get torrent metadata
-	function(next) {
-	    console.log('getting torrent: ', torrent_url);
-	    nt.read(torrent_url, next);
-	},
-
-	// check if full file already exists
-	function(torrent, next) {
-	    metadata = torrent.metadata;
-	    var hash = torrent.infoHash();
-	    filename = torrent.metadata.info.name;
-	    folder = tmp + '/webtorrent/' + hash;
-
-	    console.log('checking for file: ', folder + '/' + filename);
-	    fs.stat(folder + '/' + filename, function(err, stats) {
-		next(null, stats);
-	    });
-	},
-
-	// mkdir using infoHash
-	function(stats, next) {
-	    console.log(stats);
-	    console.log(metadata.info);
-
-	    if (metadata.info.length > data.available) {
-		next('Exceeded limit');
-	    }
-
-	    if (stats && stats.size === metadata.info.length) {
-		next('Already exists');
-	    } else {
-		mkdirp(folder, next);
-	    }
-	},
-
 	// get hosts
-	function(made, next) {
+	function(next) {
 	    var url = 'https://api.vacay.io/v1/vitamin/' + id + '/stream?token=' + token;
-	    console.log(url);
 	    request.get(url, { json: true }, next);
 	},
 
@@ -83,8 +37,12 @@ var download = function(data, done) {
 	    });
 
 	    var stream_urls = pluck(ext_hosts, 'stream_url');
+	    stream_urls.push('https://s3.amazonaws.com/vacay/' + data.env + '/vitamins/' + id + '.mp3');
 
-	    console.log(stream_urls);
+	    if (!stream_urls.length) {
+		next('missing stream_url');
+		return;
+	    }
 
 	    // go through stream_urls until healthy stream_url
 	    var check_health = function(url, check) {
@@ -105,14 +63,17 @@ var download = function(data, done) {
 
 	function(stream_url, next) {
 
-	    console.log(stream_url);
-
-	    var writeStream = fs.createWriteStream(folder + '/' + filename);
+	    var writeStream = fs.createWriteStream(data.root + '/' + filename);
 	    writeStream.on('finish', next);
 	    writeStream.on('error', next);
 
-	    request.get(stream_url).on('error', function(err) {
-		console.log(err);
+	    progress(request(stream_url), { throttle: 500 }).on('progress', function(state) {
+		process.send({
+		    method: 'progress',
+		    id: id,
+		    progress: state.size.transferred / state.size.total * 100
+		});
+	    }).on('error', function(err) {
 		next(err);
 	    }).pipe(writeStream);
 	}
@@ -121,30 +82,17 @@ var download = function(data, done) {
 
 };
 
-var q = async.queue(download, 2);
+var q = async.queue(download, 1);
 
 var save = function(message) {
     q.push(message.data, function(err) {
 
-	//TODO - handle error
+	message.data.vitamin.filename = message.data.root + '/' + message.data.vitamin.id + '.mp3';
 
-	//TODO - dont redownload torrent_file
-	client.add(message.data.torrent_file, {
-	    tmp: message.data.root,
-	    verify: true
-	}, function(torrent) {
-
-	    var file = torrent.files[0].fd;
-	    if (file && !message.data.vitamin.filename) {
-		message.data.vitamin.filename = file.filename;
-		console.log('filename:', message.data.vitamin.filename);
-	    }
-
-	    process.send({
-		err: err,
-		method: message.method,
-		vitamin: message.data.vitamin
-	    });
+	process.send({
+	    err: err,
+	    method: message.method,
+	    vitamin: message.data.vitamin
 	});
     });
 };
@@ -183,7 +131,11 @@ process.on('message', function(message) {
 
     default:
 	//TODO - log properly
-	console.error('message method not handled', message);
+	process.send({ err: 'message method not handled', data: message });
 	break;
     }
+});
+
+process.on('uncaughtException', function(err) {
+    process.send({ err: err });
 });

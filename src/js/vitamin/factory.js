@@ -103,9 +103,11 @@
 
 	    if (Platform.isNative() && data.crated) {
 		localforage.getItem(data.id.toString()).then(function(v) {
-		    var icon = Elem.create({tag: 'i', className: 'icon-download'});
-		    if (v.offline) elem.querySelector('.i-description').appendChild(icon);
-		    if (v.filename) icon.classList.add('success');
+		    if (v) {
+			var icon = Elem.create({tag: 'i', className: 'icon-download'});
+			elem.querySelector('.i-description').appendChild(icon);
+			if (v.filename) icon.classList.add('success');
+		    }
 		});
 	    }
 
@@ -163,7 +165,7 @@
 		};
 
 		localforage.getItem(data.id.toString()).then(function(v) {
-		    offline.innerHTML = '<i class="icon-download"></i><span>' + (v.offline ? 'remove' : 'save') + ' offline </span>';
+		    offline.innerHTML = '<i class="icon-download"></i><span>' + (v ? 'remove' : 'save') + ' offline </span>';
 		});
 	    }
 
@@ -289,6 +291,8 @@
 		}
 		Queue.broadcast();
 	    }
+
+	    //TODO - if native - update localforage
 
 	    var cb = function(err) {
 		if (err) {

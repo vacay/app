@@ -14,6 +14,7 @@
     var path = require('path');
     var cp = require('child_process');
     var dataPath = path.join(gui.App.dataPath, 'data');
+    var offlinePath = path.join(dataPath, 'offline');
 
     if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
 
@@ -46,42 +47,56 @@
 		    });
 		});
 	    } else {
-		//TODO - make sure file exists in localforage
-		//console.log(item);
-		
 		cb(err, total);
 	    }
 	});
     }
     var _run = function() {
-	var script = process.cwd() + '/webtorrent.js';
+	var script = process.cwd() + '/worker.js';
 
-	spaceUsed(dataPath, function(err, total) {
-	    if (err) {
-		Log.error(err);
-		return;
+	child = cp.fork(script);
+	// TODO: proper logging
+
+	child.on('message', function(msg) {
+	    if (msg.err) Log.error(msg);
+
+	    switch(msg.method) {
+	    case 'progress':
+		Offline.updateProgress(msg.id, msg.progress);
+		break;
+	    default:
+		Offline.update(msg.vitamin);
+		break;
 	    }
+	});
 
-	    used = total;
-	    Log.debug('space used: ', used);
-
-	    child = cp.fork(script);
-	    // TODO: proper logging
-
-	    child.on('message', function(data) {
-		Offline.update(data.err, data.vitamin);
-	    });
-
-	    child.on('exit', function(code, signal) {
-		if (code !== 0 || !signal) _run();
-	    });
-
+	child.on('exit', function(code, signal) {
+	    if (code !== 0 || !signal) _run();
 	});
     };
 
     _run();
 
     return {
+
+	clear: function(cb) {
+	    try {
+		var files = fs.readdirSync(offlinePath);
+		if (files.length > 0) {
+		    for (var i = 0; i < files.length; i++) {
+			var filePath = offlinePath + '/' + files[i];
+			if (fs.statSync(filePath).isFile()) fs.unlinkSync(filePath);
+		    }
+		}
+		cb();
+	    } catch(e) {
+		cb(e);
+	    }
+	},
+
+	getSpaceUsed: function(cb) {
+	    spaceUsed(offlinePath, cb);
+	},
 
 	pause: function() {
 	    child && child.send && child.send({ method: 'pause' });
@@ -93,16 +108,13 @@
 	},
 
 	save: function(v) {
-	    var torrent_file = 'https://s3.amazonaws.com/vacay/production/vitamins/' + v.id + '.mp3?torrent';
-
 	    child && child.send && child.send({
 		method: 'save',
 		data: {
-		    torrent_file: torrent_file,
-		    root: dataPath,
+		    root: offlinePath,
+		    env: CONFIG.env,
 		    vitamin: v,
-		    token: window.localStorage.token || App.token,
-		    available: Offline.limit - used
+		    token: window.localStorage.token || App.token
 		}
 	    });
 	},

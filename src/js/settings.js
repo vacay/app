@@ -24,14 +24,15 @@
 	var save = Elem.create({
 	    tag: 'button',
 	    className: 'rnd sm success save',
-	    text: 'save'
+	    text: 'save',
+	    parent: actions
 	});
-	actions.appendChild(save);
 
 	var edit = Elem.create({
 	    tag: 'button',
 	    className: 'rnd sm edit',
-	    text: 'edit'
+	    text: 'edit',
+	    parent: actions
 	});
 
 	var onsave = function(e) {
@@ -84,7 +85,6 @@
 
 	    p.classList.toggle('editable', editable);
 	};
-	actions.appendChild(edit);
 
 	var btnswitch = Elem.create({
 	    className: 'right btn-switch',
@@ -152,6 +152,7 @@
 	var username = Elem.create({ className: 'i i-right username' });
 	var ub = Elem.create({
 	    className: 'i-body',
+	    parent: username,
 	    childs: [{
 		tag: 'h4',
 		text: 'Your username'
@@ -168,7 +169,6 @@
 		}
 	    }]
 	});
-	username.appendChild(ub);
 	username.appendChild(actions.cloneNode(true));
 	username.querySelector('.edit').addEventListener('click', onedit);
 	username.querySelector('.save').addEventListener('click', onsave);
@@ -186,11 +186,13 @@
 	});
 
 	var crate = Elem.create({
-	    className: 'i i-right'
+	    className: 'i i-right',
+	    parent: privacy
 	});
 	crate.dataset.type = 'crate';
 	var cb = Elem.create({
 	    className: 'i-body',
+	    parent: crate,
 	    childs: [{
 		tag: 'h4',
 		text: 'Crate'
@@ -199,12 +201,10 @@
 		text: 'Control wether or not your crate is viewable to other people on the site'
 	    }]
 	});
-	crate.appendChild(cb);
 	var cswitch = btnswitch.cloneNode(true);
 	cswitch.classList.toggle('active', Me.data.public_crate);
 	cswitch.addEventListener('click', onswitch);
 	crate.appendChild(cswitch);
-	privacy.appendChild(crate);
 
 	var history = Elem.create({
 	    className: 'i i-right'
@@ -302,6 +302,7 @@
 	    });
 	});
 
+	if (platform.isNative()) l.appendChild(Offline.settings());
 	l.appendChild(notifications);
 
 	View.scrollOff();

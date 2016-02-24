@@ -9,116 +9,81 @@
 
     return {
 	used: null,
-	limit: window.localStorage.limit || 1000000000, // 1 gb
-	setLimit: function(limit) {
-	    this.limit = window.localStorage.limit = limit;
-	},
 	init: function() {
-	    var offset = 0;
-	    var lastSync = new Date(window.localStorage.lastSync || 1);
+	    var self = this;
+	    Downloader.getSpaceUsed(function(err, total) {
+		if (err) Log.error(err);
+		self.used = total;
+		Log.info('space used: ', self.used);
+	    });
+	},
 
-	    Log.info('last sync:', Utils.fromNow(lastSync));
-
-	    // Remove any stale crates
-	    var sync = function() {
-		localforage.keys(function(err, ids) {
-		    if (err) {
-			Log.error(err);
-			return;
-		    }
-
-		    if (!ids.length) return;
-
-		    Me.sync({
-			ids: ids
-		    }, function(err, vitamins) {
-			if (err) {
-			    Log.error(err);
-			    return;
-			}
-
-			for (var i=0; i<vitamins.length; i++) {
-			    //TODO - remove file
-			    localforage.removeItem(vitamins[i].id.toString(), Log.error);
-			}
-		    });
+	clear: function() {
+	    localforage.clear(function(err) {
+		if (err) Log.error(err);
+		Log.info('Offline Database cleared');
+		Downloader.clear(function(err) {
+		    if (err) Log.error(err);
+		    Log.info('Files cleared');
 		});
-	    };
+	    });
+	    //TODO - Update UI
+	},
 
-	    // get any new crates
-	    var load = function(cb) {
-		User.read(Me.username, 'crate', {
-		    order_by: 'asc',
-		    created_at: lastSync,
-		    limit: 50,
-		    offset: offset
-		}, cb);
-	    };
-	    var response = function(err, results) {
-		if (err) {
-		    Log.error(err);
-		    return;
-		}
+	update: function(data) {
+	    var self = this;
+	    localforage.setItem(data.id.toString(), data, function(err, o) {
+		self.updateUI(data.id, true, o.filename);
+	    });
+	},
 
-		results.forEach(function(v) {
-		    localforage.setItem(v.id.toString(), v, function(err) {
-			if (err) Log.error(err, v);
-		    });
-		});
+	save: function(data) {
+	    var self = this;
+	    localforage.setItem(data.id.toString(), data, function(err, o) {
+		if (err) Log.error(err);
+		Downloader.save(o);
+		self.updateUI(data.id, true, false);
+	    });
+	},
 
-		if (results.length === 50) {
-		    offset += 50;
-		    load(response);
-		} else {
-		    window.localStorage.lastSync = new Date();
-		}
-	    };
-
-	    sync();
-	    load(response);
-
-	    //this.check();
+	remove: function(data) {
+	    var self = this;
+	    localforage.removeItem(data.id.toString(), function(err) {
+		if (err) Log.error(err);
+		if (data.filename) Downloader.remove(data);
+		self.updateUI(data.id, false, false);
+	    });
 	},
 
 	toggle: function(data) {
 	    var self = this;
 	    localforage.getItem(data.id.toString()).then(function(v) {
-		v.offline = !v.offline;
-		self.updateUI(v);
-		localforage.setItem(data.id.toString(), v, function(err, o) {
-		    if (err) Log.error(err);
-		    if (v.offline) {
-			Downloader.save(o);
-		    } else {
-			Downloader.remove(o);
-		    }
-		});
+		if (v) self.remove(v);
+		else self.save(data);
 	    });
-
 	},
 
 	updateProgress: function(id, progress) {
 	    var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .statusbar .position');
 	    Elem.each(divs, function(div) {
-		console.log(progress);
 		div.style.width = progress.toFixed() + '%';
 	    });
 	},
 
-	updateUI: function(data) {
-	    var divs = document.querySelectorAll('.vitamin[data-id="' + data.id + '"] .i-description');
+	updateUI: function(id, offline, complete) {
+	    var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .i-description');
 
 	    Elem.each(divs, function(div) {
 
 		var progress = div.querySelector('.statusbar');
 		var icon = div.querySelector('i');
 
-		if (data.offline) {
+		if (offline) {
 		    if (!icon) {
 			Elem.create({tag: 'i', className: 'icon-download', parent: div });
 		    }
 
-		    if (data.filename) {
+		    if (complete) {
 			icon.classList.add('success');
 			div.removeChild(progress);
 		    }
@@ -137,11 +102,6 @@
 		    div.removeChild(icon);
 		}
 	    });
-
-	    localforage.setItem(data.id.toString(), data, function(err) {
-		if (err) Log.error(err);
-	    });
-
 	}
     };
 });

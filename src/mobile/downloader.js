@@ -8,7 +8,7 @@
     'use strict';
 
     function onFSSuccess(fileSystem) {
-        Log.debug('Data Path:', fileSystem.nativeURL);
+        Log.debug('Data Path:', cordova.file.dataDirectory);
     }
 
     function onFSFailure(err) {
@@ -37,6 +37,8 @@
 			    total += size;
 			    callback(err);
 			});
+		    }, function(err) {
+			cb(err, total);
 		    });
 		}, function(err) {
 		    cb(err, total);
@@ -52,12 +54,12 @@
     function download(data, cb) {
 	var id = data.vitamin.id;
 
-	// check if we should be using data
-	if (Network.connection.type !== 'wifi') {
-	    q.pause();
-	    cb('network connection is not wifi');
-	    return;
-	}
+	//TODO - check if we should be using data
+	// if (Network.connection.type !== 'wifi') {
+	//     q.pause();
+	//     cb('network connection is not wifi');
+	//     return;
+	// }
 
 	async.waterfall([
 	    // get streams
@@ -109,18 +111,16 @@
 		    return;
 		}
 
-		//TODO - validate limit
 		Log.debug('downloading: ', url);
 		var ft = new FileTransfer();
 		var uri = encodeURI(url);
-		var store = cordova.file.dataDirectory;
-		var fileURL = store + id + '.mp3';
+		var fileURL = cordova.file.dataDirectory + '/offline/' + id + '.mp3';
 
 		ft.download(uri, fileURL, function(entry) {
 		    Log.debug('saved: ', entry.toURL());
 		    next(null, entry.toURL());
 		}, function(err) {
-		    Log.error(err);
+		    //TODO - handle no space left (pause)
 		    next(err);
 		});
 
@@ -142,7 +142,7 @@
 
 	download(data, function(err, filename) {
 	    data.vitamin.filename = filename;
-	    Offline.updateUI(data.vitamin);
+	    Offline.update(data.vitamin);
 	    done(err);
 	});
     }
@@ -155,6 +155,38 @@
 
     return {
 
+	clear: function(cb) {
+	    var path = cordova.file.dataDirectory + '/offline';
+	    window.resolveLocalFileSystemURL(path, function(entry) {
+		entry.createReader().readEntries(function(entries) {
+		    async.forEach(entries, function(diritem, callback) {
+			entry.remove(function() {
+			    Log.debug('File removed: ', diritem);
+			}, callback);
+		    }, cb);
+		}, cb);
+	    }, function(err) {
+		if (err.code === FileError.NOT_FOUND_ERR) {
+		    cb();
+		    return;
+		}
+		cb(err);
+	    });
+	},
+
+	getSpaceUsed: function(cb) {
+	    var path = cordova.file.dataDirectory + '/offline';
+	    window.resolveLocalFileSystemURL(path, function(entry) {
+		readSizeRecursive(entry, cb);
+	    }, function(err) {
+		if (err.code === FileError.NOT_FOUND_ERR) {
+		    cb(null, 0);
+		    return;
+		}
+		cb(err);
+	    });
+	},
+
 	pause: function() {
 	    q.pause();
 	},
@@ -165,14 +197,7 @@
 
 	save: function(vitamin) {
 	    q.push({ vitamin: vitamin }, function(err) {
-		if (err) {
-		    Log.error(err);
-		    //TODO - requeue
-		    return;
-		}
-
-		// TODO - broadcast completion
-		Log.debug('worker completed vitamin:', vitamin.id);
+		if (err) Log.error(err);
 	    });
 	},
 
@@ -181,8 +206,7 @@
 	    window.resolveLocalFileSystemURL(v.filename, function(entry) {
 
 		entry.remove(function() {
-		    delete v.filename;
-		    Offline.updateUI(v);
+		    Log.debug('File removed: ', v.filename);
 		}, function(err) {
 		    Log.error(err);
 		});
@@ -190,8 +214,7 @@
 	    }, function(err) {
 
 		if (err.code === FileError.NOT_FOUND_ERR) {
-		    delete v.filename;
-		    Offline.updateUI(v);
+		    Log.debug('File not found: ', v.filename);
 		    return;
 		}
 
