@@ -26,7 +26,7 @@
 
 	if (Platform.isMobile()) {
 	    var lan = m.querySelector('#landing');
-	    var gif = Platform.isCordova() ? 'hero.gif' : 'https://dl.dropboxusercontent.com/u/26745309/assets/videos/landing.gif';
+	    var gif = Platform.isCordova() ? (cordova.file.applicationDirectory + 'www/hero.gif') : 'https://dl.dropboxusercontent.com/u/26745309/assets/videos/landing.gif';
 
 	    lan.style['background-image'] = 'url(' + (gif) + ')';
 	} else {
