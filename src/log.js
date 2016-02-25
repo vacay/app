@@ -115,17 +115,11 @@
     };    
 
     return {
-	info: function() {
-	    console.debug.apply(console, arguments);
-	},
-	warn: function() {
-	    console.warn.apply(console, arguments);
-	},
-	debug: function() {
-	    if (document.location.hostname !== 'vacay.io') console.info.apply(console, arguments);
-	},
+	info: console.debug.bind(console),
+	warn: console.warn.bind(console),
+	debug: console.info.bind(console),
 	error: function() {
-	    console.error.apply(console, arguments);
+	    console.error(Array.prototype.slice.call(arguments));
 	    throttledReport(arguments);
 	}
     };
