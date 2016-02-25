@@ -21,28 +21,15 @@
 
 	updateUI: function() {
 	    var url = '/@' + this.username;
-	    var p = document.querySelector('#user-icon');
-	    p.innerHTML = null;
 
-	    if (this.avatar) {
-		var avatar = Elem.create();
-		avatar.style.background = 'url(' + this.avatar + ') 50% 50% no-repeat';
-		p.appendChild(avatar);
-	    }
+	    if (this.avatar)
+		document.querySelector('#user-avatar').style.background = 'url(' + this.avatar + ') 50% 50% no-repeat';
 
-	    var crate_btn = Elem.create({ tag: 'a', text: url.substring(1)});
-	    crate_btn.href = url + '/crate';
-	    p.appendChild(crate_btn);
+	    document.querySelector('#user-crate').href = url + '/crate';
+	    document.querySelector('#user-drafts').href = url + '/drafts';
 
-	    var drafts_btn = Elem.create({ tag: 'a', text: 'drafts' });
-	    drafts_btn.href = url + '/drafts';
-	    p.appendChild(drafts_btn);
-
-	    if (Platform.isNative()) {
-		var offline_btn = Elem.create({ tag: 'a', text: 'offline' });
-		offline_btn.href = '/offline';
-		p.appendChild(offline_btn);
-	    }
+	    if (Platform.isNative())
+		document.querySelector('#user-offline').href = '/offline';
 
 	    document.querySelector('#previous a').href = url + '/listens';
 	},
@@ -122,7 +109,7 @@
 
 	isSubscribed: function(type, id) {
 	    return Utils.exists(this.subscriptions[type], id);
-	},	
+	},
 
 	subscribe: function(type, data, cb) {
 
@@ -133,15 +120,11 @@
 	    var url = '/' + type.slice(0, - 1) + '/' + (type === 'users' ? data.username : data.id) + '/subscription';
 
 	    App.api(url).post().success(function(res) {
-		// $rootScope.$broadcast('inbox:refresh');
 		cb(null, res.data);
 	    }).error(function(res) {
 		self.subscriptions[type].splice(Utils.find(self.subscriptions[type], data.id), 1);
-		// $rootScope.$broadcast('user:subscriptions:update');
 		cb(res.data || 'failed to create ' + type + ' subscription', null);
 	    });
-
-	    // $rootScope.$broadcast('user:subscriptions:update');
 
 	},
 	
@@ -154,11 +137,9 @@
 	    var url = '/' + type.slice(0, - 1) + '/' + (type === 'users' ? data.username : data.id) + '/subscription';
 
 	    App.api(url).del().success(function(res) {
-		// $rootScope.$broadcast('inbox:refresh');
 		cb(null, res.data);
 	    }).error(function(res) {
 		self.subscriptions[type].push(data);
-		// $rootScope.$broadcast('user:subscriptions:update');
 		cb(res.data || 'failed to create ' + type + ' subscription', null);
 	    });
 

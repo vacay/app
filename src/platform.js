@@ -39,6 +39,7 @@
 	    }
 	    document.body.classList.add('grade-' + platform.grade);
 	    document.body.classList.toggle('mobile', this.isMobile());
+	    document.body.classList.toggle('not-native', !this.isNative());
 	    document.body.classList.add(this.isTouchDevice() ? 'touch' : 'mouse');	    
 	},
 

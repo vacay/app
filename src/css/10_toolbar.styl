@@ -29,6 +29,11 @@
         width 95px
         z-index 5
         background white
+        ul
+            padding 15px 0
+            border-bottom 1px solid #ddd
+            border-top 1px solid #ddd
+            background #fcfcfc
         a
             min-width 45px
             padding 5px 10px
@@ -40,23 +45,21 @@
                 color #444
                 font-weight 500
 
-#user-icon
-    margin 25px 0 15px
-    border-top 1px solid $border
-    div
-        margin-top 20px
-        margin-left 10px
-        margin-bottom 15px
-        width 45px
-        height 45px
-        border-radius 999em
-        background-size cover !important
+#user-avatar
+    margin 20px
+    width 45px
+    height 45px
+    border-radius 999em
+    background-size cover !important
 
 #toolbar-title
     fixed left 60px top 25px
     z-index 10001
     line-height 44px
     font-weight 500
+
+body.not-native #user-offline
+    display none
 
 .menu-open #toolbar
     nav
@@ -73,13 +76,27 @@
     #toolbar-title
         display none
 
+@media (min-width: $smallMin)
+    #toolbar ul
+        margin 15px 0
+
 @media (max-width: $extraSmallMax)
     #toolbar
         pointer-events none
+        text-align center
 
         nav
             pointer-events auto
+            top auto
+            left -100%
             bottom 60px
+            width 100%
+            padding 0
+            border-top 1px solid $border
+            border-right none
+            li
+                width 20%
+                display inline-block
 
         .menu-trigger
             pointer-events auto
@@ -89,6 +106,21 @@
             &:after
             span
                 background white
+        a
+            min-height 45px
+            line-height 35px
+
+        li + li:before
+        a + a:before
+            content ""
+            absolute top left bottom
+            border-left 1px solid $border
+
+    #user-icon
+        display flex
+        padding 5px 0
+        a
+            flex 1
 
     #toolbar-title
         display none

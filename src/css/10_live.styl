@@ -3,13 +3,10 @@
 
 #live
     position relative
-    margin-top 25px
     padding-top 35px
-    border-top 1px solid $border
     &:before
-        absolute top 15px left right
+        absolute top 15px left 10px right
         content '\2022\00a0LIVE'
-        text-align center
         display block
         font-size 10px
         color $red
@@ -23,3 +20,11 @@
 
     .user a
         padding 5px 25px
+
+@media (max-width: $extraSmallMax)
+    #live
+        text-align left
+        overflow hidden
+        overflow-x scroll
+        .user a
+            display inline-block
