@@ -45,11 +45,13 @@
 			if (Platform.isNative()) Downloader.resume();
 
 		    } else {
+			//TODO - notify user of offline
+			Player.reset();
+
 			if (Platform.isNative()) {
 			    page('/offline');
 			    Downloader.pause();
 			}
-			//TODO - notify user of offline
 		    }
 		}
 	    };

@@ -114,7 +114,7 @@
 		Log.debug('downloading: ', url);
 		var ft = new FileTransfer();
 		var uri = encodeURI(url);
-		var fileURL = cordova.file.dataDirectory + '/offline/' + id + '.mp3';
+		var fileURL = cordova.file.dataDirectory + 'offline/' + id + '.mp3';
 
 		ft.download(uri, fileURL, function(entry) {
 		    Log.debug('saved: ', entry.toURL());
@@ -156,7 +156,7 @@
     return {
 
 	clear: function(cb) {
-	    var path = cordova.file.dataDirectory + '/offline';
+	    var path = cordova.file.dataDirectory + 'offline';
 	    window.resolveLocalFileSystemURL(path, function(entry) {
 		entry.createReader().readEntries(function(entries) {
 		    async.forEach(entries, function(diritem, callback) {
@@ -175,7 +175,7 @@
 	},
 
 	getSpaceUsed: function(cb) {
-	    var path = cordova.file.dataDirectory + '/offline';
+	    var path = cordova.file.dataDirectory + 'offline';
 	    window.resolveLocalFileSystemURL(path, function(entry) {
 		readSizeRecursive(entry, cb);
 	    }, function(err) {

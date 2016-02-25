@@ -302,7 +302,7 @@
 	    });
 	});
 
-	if (platform.isNative()) l.appendChild(Offline.settings());
+	if (Platform.isNative()) l.appendChild(Offline.settings());
 	l.appendChild(notifications);
 
 	View.scrollOff();
