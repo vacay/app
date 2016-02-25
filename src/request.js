@@ -21,8 +21,9 @@
 	var result;
 	try {
 	    result = JSON.parse(req.responseText);
+	    result.status = req.status;
 	} catch (e) {
-	    result = req.responseText;
+	    result = { text: req.responseText, status: req.status, url: req._url };
 	}
 	return [result, req];
     };
@@ -47,6 +48,7 @@
 	    error: function () {}
 	};
 	var request = getXHR();
+	request._url = url;
 
 	if (!request) throw new Error('unable to detect XHR');
 

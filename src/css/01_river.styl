@@ -2,10 +2,17 @@
 @import 'nib'
 
 #river .md-loading
+#river .md-loading-error
     display none
 
 #river[data-loading='true']
     .list:empty
         display none
     .md-loading
+        display block
+
+#river[data-loading-error='true']
+    .md-loading
+        display none
+    .md-loading-error
         display block

@@ -64,15 +64,15 @@
 
 	    var river = Elem.create({
 		className: opts.className || 'u u720',
+		parent: m,
 		attributes: {
 		    id: 'river'
 		}
 	    });
 	    river.dataset.loading = true;
-	    var list = Elem.create({ className: 'list cf' });
-	    river.appendChild(list);
+	    Elem.create({ className: 'list cf', parent: river });
+	    Elem.create({ className: 'md-loading-error', parent: river });
 	    river.appendChild(Loading.render({ indeterminate: true }));
-	    m.appendChild(river);
 
 	    this.updateToolbar();
 

@@ -24,19 +24,22 @@
 	    }
 
 	    Discussion.browse(opts, function(err, discussions) {
-		if (err) Log.error(err);
-		else {
-		    if (discussions.length < 20) View.scrollOff();
-		    offset += discussions.length;
-
-		    var frag = document.createDocumentFragment();
-
-		    discussions.forEach(function(d) {
-			frag.appendChild(Discussion.render(d));
-		    });
-
-		    l.appendChild(frag);
+		if (err) {
+		    Log.error(err);
+		    r.dataset.loadingError = true;
+		    return;
 		}
+
+		if (discussions.length < 20) View.scrollOff();
+		offset += discussions.length;
+
+		var frag = document.createDocumentFragment();
+
+		discussions.forEach(function(d) {
+		    frag.appendChild(Discussion.render(d));
+		});
+
+		l.appendChild(frag);
 
 		delete r.dataset.loading;
 	    });

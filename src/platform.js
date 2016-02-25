@@ -242,7 +242,6 @@
 
     // setup listeners to know when the device is ready to go
     var onDOMLoad = function() {
-	setTimeout(function() {
 	if (platform.isCordova()) {
 	    // the window and scripts are fully loaded, and a cordova/phonegap
 	    // object exists then let's listen for the deviceready
@@ -257,8 +256,7 @@
 	    onPlatformReady();
 	}
 
-	    document.removeEventListener('DOMContentLoaded', onDOMLoad, false);
-	}, 3000);
+	document.removeEventListener('DOMContentLoaded', onDOMLoad, false);
     };
 
     if (platform.isNodeWebkit()) {

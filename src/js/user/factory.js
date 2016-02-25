@@ -336,7 +336,7 @@
 	    App.api('/users').get(params).success(function(res) {
 		cb(null, res.data);
 	    }).error(function(res) {
-		cb(res.data, null);
+		cb(res, null);
 	    });
 	},
 
@@ -370,8 +370,8 @@
 		}
 
 		cb(null, res.data);
-	    }).error(function(response) {
-		cb(response.data || 'failed to load', null);
+	    }).error(function(res) {
+		cb(res, null);
 	    });
 	},
 

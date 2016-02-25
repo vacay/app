@@ -7,7 +7,9 @@
 	} else {
 	    Artist.read(ctx.params.id, null, null, function(err, artist) {
 		if (err) {
-		    page('/');
+		    Log.error(err);
+		    View.render();
+		    document.getElementById('river').dataset.loadingError = true;
 		} else {
 		    ctx.state.artist = artist;
 		    ctx.save();

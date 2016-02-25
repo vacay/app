@@ -31,9 +31,9 @@
 	    var self = this;
 	    var update = function(res) {
 		var previous = self.online;
-		self.online = res === 'OK';
+		self.online = res.status === 200;
 
-		Log.info('health check: ', res);
+		Log.info('health check: ', res.text);
 		Log.info('online: ', self.online);
 
 		if (typeof previous !== 'undefined') {

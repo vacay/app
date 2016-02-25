@@ -72,3 +72,22 @@
 
 button > .md-loading
     margin 0
+
+.md-loading-error
+    animation blink 1400ms linear infinite
+    width 50px
+    height 50px
+    display block
+    margin 45px auto
+    border 3px solid red
+    border-radius 999em
+    &:after
+        absolute bottom -50px left right
+        content "Loading Error"
+        padding 10px 15px
+        margin 0 auto
+        width 150px
+        text-align center
+        background red
+        color white
+        border-radius 3px

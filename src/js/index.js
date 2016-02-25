@@ -27,7 +27,7 @@
 	    }, function(err, prescriptions) {
 		if (err) {
 		    Log.error(err);
-		    //TODO - loading error
+		    r.dataset.loadingError = true;
 		    return;
 		}
 

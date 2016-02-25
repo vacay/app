@@ -14,17 +14,21 @@
 	    q: query
 	}, function(err, data) {
 	    if (err) {
-		page('/');
-	    } else {
-		data.query = query;
-		ctx.state.search = data;
-		ctx.save();
+		Log.error(err);
 		next();
+		return;
 	    }
+
+	    data.query = query;
+	    ctx.state.search = data;
+	    ctx.save();
+	    next();
 	});
     };
 
     var read = function(ctx) {
+
+	console.log(ctx);
 
 	var offset = 0;
 
@@ -52,19 +56,21 @@
 
 	    if (Utils.isUrl(query) && subpath === 'top') {
 		Page.create(query, function(err, page) {
-		    if (err) Log.error(err);
-		    else {
-
-			var frag = document.createDocumentFragment();
-			frag.appendChild(Page.render(page, { subscribe: true }));
-
-			page.vitamins.forEach(function(v) {
-			    frag.appendChild(Vitamin.render(v));
-			});
-
-			l.appendChild(frag);
-
+		    if (err) {
+			Log.error(err);
+			r.dataset.loadingError = true;
+			return;
 		    }
+
+		    var frag = document.createDocumentFragment();
+		    frag.appendChild(Page.render(page, { subscribe: true }));
+
+		    page.vitamins.forEach(function(v) {
+			frag.appendChild(Vitamin.render(v));
+		    });
+
+		    l.appendChild(frag);
+
 		    View.scrollOff();
 		    delete r.dataset.loading;
 		});
@@ -74,7 +80,11 @@
 		    q: query,
 		    limit: subpath === 'top' ? 5 : 10
 		}, function(err, data) {
-		    if (err) Log.error(err);
+		    if (err) {
+			Log.error(err);
+			r.dataset.loadingError = true;
+			return;
+		    }
 
 		    var frag = document.createDocumentFragment();
 

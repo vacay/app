@@ -119,7 +119,7 @@
 		cb(null, res.data);
 	    }).error(function(res) {
 		self.subscriptions[type].splice(Utils.find(self.subscriptions[type], data.id), 1);
-		cb(res.data || 'failed to create ' + type + ' subscription', null);
+		cb(res, null);
 	    });
 
 	},
@@ -136,7 +136,7 @@
 		cb(null, res.data);
 	    }).error(function(res) {
 		self.subscriptions[type].push(data);
-		cb(res.data || 'failed to create ' + type + ' subscription', null);
+		cb(res, null);
 	    });
 
 	},
@@ -144,7 +144,7 @@
 	    App.api('/me/sync').post(params).success(function(res) {
 		cb(null, res.data);
 	    }).error(function(res) {
-		cb(res.data || 'failed to sync', null);
+		cb(res, null);
 	    });
 	},
 
@@ -152,7 +152,7 @@
 	    App.api('/me/watching').get().success(function(res) {
 		cb(null, res.data);
 	    }).error(function(res) {
-		cb(res.data || 'failed to load user watching', null);
+		cb(res, null);
 	    });
 	},
 	

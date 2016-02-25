@@ -360,8 +360,8 @@
 
 	    Request.get(enUrl).success(function(data) {
 		cb(null, data.response.songs);
-	    }).error(function(err, res) {
-		cb('echonest api error', res);
+	    }).error(function(res) {
+		cb(res, null);
 	    });
 	},
 
@@ -418,7 +418,10 @@
 
 	    if (data.echonest_id) {
 		this.getEchonestTracks(data.echonest_id, function(err, res) {
-		    if (err) Log.error(err, data);
+		    if (err) {
+			Log.error(err, data);
+			return;
+		    }
 		    res.forEach(function(h) {
 			Elem.create({
 			    className: 'i',

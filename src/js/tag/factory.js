@@ -216,7 +216,7 @@
 		    div.appendChild(self.tag(params.value, { create: true }));
 		});
 
-		cb(res.data, null);
+		cb(res, null);
 	    });
 	}
     };
