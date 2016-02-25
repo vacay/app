@@ -18,7 +18,6 @@
 	},
 
 	init: function (done) {
-
 	    App.api('/me').get().success(function(res) {
 		Me.init(res);
 		done();

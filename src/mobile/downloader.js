@@ -118,7 +118,7 @@
 
 		ft.download(uri, fileURL, function(entry) {
 		    Log.debug('saved: ', entry.toURL());
-		    next(null, entry.toURL());
+		    next(null, id + '.mp3');
 		}, function(err) {
 		    //TODO - handle no space left (pause)
 		    next(err);
@@ -155,9 +155,9 @@
 
     return {
 
+	offlinePath: cordova.file.dataDirectory + 'offline/',
 	clear: function(cb) {
-	    var path = cordova.file.dataDirectory + 'offline';
-	    window.resolveLocalFileSystemURL(path, function(entry) {
+	    window.resolveLocalFileSystemURL(this.offlinePath, function(entry) {
 		entry.createReader().readEntries(function(entries) {
 		    async.forEach(entries, function(diritem, callback) {
 			entry.remove(function() {
@@ -175,8 +175,7 @@
 	},
 
 	getSpaceUsed: function(cb) {
-	    var path = cordova.file.dataDirectory + 'offline';
-	    window.resolveLocalFileSystemURL(path, function(entry) {
+	    window.resolveLocalFileSystemURL(this.offlinePath, function(entry) {
 		readSizeRecursive(entry, cb);
 	    }, function(err) {
 		if (err.code === FileError.NOT_FOUND_ERR) {
@@ -203,10 +202,12 @@
 
 	remove: function(v) {
 
-	    window.resolveLocalFileSystemURL(v.filename, function(entry) {
+	    var path = this.offlinePath + v.filename;
+
+	    window.resolveLocalFileSystemURL(path, function(entry) {
 
 		entry.remove(function() {
-		    Log.debug('File removed: ', v.filename);
+		    Log.debug('File removed: ', path);
 		}, function(err) {
 		    Log.error(err);
 		});
@@ -214,7 +215,7 @@
 	    }, function(err) {
 
 		if (err.code === FileError.NOT_FOUND_ERR) {
-		    Log.debug('File not found: ', v.filename);
+		    Log.debug('File not found: ', path);
 		    return;
 		}
 

@@ -63,7 +63,7 @@ var download = function(data, done) {
 
 	function(stream_url, next) {
 
-	    var writeStream = fs.createWriteStream(data.root + '/' + filename);
+	    var writeStream = fs.createWriteStream(data.root + filename);
 	    writeStream.on('finish', next);
 	    writeStream.on('error', next);
 
@@ -87,7 +87,7 @@ var q = async.queue(download, 1);
 var save = function(message) {
     q.push(message.data, function(err) {
 
-	message.data.vitamin.filename = message.data.root + '/' + message.data.vitamin.id + '.mp3';
+	if (!err) message.data.vitamin.filename = message.data.vitamin.id + '.mp3';
 
 	process.send({
 	    err: err,
@@ -98,14 +98,11 @@ var save = function(message) {
 };
 
 var remove = function(message) {
-    fs.unlink(message.data.vitamin.filename, function(err) {
-
-	delete message.data.vitamin.filename;
-
+    fs.unlink(message.data.filename, function(err) {
 	process.send({
 	    err: err,
 	    method: message.method,
-	    vitamin: message.data.vitamin
+	    filename: message.data.filename
 	});
     });
 };

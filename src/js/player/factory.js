@@ -705,6 +705,7 @@
 			return;
 		    }
 
+		    Log.info('Loading: ', host.url);
 		    soundURL = host.url;
 
 		    if (soundURL.indexOf('youtube.com') !== -1) {
@@ -804,7 +805,7 @@
 	    this.getFile(vitamin, function(f) {
 		if (f && f.filename) {
 		    cb(null, {
-			url: f.filename,
+			url: Downloader.offlinePath + f.filename,
 			idx: -1
 		    });
 		} else {

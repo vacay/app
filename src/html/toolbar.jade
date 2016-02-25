@@ -7,8 +7,8 @@
         #user-icon
             a#user-crate.hide-auth crate
             a#user-drafts.hide-auth drafts
-            a#user-offline.hide-auth offline
-            a.hide-auth(onclick='page("/settings")') settings
+            a#user-offline(href='/offline') offline
+            a.hide-auth(href='/settings') settings
             a#auth-btn(onclick='Landing.show()') log in
         ul
             li

@@ -27,10 +27,6 @@
 
 	    document.querySelector('#user-crate').href = url + '/crate';
 	    document.querySelector('#user-drafts').href = url + '/drafts';
-
-	    if (Platform.isNative())
-		document.querySelector('#user-offline').href = '/offline';
-
 	    document.querySelector('#previous a').href = url + '/listens';
 	},
 

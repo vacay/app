@@ -17,6 +17,7 @@
     var offlinePath = path.join(dataPath, 'offline');
 
     if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
+    if (!fs.existsSync(offlinePath)) fs.mkdirSync(offlinePath);
 
     Log.info('data path: ', dataPath);
     
@@ -79,12 +80,15 @@
 
     return {
 
+	offlinePath: offlinePath + '/',
+
 	clear: function(cb) {
+	    var self = this;
 	    try {
-		var files = fs.readdirSync(offlinePath);
+		var files = fs.readdirSync(self.offlinePath);
 		if (files.length > 0) {
 		    for (var i = 0; i < files.length; i++) {
-			var filePath = offlinePath + '/' + files[i];
+			var filePath = self.offlinePath + files[i];
 			if (fs.statSync(filePath).isFile()) fs.unlinkSync(filePath);
 		    }
 		}
@@ -95,7 +99,7 @@
 	},
 
 	getSpaceUsed: function(cb) {
-	    spaceUsed(offlinePath, cb);
+	    spaceUsed(this.offlinePath, cb);
 	},
 
 	pause: function() {
@@ -111,7 +115,7 @@
 	    child && child.send && child.send({
 		method: 'save',
 		data: {
-		    root: offlinePath,
+		    root: this.offlinePath,
 		    env: CONFIG.env,
 		    vitamin: v,
 		    token: window.localStorage.token || App.token
@@ -123,7 +127,7 @@
 	    child && child.send && child.send({
 		method: 'remove',
 		data: {
-		    vitamin: v
+		    filename: this.offlinePath + v.filename
 		}
 	    });
 	}
