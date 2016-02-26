@@ -44,6 +44,7 @@
 	
 	View.render({
 	    load: load,
+	    title: 'Offline',
 	    filter: true
 	});
 
