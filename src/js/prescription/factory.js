@@ -7,7 +7,6 @@
 
     'use strict';
 
-    var pSimple = doT.template(View.tmpl('/prescription/item-simple.html'));
     var pDrafts = doT.template(View.tmpl('/prescription/drafts.html'));
 
     return {
@@ -201,7 +200,8 @@
 			className: 'sm link success',
 			text: 'publish',
 			parent: owner_actions
-		    }).onclick = function() {
+		    });
+		    publish.onclick = function() {
 			Modal.show({
 			    confirm: {
 				message: 'Are you sure you want to publish?',
@@ -400,8 +400,9 @@
 		    }],
 		    description: description
 		}).success(function(res) {
-		    //TODO
+		    Notification.show({msg: 'Vitamin added to prescription' });
 		}).error(function(res) {
+		    //TODO
 		    Log.error(res);
 		});
 
@@ -411,78 +412,40 @@
 
 	},
 
-	addVitamin: function(e, vit) {
-	    var prescription = Elem.getClosest(e.target, '[data-id]');
-	    var id = parseInt(prescription.dataset.id, 10);
-
-	    var cb = function(err) {
-		if (err) {
-		    //TODO
-		    Log.error(err);
-		}
-	    };
-
-	    var vitamins = [];
-
-	    if (prescription.dataset.vitamins) {
-		var dataset = prescription.dataset.vitamins.split(',');
-
-		for (var i=0; i<dataset.length; i++) {
-		    vitamins.push({
-			vitamin_id: dataset[i],
-			order: i
-		    });
-		}
-	    }
-
-	    vitamins.push({
-		vitamin_id: vit,
-		order: vitamins.length
-	    });
-
-	    this.update(id, {
-		vitamins: vitamins
-	    }, cb);
-
-	    Modal.close(e);
-	    //TODO - include vitamin title in notification
-	    Notification.show({msg: 'Vitamin added to prescription' });
-
-	    //TODO - update UI
-	    var prescriptions = document.querySelectorAll('.prescription[data-id="' + id + '"] .list');
-	    Elem.each(prescriptions, function(p) {
-		//TODO
+	addVitamin: function(prescription_id, vitamin_id, cb) {
+	    App.api('/prescription/' + prescription_id + '/vitamin').post({
+		vitamin_id: vitamin_id
+	    }).success(function(res) {
+		cb(null, res);
+	    }).error(function(res) {
+		cb(res);
 	    });
 	},
 
-	removeVitamin: function(e) {
-	    var prescription = Elem.getClosest(e.target, '.prescription');
-	    var vitamin = Elem.getClosest(e.target, '.vitamin');
-	    var id = parseInt(vitamin.dataset.id, 10);
+	destroyVitamin: function(prescription_id, vitamin_id, cb) {
+	    if (!vitamin_id) {
+		var e = prescription_id;
+		var prescription = Elem.getClosest(e.target, '.prescription');
+		var vitamin = Elem.getClosest(e.target, '.vitamin');
+		prescription_id = parseInt(prescription.dataset.id, 10);
+		vitamin_id = parseInt(vitamin.dataset.id, 10);
+	    }
 
-	    var cb = function(err) {
-		if (err) Log.error(err);
-		//TODO
-	    };
+	    if (!cb) {
+		cb = function(err) {
+		    if (err) Log.error(err);
+		};
+	    }
 
-	    var vitamins = [];
-	    var elements = prescription.querySelectorAll('.vitamin');
-
-	    Elem.each(elements, function(elem, index) {
-		vitamins.push({
-		    vitamin_id: parseInt(elem.dataset.id, 10),
-		    order: index
-		});
+	    App.api('/prescription/' + prescription_id + '/vitamin').del({
+		vitamin_id: vitamin_id
+	    }).success(function(res) {
+		cb(null, res);
+	    }).error(function(res) {
+		cb(res);
 	    });
 
-	    vitamins.splice(Utils.find(vitamins, id, 'vitamin_id'), 1);
-
-	    Prescription.update(prescription.dataset.id, {
-		vitamins: vitamins
-	    }, cb);
-
-	    vitamin.parentNode.removeChild(vitamin);
-
+	    if (vitamin) vitamin.parentNode.removeChild(vitamin);
 	},
 
 	showDrafts: function(id) {
@@ -499,23 +462,68 @@
 		    if (p.image_url && p.image_url.indexOf('/tmp') === -1)
 			image_url = p.image_url.replace('-original', '-900');
 
-		    p.vitamin_id = id;
+		    var vitaminCount = function(count) {
+			return count + ' Vitamin' + (count > 1 ? 's': '');
+		    };
+
 		    p.artwork = image_url || p.image_url;
-		    p.vitaminCount = p.vitamins.length + ' Vitamin' + (p.vitamins.length > 1 ? 's': '');
-		    var vitamins = [];
-		    for (var i=0; i<p.vitamins.length; i++) {
-			if (p.vitamins[i].id == id) return;
-			vitamins.push(p.vitamins[i].id);
-		    }
 
 		    var item = Elem.create({
 			className: 'i i-left i-right',
-			attributes: {
-			    'data-id': p.id,
-			    'data-vitamins': vitamins
-			}
+			attributes: { 'data-id': p.id }
 		    });
-		    item.innerHTML = pSimple(p);
+
+		    Elem.create({
+			className: 'left avatar',
+			parent: item,
+			childs: [{
+			    tag: 'img',
+			    attributes: {
+				src: p.artwork,
+				onerror: 'this.src=""'
+			    }
+			}]
+		    });
+
+		    Elem.create({
+			className: 'i-body',
+			parent: item,
+			childs: [{
+			    tag: 'h5',
+			    className: 'i-title',
+			    text: p.description || '(empty description)'
+			}, {
+			    tag: 'p',
+			    className: 'i-description',
+			    html: '<small>' + vitaminCount(p.vitamins.length) + '</small>'
+			}]
+		    });
+
+		    var button = Elem.create({
+			tag: 'button',
+			className: 'sm rnd success right',
+			text: 'Add',
+			parent: item
+		    });
+
+		    if (Utils.exists(p.vitamins, id)) {
+			button.classList.add('active');
+		    }
+
+		    button.onclick = function() {
+			var isActive = button.classList.contains('active');
+			var cb = function(err) {
+			    if (err) button.classList.toggle('active', isActive);
+			};
+
+			if (isActive) {
+			    Prescription.destroyVitamin(p.id, id, cb);
+			} else {
+			    Prescription.addVitamin(p.id, id, cb);
+			}
+			button.classList.toggle('active');
+		    };
+
 		    frag.appendChild(item);
 		});
 

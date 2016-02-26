@@ -81,7 +81,7 @@
 		    className: 'icon failure delete',
 		    parent: actions,
 		    attributes: { title: 'remove'},
-		    onclick: Prescription.removeVitamin
+		    onclick: Prescription.destroyVitamin
 		});
 	    }
 
