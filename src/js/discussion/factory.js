@@ -41,7 +41,7 @@
 		var text;
 
 		var converter = new showdown.Converter();
-		var description = Elem.create({ className: 'i' });
+		var description = Elem.create({ className: 'i _m' });
 		description.setAttribute('placeholder', 'What would you like to discuss?');
 		description.innerHTML = converter.makeHtml(data.description);
 		elem.appendChild(description);
