@@ -2,32 +2,32 @@
     "main": "index.html",
     "name": "vacay",
     "description": "A music community & platform.",
-    "version": "0.0.14",
+    "version": "0.1.0",
     "user-agent": "%name/%ver NodeWebkit/%nwver Webkit/%webkit_ver %osinfo",
     "manifestUrl": "https://vacay.io/desktop/package.json",
     "packages": {
-	"mac": {
-	    "url": "https://vacay.io/desktop/osx32/vacay.zip"
-	}
+        "mac": {
+            "url": "https://vacay.io/desktop/osx32/vacay.zip"
+        }
     },
     "window": {
-	"title": "vacay",
-	"toolbar": false,
-	"frame": false,
-	"width": 1024,
-	"height": 600,
-	"position": "mouse",
-	"min_width": 400,
-	"min_height": 400
+        "title": "vacay",
+        "toolbar": false,
+        "frame": false,
+        "width": 1024,
+        "height": 600,
+        "position": "mouse",
+        "min_width": 400,
+        "min_height": 400
     },
     "dependencies": {
-	"async": "^1.4.2",
-	"mkdirp": "0.5.0",
-	"node-webkit-updater": "0.2.4",
-	"request": "2.53.0",
-	"request-progress": "2.0.1"
+        "async": "^1.4.2",
+        "mkdirp": "0.5.0",
+        "node-webkit-updater": "0.2.4",
+        "request": "2.53.0",
+        "request-progress": "2.0.1"
     },
     "engines": {
-	"node": "0.10.x"
+        "node": "0.10.x"
     }
 }
