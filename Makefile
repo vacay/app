@@ -70,8 +70,8 @@ build_desktop:
 
 deploy_desktop: build_desktop
 	cd dist/vacay/osx32 && rm -f vacay.zip && zip -r vacay vacay.app
-	rsync -avz --delete ./dist/vacay/osx32/vacay.zip deploy@54.86.1.162:/home/deploy/app/desktop/osx32/vacay.zip
-	rsync -av --delete ./desktop/package.json deploy@54.86.1.162:/home/deploy/app/desktop/package.json
+	rsync -avz --delete ./dist/vacay/osx32/vacay.zip deploy@52.21.6.168:/home/deploy/app/desktop/osx32/vacay.zip
+	rsync -av --delete ./desktop/package.json deploy@52.21.6.168:/home/deploy/app/desktop/package.json
 
 ## Mobile
 build_mobile: update

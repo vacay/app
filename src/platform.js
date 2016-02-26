@@ -251,6 +251,10 @@
 	    document.body.appendChild(mobile_script);
 
 	    document.addEventListener('deviceready', onPlatformReady, false);
+	} else if (platform.isNodeWebkit()) {
+	    var gui = require('nw.gui');
+	    var win = gui.Window.get();
+	    win.on('loaded', onPlatformReady, false);
 	} else {
 	    // the window and scripts are fully loaded, but the window object doesn't have the
 	    // cordova/phonegap object, so its just a browser, not a webview wrapped w/ cordova
