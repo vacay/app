@@ -15,14 +15,6 @@
 	win.showDevTools();
     });
 
-    App.back = function() {
-	window.history.back();
-    };
-
-    App.forward = function() {
-	window.history.forward();
-    };
-
     App.minimize = function() {
 	win.minimize();
     };

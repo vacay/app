@@ -3,7 +3,7 @@
 
 #toolbar
     fixed left top bottom
-    z-index 10001
+    z-index 10003
     .menu-trigger
         fixed left 10px top 25px
         padding 10px
@@ -58,9 +58,6 @@
     line-height 44px
     font-weight 500
 
-body.not-native #user-offline
-    display none
-
 .menu-open #toolbar
     nav
         left 0
@@ -82,6 +79,9 @@ body.not-native #user-offline
 
 @media (max-width: $extraSmallMax)
     #toolbar
+        right 0
+        bottom 60px
+        background rgba(0,0,0,0.6)
         pointer-events none
         text-align center
 
@@ -116,6 +116,9 @@ body.not-native #user-offline
             absolute top left bottom
             border-left 1px solid $border
 
+    .menu-open #toolbar
+        width 100% !important
+
     #user-icon
         display flex
         padding 5px 0
@@ -123,4 +126,7 @@ body.not-native #user-offline
             flex 1
 
     #toolbar-title
-        display none
+        top 2px
+        left 0
+        right 0
+        margin 0 auto

@@ -33,6 +33,8 @@
 		    return Request.del(path, params);
 		}
 	    };
-	}
+	},
+	back: window.history.back.bind(window.history),
+	forward: window.history.forward.bind(window.history)
     };
 });

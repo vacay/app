@@ -148,14 +148,13 @@
     }
 
     Platform.ready(function() {
+	downloader.offlinePath = cordova.file.dataDirectory + 'offline/';
 	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFSSuccess, onFSFailure);
     });
 
     var q = async.queue(worker, 1);
 
-    return {
-
-	offlinePath: cordova.file.dataDirectory + 'offline/',
+    var downloader = {
 	clear: function(cb) {
 	    window.resolveLocalFileSystemURL(this.offlinePath, function(entry) {
 		entry.createReader().readEntries(function(entries) {
@@ -224,4 +223,6 @@
 	    });
 	}
     };
+
+    return downloader;
 });

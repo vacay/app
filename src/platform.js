@@ -39,7 +39,7 @@
 	    }
 	    document.body.classList.add('grade-' + platform.grade);
 	    document.body.classList.toggle('mobile', this.isMobile());
-	    document.body.classList.toggle('not-native', !this.isNative());
+	    document.body.classList.toggle('native', this.isNative());
 	    document.body.classList.add(this.isTouchDevice() ? 'touch' : 'mouse');	    
 	},
 
@@ -246,7 +246,8 @@
 	    // the window and scripts are fully loaded, and a cordova/phonegap
 	    // object exists then let's listen for the deviceready
 	    var mobile_script = document.createElement('script');
-	    mobile_script.setAttribute('src','mobile.js');
+	    mobile_script.type = 'text/javascript';
+	    mobile_script.src = 'mobile.js';
 	    document.body.appendChild(mobile_script);
 
 	    document.addEventListener('deviceready', onPlatformReady, false);
@@ -261,7 +262,7 @@
 
     if (platform.isNodeWebkit()) {
 	var desktop_script = document.createElement('script');
-	desktop_script.setAttribute('src','desktop.js');
+	desktop_script.src = 'desktop.js';
 	document.body.appendChild(desktop_script);
     }
 

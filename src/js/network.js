@@ -36,6 +36,8 @@
 		Log.info('health check: ', res.text);
 		Log.info('online: ', self.online);
 
+		document.body.classList.toggle('online', self.online);
+
 		if (typeof previous !== 'undefined') {
 		    if (self.online) {
 			Auth.init(function() {

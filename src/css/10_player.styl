@@ -13,9 +13,6 @@
     font-weight 900
     line-height 1.2em
 
-.platform-nodewebkit .p-container
-    top 25px
-    
 #brand
     absolute top left
     font-size 2.5em
@@ -176,6 +173,12 @@ body.live .p-live
     background $border
 
 @media (min-width: $smallMin)
+    body.native
+        .p-container
+            top 25px
+        &.mobile .p-container
+            top 45px
+
     .p-container
         width 320px
         right -320px

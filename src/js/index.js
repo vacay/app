@@ -36,6 +36,7 @@
 
 		var frag = document.createDocumentFragment();
 		prescriptions.forEach(function(p) {
+		    frag.appendChild(Elem.create({className: 'i-divider'}));
 		    frag.appendChild(Prescription.render(p));
 		});
 		l.appendChild(frag);

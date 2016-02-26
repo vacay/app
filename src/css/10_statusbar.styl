@@ -56,11 +56,16 @@
 body.playing #statusbar .statusbar .position
     background-color $vacay
 
-.platform-nodewebkit #statusbar
-    top 25px
+body.native
+    #statusbar
+        top 25px
+    &.mobile #statusbar
+        top 45px
 
 @media (max-width: $extraSmallMax)
     #statusbar canvas
         display none
     .player-open #statusbar canvas
         display block
+    body.native.player-open #statusbar
+        top 0
