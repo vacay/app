@@ -4,4 +4,6 @@
     button#maximize.hide-nw(onclick='App.maximize()')
     button#back.link(onclick='App.back()') &larr;
     button#forward.link(onclick='App.forward()') &rarr;
-    #version
+    .pull-right
+        small.offline.cursor(onclick='page("/offline")') Offline
+        small#version

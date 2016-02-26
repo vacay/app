@@ -62,10 +62,9 @@
 
     Platform.ready(function() {
 	if (Platform.isNodeWebkit()) {
-	    //console.log(Updater);
-	    //Updater.init(function() {
+	    Updater.init(function() {
 		init();
-	//});
+	    });
 	} else {
 	    init();
 	}

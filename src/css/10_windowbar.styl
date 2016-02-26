@@ -9,13 +9,17 @@
     -webkit-user-select none
     -webkit-app-region drag
     cursor move
-    z-index 10003
+    z-index 10005
     background white
     button
-        width 15px
-        height 15px
+        width 14px
+        height 14px
+        min-width 14px
+        min-height 14px
         padding 0
         border-radius 100%
+    .offline
+        color red
 
 body.native
     #windowbar
@@ -36,10 +40,6 @@ body.native
 #maximize
     background $green
 
-#version
-    color #c8c8c8
-    fixed right 10px top 5px
-
 #back
     border 1px solid $border
     line-height 35px
@@ -47,6 +47,9 @@ body.native
 #forward
     border 1px solid $border
     line-height 35px
+
+#version
+    color #c8c8c8
 
 @media (max-width: $extraSmallMax)
     body.native.player-open #windowbar

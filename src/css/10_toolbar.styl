@@ -5,7 +5,7 @@
     fixed left top bottom
     z-index 10003
     .menu-trigger
-        fixed left 10px top 25px
+        fixed left 10px top 45px
         padding 10px
         border-radius 999em
         z-index 10001
@@ -53,22 +53,31 @@
     background-size cover !important
 
 #toolbar-title
-    fixed left 60px top 25px
+    fixed left 60px top 45px
     z-index 10001
     line-height 44px
     font-weight 500
 
-.menu-open #toolbar
-    nav
-        left 0
+.platform-nodewebkit #toolbar-title
+    top 6px
+    left 0
+    right 0
+    text-align center
+    line-height inherit
+    z-index 10004
 
-    .menu-trigger
-        &:before
-            transform rotate(45deg) translate3d(4px,4px,0)
-        span
-            opacity 0
-        &:after
-            transform rotate(-45deg) translate3d(4px,-4px,0)
+.menu-open
+    #toolbar
+        nav
+            left 0
+
+        .menu-trigger
+            &:before
+                transform rotate(45deg) translate3d(4px,4px,0)
+            span
+                opacity 0
+            &:after
+                transform rotate(-45deg) translate3d(4px,-4px,0)
 
     #toolbar-title
         display none
@@ -79,9 +88,7 @@
 
 @media (max-width: $extraSmallMax)
     #toolbar
-        right 0
         bottom 60px
-        background rgba(0,0,0,0.6)
         pointer-events none
         text-align center
 
@@ -117,6 +124,8 @@
             border-left 1px solid $border
 
     .menu-open #toolbar
+        right 0
+        background rgba(0,0,0,0.6)
         width 100% !important
 
     #user-icon
