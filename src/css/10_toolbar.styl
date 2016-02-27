@@ -66,6 +66,9 @@
     line-height inherit
     z-index 10004
 
+body.modal-open #toolbar-title
+    display none
+
 .menu-open
     #toolbar
         nav
@@ -123,7 +126,7 @@
             absolute top left bottom
             border-left 1px solid $border
 
-    .menu-open #toolbar
+    body.menu-open #toolbar
         right 0
         background rgba(0,0,0,0.6)
         width 100% !important
@@ -140,5 +143,7 @@
         right 0
         text-align center
 
-    body.player-open #toolbar-title
-        display none
+    body.player-open
+        .menu-trigger
+        #toolbar-title
+            display none

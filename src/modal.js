@@ -91,11 +91,13 @@
 	    container.appendChild(content);
 
 	    document.body.appendChild(container);
+	    document.body.classList.toggle('modal-open', true);
 	},
 
 	close: function(e) {
 	    var modal = Elem.getClosest(e.target, '.modal');
 	    modal.parentNode.removeChild(modal);
+	    document.body.classList.toggle('modal-open', false);
 	},
 
 	closeAll: function() {
@@ -104,7 +106,7 @@
 	    Elem.each(divs, function(div) {
 		div.parentNode.removeChild(div);
 	    });
-	    
+	    document.body.classList.toggle('modal-open', false);
 	}
 
     };
