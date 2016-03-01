@@ -752,22 +752,21 @@
 	    }
 	},
 
+	getHostIdx: function(hosts, title) {
+	    var idx = -1;
+	    for (var h=0; h<hosts.length; h++) {
+		if (hosts[h].title === title && !hosts[h].loadError) {
+		    idx = h;
+		    break;
+		}
+	    }
+	    return idx;
+	},
+
 	chooseHost: function(vitamin, cb) {
 	    var hosts = vitamin.hosts;
-
-	    var getHostIdx = function(title) {
-		var idx = -1;
-		for (var h=0; h<hosts.length; h++) {
-		    if (hosts[h].title === title && !hosts[h].loadError) {
-			idx = h;
-			break;
-		    }
-		}
-		return idx;
-	    };
-
-	    var scIdx = getHostIdx('soundcloud');
-	    var ytIdx = getHostIdx('youtube');
+	    var scIdx = P.getHostIdx(hosts, 'soundcloud');
+	    var ytIdx = P.getHostIdx(hosts, 'youtube');
 
 	    if (scIdx !== -1 && hosts[scIdx].stream_url) {
 		return cb(null, {
@@ -801,16 +800,24 @@
 	},
 
 	getStream: function(vitamin, cb) {
-	    var self = this;
-	    this.getFile(vitamin, function(f) {
+	    P.getFile(vitamin, function(f) {
 		if (f && f.filename) {
 		    cb(null, {
 			url: Downloader.offlinePath + f.filename,
 			idx: -1
 		    });
 		} else {
-		    self.getHosts(vitamin, function() {
-			self.chooseHost(vitamin, cb);
+		    P.getHosts(vitamin, function() {
+			if (window.ytdl) {
+			    var ytIdx = P.getHostIdx(vitamin.hosts, 'youtube');
+			    window.ytdl(vitamin.hosts[ytIdx].identifier, function(err, video) {
+				console.log(video);
+				if (!err) vitamin.hosts[ytIdx].stream_url = video.stream_url;
+				P.chooseHost(vitamin, cb);
+			    });
+			} else {
+			    P.chooseHost(vitamin, cb);
+			}
 		    });
 		}
 	    });

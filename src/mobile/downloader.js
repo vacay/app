@@ -147,11 +147,6 @@
 	});
     }
 
-    Platform.ready(function() {
-	downloader.offlinePath = cordova.file.dataDirectory + 'offline/';
-	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFSSuccess, onFSFailure);
-    });
-
     var q = async.queue(worker, 1);
 
     var downloader = {
@@ -223,6 +218,11 @@
 	    });
 	}
     };
+
+    Platform.ready(function() {
+	downloader.offlinePath = cordova.file.dataDirectory + 'offline/';
+	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFSSuccess, onFSFailure);
+    });
 
     return downloader;
 });
