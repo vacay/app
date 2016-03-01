@@ -124,11 +124,13 @@
 	    }
 	},
 
-	setTime: function() {
+	updateTime: function(position, total) {
 	    P.data.time = {
-		position: this.position,
-		total: this.durationEstimate
+		position: position,
+		total: total
 	    };
+	    document.getElementById('current-time').innerHTML = P.getTime(position, true);
+	    document.getElementById('remaining-time').innerHTML = '-' + P.getTime(total - position, true);
 	},
 
 	updateArtwork: function(isYoutube) {
@@ -279,17 +281,19 @@
 	    });
 	},
 
-	updateTime: function() {
-	    document.getElementById('current-time').innerHTML = P.getTime(P.data.time.position, true);
-	    document.getElementById('remaining-time').innerHTML = '-' + P.getTime(P.data.time.total - P.data.time.position, true);
+	updatePlaying: function(value) {
+	    P.data.playing = value;
+	    document.body.classList.toggle('playing', value);
 	},
 
-	updatePosition: function() {
-	    sb.querySelector('.position').style.width = P.data.position;
+	updatePosition: function(value) {
+	    P.data.position = value;
+	    sb.querySelector('.position').style.width = value;
 	},
 
-	updateLoading: function() {
-	    sb.querySelector('.loading').style.width = P.data.loading;
+	updateLoading: function(value) {
+	    P.data.loading = value;
+	    sb.querySelector('.loading').style.width = value;
 	},
 
 	updateAutoplay: function() {
@@ -302,9 +306,7 @@
 	
 	events: {
 	    play: function () {
-		P.data.playing = true;
-		document.body.classList.toggle('playing', P.data.playing);
-
+		P.updatePlaying(true);
 		P.setPageTitle('\u25B6');
 		canvas.width = window.innerWidth;
 
@@ -328,11 +330,8 @@
 	    stop: function () {
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
 
-		P.data.playing = false;
-		document.body.classList.toggle('playing', P.data.playing);
-
-		P.data.position = '0%';
-		P.updatePosition();
+		P.updatePlaying(false);
+		P.updatePosition('0%');
 		P.setPageTitle();
 
 		WS.emit('player:status', {
@@ -345,8 +344,8 @@
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
 
 		if (P.dragActive) return;
-		P.data.playing = false;
-		document.body.classList.toggle('playing', P.data.playing);
+
+		P.updatePlaying(false);
 		P.setPageTitle('\u25FC');
 
 		WS.emit('player:status', {
@@ -358,8 +357,8 @@
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
 
 		if (P.dragActive) return;
-		P.data.playing = true;
-		document.body.classList.toggle('playing', P.data.playing);
+
+		P.updatePlaying(true);
 		P.setPageTitle('\u25B6');
 
 		WS.emit('player:status', {
@@ -370,8 +369,7 @@
 	    finish: function () {
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
 
-		P.data.playing = false;
-		document.body.classList.toggle('playing', P.data.playing);
+		P.updatePlaying(false);
 		P.setPageTitle();
 
 		if (!P.data.room) P.data.repeat ? P.repeat() : P.next();
@@ -382,8 +380,7 @@
 		var self = this;
 		function doWork() {
 		    if (P.data.nowplaying.id === self._data.vitamin.id) {
-			P.data.loading = ((self.bytesLoaded / self.bytesTotal) * 100) + '%';
-			P.updateLoading();
+			P.updateLoading(((self.bytesLoaded / self.bytesTotal) * 100) + '%');
 		    }
 		}
 		
@@ -416,10 +413,8 @@
 
 		if (P.dragActive) {
 
-		    P.data.position = ((this.position / this.durationEstimate) * 100) + '%';
-		    P.setTime.apply(this);
-		    P.updateTime();
-		    P.updatePosition();
+		    P.updatePosition(((this.position / this.durationEstimate) * 100) + '%');
+		    P.updateTime(this.position, this.durationEstimate);
 
 		} else {
 
@@ -487,10 +482,8 @@
 			    }
 			}
 			
-			P.data.position = ( progress * 100) + '%';
-			P.setTime.apply(this);
-			P.updateTime();
-			P.updatePosition();
+			P.updatePosition((progress * 100) + '%');
+			P.updateTime(this.position, this.durationEstimate);
 
 			WS.emit('player:status', {
 			    time: P.data.time,
@@ -686,7 +679,6 @@
 		}
 
 		P.data.nowplaying = vitamin;
-
 		P.updateNowplaying();
 
 		P.getStream(vitamin, function(err, host) {
@@ -728,6 +720,7 @@
 		    if (Network.online) {
 			P.broadcast.nowplaying();
 		    }
+
 		});
 	    }
 	},
@@ -808,8 +801,9 @@
 		    });
 		} else {
 		    P.getHosts(vitamin, function() {
-			if (window.ytdl) {
-			    var ytIdx = P.getHostIdx(vitamin.hosts, 'youtube');
+			var ytIdx = P.getHostIdx(vitamin.hosts, 'youtube');
+
+			if (window.ytdl && ytIdx !== -1) {
 			    window.ytdl(vitamin.hosts[ytIdx].identifier, function(err, video) {
 				console.log(video);
 				if (!err) vitamin.hosts[ytIdx].stream_url = video.stream_url;
@@ -922,8 +916,7 @@
 		if (P.data.playing) {
 		    P.lastSound.resume();
 		} else {
-		    P.data.position = ((P.lastSound.position / P.lastSound.durationEstimate) * 100) + '%';
-		    P.updatePosition();
+		    P.updatePosition(((P.lastSound.position / P.lastSound.durationEstimate) * 100) + '%');
 		    WS.emit('player:status', {
 			position: P.data.position,
 			id: P.lastSound._data.vitamin.id
@@ -1041,7 +1034,7 @@
 		var isMaster = socketID === master;
 
 		if (isMaster && P.data.remote && P.data.playing)
-		    P.data.playing = false;
+		    P.updatePlaying(false);
 		else if (!isMaster && !P.data.remote  && P.data.playing)
 		    P.stop();
 
@@ -1152,25 +1145,13 @@
 	    WS.on('player:status', function(data) {
 		if (P.data.remote) {
 
-		    if (data.time) {
-			P.data.time = data.time;
-			P.updateTime();
-		    }
+		    if (data.time) P.updateTime(data.time.position, data.time.total);
 
-		    if (data.position) {
-			P.data.position = data.position;
-			P.updatePosition();
-		    }
+		    if (data.position) P.updatePosition(data.position);
 
-		    if (data.loading) {
-			P.data.loading = data.loading;
-			P.updateLoading();
-		    }
+		    if (data.loading) P.updateLoading(data.loading);
 
-		    if (typeof data.playing !== 'undefined' && P.data.playing !== data.playing) {
-			P.data.playing = data.playing;
-			document.body.classList.toggle('playing', P.data.playing);
-		    }
+		    if (typeof data.playing !== 'undefined' && P.data.playing !== data.playing) P.updatePlaying(data.playing);
 		}
 	    });
 
