@@ -459,11 +459,11 @@
 			    });
 			};
 
-			if (h.stream_url.indexOf('soundcloud.com') > -1)
+			if (h.stream_url && h.stream_url.indexOf('soundcloud.com') > -1)
 			    test(h.stream_url.replace('/stream',''));
 
-			else if (h.title === 'youtube' && YTDL) {
-			    YTDL.stream(h.identifier, function(err, video) {
+			else if (h.title === 'youtube' && window.YTDL) {
+			    window.YTDL.stream(h.identifier, function(err, video) {
 				if (err) check(false);
 				else test(video);
 			    });
@@ -486,7 +486,7 @@
 			    return;
 			}
 
-			next(null, host.title !== 'youtube' ? host.stream_url : YTDL ? host.stream_url : host.url );
+			next(null, host.title !== 'youtube' ? host.stream_url : window.YTDL ? host.stream_url : host.url );
 		    });
 
 		}

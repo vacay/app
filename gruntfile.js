@@ -106,12 +106,12 @@ module.exports = function(grunt) {
 	    },
 	    desktop: {
 		files: {
-		    'tmp/desktop.js': [ 'src/desktop/*.js' ]
+		    'tmp/desktop.js': [ 'src/native/*.js', 'src/desktop/*.js' ]
 		}
 	    },
 	    mobile: {
 		files: {
-		    'tmp/mobile.js': [ 'src/mobile/*.js' ]
+		    'tmp/mobile.js': [ 'src/native/*.js', 'src/mobile/*.js' ]
 		}
 	    }
 	},
