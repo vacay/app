@@ -9,7 +9,7 @@
 	var r = document.getElementById('river');
 	var l = r.querySelector('.list');
 
-	View.github(ctx.params.subpath || 'about', function(err, content) {
+	View.github(ctx.params.subpath || 'README', function(err, content) {
 	    if (err) {
 		Log.error(err);
 		r.dataset.loadingError = true;
