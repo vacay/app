@@ -98,7 +98,7 @@
 
 	    if (data instanceof Array) {
 		data = data.filter(function(d) {
-		    return !Utils.exists(self.vitamins, d.id);
+		    return !self.isQueued(d.id);
 		});
 		this.vitamins = this.vitamins.concat(data);
 
@@ -109,8 +109,7 @@
 		});
 
 		elem.appendChild(frag);		
-
-	    } else {
+	    } else if (!this.isQueued(data.id)){
 		this.vitamins.push(data);
 		elem.appendChild(Vitamin.render(data, { drag: true }));
 		this.updateVitaminUI(data.id, true);
@@ -124,6 +123,9 @@
 	    var elem = document.querySelector('#queue .list');
 
 	    if (data instanceof Array) {
+		data = data.filter(function(d) {
+		    return !self.isQueued(d.id);
+		});
 		this.vitamins = data.concat(this.vitamins);
 
 		var frag = document.createDocumentFragment();
@@ -134,7 +136,7 @@
 
 		elem.insertBefore(frag, elem.firstChild);
 		
-	    } else {
+	    } else if (!this.isQueued(data.id)){
 		this.vitamins.unshift(data);
 		this.updateVitaminUI(data.id, true);
 		elem.insertBefore(Vitamin.render(data, { drag: true }), elem.firstChild);

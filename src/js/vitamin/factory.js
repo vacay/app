@@ -147,6 +147,11 @@
 		Queue.toggle(data);
 	    };
 
+	    elem.querySelector('.queue-next').onclick = function(e) {
+		Modal.close(e);
+		Queue.addNext(data);
+	    };
+
 	    elem.querySelector('.show-drafts').onclick = function(e) {
 		Modal.close(e);
 		Prescription.showDrafts(data.id);
@@ -169,7 +174,7 @@
 		});
 	    }
 
-	    var getStyle, bottom, modal_height = 290;
+	    var getStyle, bottom, modal_height = 325;
 	    if (contextmenu) {
 		bottom = (e.y + modal_height) > window.innerHeight;
 		getStyle = function() {
