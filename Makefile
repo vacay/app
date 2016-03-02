@@ -24,6 +24,7 @@ cordova:
 	if [ ! -d './plugins/cordova-plugin-file-transfer' ]; then $(CPLUGIN) add cordova-plugin-file-transfer; fi
 	if [ ! -d './plugins/cordova-plugin-network-information' ]; then $(CPLUGIN) add cordova-plugin-network-information; fi
 	if [ ! -d './plugins/nl.kingsquare.cordova.background-audio' ]; then $(CPLUGIN) add https://github.com/AubreyHewes/cordova-background-audio.git; fi
+	if [ ! -d './plugins/cordova-plugin-app-version' ]; then $(CPLUGIN) add cordova-plugin-app-version; fi
 
 	cordova prepare
 
@@ -72,6 +73,9 @@ deploy_desktop: build_desktop
 	cd dist/vacay/osx32 && rm -f vacay.zip && zip -r vacay vacay.app
 	rsync -avz --delete ./dist/vacay/osx32/vacay.zip deploy@52.21.6.168:/home/deploy/app/desktop/osx32/vacay.zip
 	rsync -av --delete ./desktop/package.json deploy@52.21.6.168:/home/deploy/app/desktop/package.json
+
+deploy_android: build_android
+	rsync -avz --delete ./dist/android.apk deploy@52.21.6.168:/home/deploy/app/mobile/android.apk
 
 ## Mobile
 build_mobile: update

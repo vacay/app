@@ -12,4 +12,10 @@ Platform.ready(function() {
     } else {
 	StatusBar && StatusBar.hide();
     }
+
+    if (cordova.getAppVersion) {
+	cordova.getAppVersion.getVersionNumber(function (v) {
+	    document.getElementById('version').innerHTML = v;
+	});
+    }
 });
