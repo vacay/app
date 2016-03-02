@@ -2,7 +2,7 @@
     "main": "index.html",
     "name": "vacay",
     "description": "A music community & platform.",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "user-agent": "%name/%ver NodeWebkit/%nwver Webkit/%webkit_ver %osinfo",
     "manifestUrl": "https://vacay.io/desktop/package.json",
     "packages": {
@@ -26,7 +26,7 @@
         "node-webkit-updater": "0.2.4",
         "request": "2.53.0",
         "request-progress": "2.0.1",
-	"ytdl-core": "0.7.10"
+        "ytdl-core": "0.7.10"
     },
     "engines": {
         "node": "0.10.x"
