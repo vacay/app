@@ -26,8 +26,6 @@
 		}
 	    });
 
-	    img.onerror = function() { this.src = ''; };
-
 	    if (!opts.single) {
 		elem.classList.add('i-left');
 		avatar.classList.add('left');

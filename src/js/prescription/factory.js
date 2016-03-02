@@ -479,8 +479,7 @@
 			childs: [{
 			    tag: 'img',
 			    attributes: {
-				src: p.artwork,
-				onerror: 'this.src=""'
+				src: p.artwork
 			    }
 			}]
 		    });
