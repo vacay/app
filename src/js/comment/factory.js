@@ -225,6 +225,8 @@
 	    }
 
 	    var comments = Elem.create({ className: 'comments' });
+
+	    Discussion.sortComments(data.comments);
 	    
 	    data.comments.forEach(function(c) {
 		comments.appendChild(self.render(c));

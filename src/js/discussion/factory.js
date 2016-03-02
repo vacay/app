@@ -251,6 +251,9 @@
 		container.appendChild(elem);
 
 		var comments = Elem.create({ className: 'comments' });
+
+		this.sortComments(data.comments);
+
 		data.comments.forEach(function(c) {
 		    var i = Elem.create({ className: 'c' });
 		    i.appendChild(Comment.render(c));
@@ -265,9 +268,21 @@
 	    
 	},
 
-	updateVoteUI: function(elem, votes) {
+	sortComments: function(comments) {
+	    var self = this;
+	    comments.sort(function(a, b) {
+		return self.getVoteCount(b.votes) - self.getVoteCount(a.votes);
+	    });
+	},
+
+	getVoteCount: function(votes) {
 	    var count = 0;
 	    votes.forEach(function(v) { count += v.vote; });
+	    return count;
+	},
+
+	updateVoteUI: function(elem, votes) {
+	    var count = this.getVoteCount(votes);
 	    elem.querySelector('.votes').innerHTML = count + ' Point' + (count > 1 ? 's' : '');
 	},
 
