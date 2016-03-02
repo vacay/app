@@ -31,6 +31,11 @@
 		return false;
 	    });
 
+	    Mousetrap.bind('i', function() {
+		page('/inbox');
+		return false;
+	    });
+
 	    Mousetrap.bind('c', function() {
 		if (Me.id) page('/@' + Me.username + '/crate');
 		return false;

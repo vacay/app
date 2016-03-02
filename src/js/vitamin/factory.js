@@ -475,6 +475,11 @@
 			else test(h.stream_url);
 		    };
 
+		    hosts.push({
+			title: 'vacay',
+			stream_url: 'https://s3.amazonaws.com/vacay/' + CONFIG.env + '/vitamins/' + id + '.mp3'
+		    });
+
 		    async.detect(hosts, check_health, function(host) {
 			if (!host) {
 			    next('no stream');
