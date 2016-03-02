@@ -51,7 +51,7 @@
 	});
     }
 
-    function download(data, cb) {
+    function download(data, done) {
 	var id = data.vitamin.id;
 
 	//TODO - check if we should be using data
@@ -62,52 +62,15 @@
 	// }
 
 	async.waterfall([
-	    // get streams
+
 	    function(next) {
-		Vitamin.read(id, 'stream', {}, next);
+		Vitamin.getStream(id, next);
 	    },
 
-	    // choose stream
-	    function(hosts, next) {
-		var filtered = hosts.filter(function(h) {
-		    return h.stream_url && h.host !== 'vacay';
-		});
-
-		var stream_urls = pluck(filtered, 'stream_url');
-
-		stream_urls.push('https://s3.amazonaws.com/vacay/' + CONFIG.env + '/vitamins/' + id + '.mp3');
-
-		Log.debug('streams: ', stream_urls);
-
-		if (!stream_urls.length) {
-		    next('missing stream_url');
-		    return;
-		}
-
-		var count = 0;
-		var stream_url;
-		async.whilst(function() {
-		    return count < stream_urls.length && !stream_url;
-		}, function(cb) {
-		    var url = stream_urls[count];
-		    count++;
-		    Request.head(url).success(function(res) {
-			stream_url = url;
-			cb();
-		    }).error(function(res) {
-			cb();
-		    });
-		}, function(err, url) {
-		    console.log(stream_url);
-		    next(err, stream_url);
-		});
-	    },
-
-	    //save stream
 	    function(url, next) {
 
 		if (!url) {
-		    next('missing stream_url');
+		    next('no stream');
 		    return;
 		}
 
@@ -116,12 +79,15 @@
 		var uri = encodeURI(url);
 		var fileURL = cordova.file.dataDirectory + 'offline/' + id + '.mp3';
 
-		ft.download(uri, fileURL, function(entry) {
+		ft.download(url, fileURL, function(entry) {
 		    Log.debug('saved: ', entry.toURL());
-		    next(null, id + '.mp3');
+		    next();
 		}, function(err) {
-		    //TODO - handle no space left (pause)
 		    next(err);
+		}, true, {
+		    headers: {
+			'User-Agent': window.navigator.userAgent
+		    }
 		});
 
 		ft.onprogress = function(e) {
@@ -130,24 +96,10 @@
 		    }
 		};
 	    }
-	], cb);
+	], done);
     }
 
-    function worker(data, done) {
-	if (data.vitamin.filename) {
-	    Log.debug('already downloaded: ', data.vitamin.id);
-	    done();
-	    return;
-	}
-
-	download(data, function(err, filename) {
-	    data.vitamin.filename = filename;
-	    Offline.update(data.vitamin);
-	    done(err);
-	});
-    }
-
-    var q = async.queue(worker, 1);
+    var q = async.queue(download, 1);
 
     var downloader = {
 	clear: function(cb) {
@@ -190,7 +142,13 @@
 
 	save: function(vitamin) {
 	    q.push({ vitamin: vitamin }, function(err) {
-		if (err) Log.error(err);
+		if (err) {
+		    Log.error(err);
+		    return;
+		}
+
+		vitamin.filename = vitamin.id + '.mp3';
+		Offline.update(vitamin);
 	    });
 	},
 

@@ -667,84 +667,6 @@
 	'watermark'
     ];
 
-    var SUPPORTED_TYPES = [
-	'audio/mpeg',
-	'audio/mp3',
-	'audio/MPA',
-	'audio/mpa-robust',
-	'audio/mp4',
-	'audio/aac',
-	'audio/x-m4a',
-	'audio/MP4A-LATM',
-	'audio/mpeg4-generic',
-	'audio/ogg',
-	'audio/wav',
-	'audio/wave',
-	'audio/x-wav'
-    ];
-
-    // sorted from worst to best
-    var YTDL_AUDIO_ENCODINGS = [
-	'mp3',
-	'aac',
-	'vorbis',
-	'wav'
-    ];    
-
-    window.ytdl = function(url, cb) {
-	var bestFormat;
-	var onInfo = function(err, info) {
-	    if (err) {
-
-		var e = err.toString();
-
-		if (e.indexOf('Error 100') !== -1 || e.indexOf('Code 150') !== -1) {
-		    cb(null);
-		    return;
-		}
-
-		cb(err);
-		return;
-	    }
-
-	    if (info.requires_purchase) {
-		cb(new Error('this YouTube video requires purchase'));
-		return;
-	    }
-	    console.log(info.formats);
-
-	    var formats = info.formats.filter(function(f) {
-		var type = f.type && f.type.substr(0, f.type.indexOf(';'));
-		console.log(type);
-		return f.type && SUPPORTED_TYPES.indexOf(type) > -1;
-	    });
-
-	    console.log(formats);
-
-	    for (var i = 0; i < formats.length; i += 1) {
-		var format = formats[i];
-
-		if (bestFormat == null || format.audioBitrate > bestFormat.audioBitrate || (format.audioBitrate === bestFormat.audioBitrate && YTDL_AUDIO_ENCODINGS.indexOf(format.audioEncoding) > YTDL_AUDIO_ENCODINGS.indexOf(bestFormat.audioEncoding))) {
-		    bestFormat = format;
-		}
-	    }
-
-	    cb(null, {
-		id: info.video_id,
-		host: 'youtube',
-		url: 'http://www.youtube.com/watch?v=' + info.video_id,
-		stream_url: bestFormat ? bestFormat.url : null,
-		artwork_url: 'https://i.ytimg.com/vi/' + info.video_id + '/0.jpg',
-		title: info.title,
-		duration: info.length_seconds,
-		created_at: null
-	    });
-	};
-
-	if (/([0-9A-Za-z_-]{11})/ig.test(url)) url = 'http://www.youtube.com/watch?v=' + url;
-
-	getInfo(url, { downloadURL: true }, onInfo);
-    };
 
     /**
      * Gets info from a video.
@@ -754,7 +676,7 @@
      * @param {Function(Error, Object)} callback
      */
 
-    function getInfo(link, opts, callback) {
+    window.getInfo = function(link, opts, callback) {
 	if (typeof opts === 'function') {
 	    callback = opts;
 	    opts = {};

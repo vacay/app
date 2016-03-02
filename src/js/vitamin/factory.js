@@ -319,18 +319,6 @@
 	},
 
 	crate: function(data, cb) {
-	    if (Platform.isNative()) {
-		localforage.setItem(data.id.toString(), {
-		    id: data.id,
-		    title: data.title,
-		    duration: data.duration,
-		    processed_at: data.processed_at,
-		    processing_failed_at: data.processing_failed_at
-		}, function(err) {
-		    if (err) Log.error(err);
-		});
-	    }
-
 	    App.api('/vitamin/' + data.id + '/crate').post().success(function(res) {
 		cb(null, res.data);
 	    }).error(function(res) {
@@ -339,12 +327,6 @@
 	},
 
 	uncrate: function(data, cb) {
-	    if (Platform.isNative()) {
-		localforage.removeItem(data.id.toString(), function(err) {
-		    if (err) Log.error(err);
-		});
-	    }
-
 	    App.api('/vitamin/' + data.id + '/crate').del().success(function(res) {
 		cb(null, res.data);
 	    }).error(function(res) {
@@ -366,8 +348,6 @@
 	},
 
 	showEdit: function(data) {
-	    console.log(data);
-
 	    var elem = Elem.create();
 	    var form = Elem.create({
 		tag: 'form',
@@ -450,6 +430,57 @@
 		}
 	    }
 	    return artwork;
+	},
+
+	getStream: function(id, cb) {
+	    var self = this;
+
+	    async.waterfall([
+		function(next) {
+		    self.read(id, 'stream', {}, next);
+		},
+
+		function(hosts, next) {
+
+		    var host;
+
+		    var check_health = function(h, check) {
+			var test = function(url) {
+			    Request.head(url).success(function(data, res) {
+				host = h;
+				check(true);
+			    }).error(function(data, res) {
+				check(false);
+			    });
+			};
+
+			if (h.stream_url.indexOf('soundcloud.com') > -1)
+			    test(h.stream_url.replace('/stream',''));
+
+			else if (h.title === 'youtube' && YTDL) {
+			    YTDL.stream(h.identifier, function(err, video) {
+				if (err) check(false);
+				else test(video);
+			    });
+			} else if (h.title === 'youtube' && !Platform.isMobile()) {
+			    host = h;
+			    check(true);
+			}
+
+			else test(h.stream_url);
+		    };
+
+		    async.detect(hosts, check_health, function(host) {
+			if (!host) {
+			    next('no stream');
+			    return;
+			}
+
+			next(null, host.title !== 'youtube' ? host.stream_url : YTDL ? host.stream_url : host.url );
+		    });
+
+		}
+	    ], cb);
 	}
     };
 });

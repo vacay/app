@@ -21,11 +21,6 @@
 
     Log.info('data path: ', dataPath);
     
-    var child, used;
-
-    process.on('SIGINT',  function() { child.kill('SIGINT');  });
-    process.on('SIGTERM', function() { child.kill('SIGTERM'); });    
-
     function spaceUsed(item, cb) {
 	fs.lstat(item, function(err, stats) {
 
@@ -52,31 +47,56 @@
 	    }
 	});
     }
-    var _run = function() {
-	var script = process.cwd() + '/worker.js';
+    var download = function(vitamin, done) {
+	async.waterfall([
 
-	child = cp.fork(script);
-	// TODO: proper logging
+	    function(next) {
+		Vitamin.getStream(vitamin.id, next);
+	    },
 
-	child.on('message', function(msg) {
-	    if (msg.err) Log.error(msg);
+	    function(url, next) {
 
-	    switch(msg.method) {
-	    case 'progress':
-		Offline.updateProgress(msg.id, msg.progress);
-		break;
-	    default:
-		Offline.update(msg.vitamin);
-		break;
+		if (!url) {
+		    next('no stream');
+		    return;
+		}
+
+		Log.debug('downloading: ', url);
+
+		var script = process.cwd() + '/worker.js';
+		var child = cp.fork(script);
+	
+		// process.on('SIGINT',  function() { child.kill('SIGINT');  });
+		// process.on('SIGTERM', function() { child.kill('SIGTERM'); });
+
+		child.on('message', function(msg) {
+		    if (msg.err) {
+			next(msg.err);
+			return;
+		    }
+
+		    if (msg.method === 'progress') {
+			Offline.updateProgress(vitamin.id, msg.progress);
+			return;
+		    }
+
+		    next();
+		});
+
+		child.on('exit', function(code, signal) {
+		    Log.info('child exit', code, signal);
+		    next(code);
+		});
+
+		child.send({
+		    filename: offlinePath + '/' + vitamin.id + '.mp3',
+		    url: url
+		});		
 	    }
-	});
-
-	child.on('exit', function(code, signal) {
-	    if (code !== 0 || !signal) _run();
-	});
+	], done);
     };
 
-    _run();
+    var q = async.queue(download, 1);
 
     return {
 
@@ -103,32 +123,28 @@
 	},
 
 	pause: function() {
-	    child && child.send && child.send({ method: 'pause' });
+	    q.pause();
 	},
 
 	resume: function() {
-	    //TODO - restart worker if it does not exist
-	    child && child.send && child.send({ method: 'resume' });
+	    q.resume();
 	},
 
 	save: function(v) {
-	    child && child.send && child.send({
-		method: 'save',
-		data: {
-		    root: this.offlinePath,
-		    env: CONFIG.env,
-		    vitamin: v,
-		    token: window.localStorage.token || App.token
+	    q.push(v, function(err) {
+		if (err) {
+		    Log.error(err);
+		    return;
 		}
-	    });
+
+		v.filename = v.id + '.mp3';
+		Offline.update(v);
+	    });	
 	},
 
 	remove: function(v) {
-	    child && child.send && child.send({
-		method: 'remove',
-		data: {
-		    filename: this.offlinePath + v.filename
-		}
+	    fs.unlink(this.offlinePath + v.filename, function(err) {
+		if (err) Log.error(err);
 	    });
 	}
     };

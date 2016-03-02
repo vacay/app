@@ -392,17 +392,17 @@
 	    },
 	    onload: function (success) {
 		if (!success && this.readyState === 2 && !this._data.reloaded) {
+		    Log.error('load error', {
+			vitamin: this._data.vitamin
+		    });
 
-		    this._data.reloaded = true;
-
-		    P.lastSound = null;
-
-		    var idx = this._data.host.idx;
-
-		    if (idx === -1) this._data.vitamin.loadError = true;
-		    else this._data.vitamin.hosts[idx].loadError = true;
-
-		    P.load(this._data.vitamin, true);
+		    Notification.show({
+			msg: 'Temporarily failed to load stream.',
+			action: {
+			    onclick: function() {},
+			    text: 'Ok'
+			}
+		    });
 		}
 	    },
 	    whileplaying: function () {
@@ -681,12 +681,12 @@
 		P.data.nowplaying = vitamin;
 		P.updateNowplaying();
 
-		P.getStream(vitamin, function(err, host) {
+		P.getStream(vitamin, function(err, url) {
 
 		    if (err) {
 			Log.error(err, { vitamin: vitamin });
 			Notification.show({
-			    msg: 'No stream currently available.',
+			    msg: 'Stream currently unavailable.',
 			    action: {
 				onclick: function() {},
 				text: 'Ok'
@@ -697,8 +697,8 @@
 			return;
 		    }
 
-		    Log.info('Loading: ', host.url);
-		    soundURL = host.url;
+		    Log.info('Loading: ', url);
+		    soundURL = url;
 
 		    if (soundURL.indexOf('youtube.com') !== -1) {
 			thisSound = P.createYTSound(soundURL);
@@ -707,7 +707,7 @@
 			thisSound = P.createSMSound(soundURL);
 		    }
 
-		    thisSound._data = { vitamin: vitamin, host: host };
+		    thisSound._data = { vitamin: vitamin };
 
 		    P.lastSound = thisSound;
 
@@ -730,89 +730,12 @@
 	    else cb();
 	},
 
-	getHosts: function(vitamin, cb) {
-	    //TODO - hacky fix for iOS preventing loading outside of onclick
-	    if (Platform.isMobile() && !P.data.playInit) {
-		cb();
-	    } else if (vitamin.loadedHosts) {
-		cb();
-	    } else {
-		Vitamin.read(vitamin.id, 'stream', {}, function(err, hosts) {
-		    vitamin.loadedHosts = true;
-		    if (!err) vitamin.hosts = hosts;
-		    cb();
-		});
-	    }
-	},
-
-	getHostIdx: function(hosts, title) {
-	    var idx = -1;
-	    for (var h=0; h<hosts.length; h++) {
-		if (hosts[h].title === title && !hosts[h].loadError) {
-		    idx = h;
-		    break;
-		}
-	    }
-	    return idx;
-	},
-
-	chooseHost: function(vitamin, cb) {
-	    var hosts = vitamin.hosts;
-	    var scIdx = P.getHostIdx(hosts, 'soundcloud');
-	    var ytIdx = P.getHostIdx(hosts, 'youtube');
-
-	    if (scIdx !== -1 && hosts[scIdx].stream_url) {
-		return cb(null, {
-		    url: hosts[scIdx].stream_url,
-		    idx: scIdx
-		});
-	    } else if (ytIdx !== -1 && (!Platform.isMobile() || hosts[ytIdx].stream_url)) {
-		return cb(null, {
-		    url: Platform.isMobile() ? hosts[ytIdx].stream_url : hosts[ytIdx].url,
-		    idx: ytIdx
-		});
-	    } else {
-		for (var i=0; i<hosts.length; i++) {
-		    if (!hosts[i].loadError && hosts[i].stream_url) {
-			return cb(null, {
-			    url: hosts[i].stream_url,
-			    idx: i
-			});
-		    }
-		}
-
-		if (!vitamin.loadError && vitamin.processed_at) {
-		    return cb(null, {
-			url: 'https://s3.amazonaws.com/vacay/' + CONFIG.env + '/vitamins/' + vitamin.id + '.mp3',
-			idx: -1
-		    });
-		} else {
-		    return cb('no stream available');
-		}
-	    }
-	},
-
 	getStream: function(vitamin, cb) {
 	    P.getFile(vitamin, function(f) {
 		if (f && f.filename) {
-		    cb(null, {
-			url: Downloader.offlinePath + f.filename,
-			idx: -1
-		    });
+		    cb(null, Downloader.offlinePath + f.filename);
 		} else {
-		    P.getHosts(vitamin, function() {
-			var ytIdx = P.getHostIdx(vitamin.hosts, 'youtube');
-
-			if (window.ytdl && ytIdx !== -1) {
-			    window.ytdl(vitamin.hosts[ytIdx].identifier, function(err, video) {
-				console.log(video);
-				if (!err) vitamin.hosts[ytIdx].stream_url = video.stream_url;
-				P.chooseHost(vitamin, cb);
-			    });
-			} else {
-			    P.chooseHost(vitamin, cb);
-			}
-		    });
+		    Vitamin.getStream(vitamin.id, cb);
 		}
 	    });
 	},
