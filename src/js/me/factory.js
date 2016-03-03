@@ -72,7 +72,6 @@
 		pages: []
 	    };
 
-	    document.querySelector('#user-icon').innerHTML = null;
 	    document.body.classList.toggle('no-auth', true);
 
 	    var btn = document.getElementById('auth-btn');
