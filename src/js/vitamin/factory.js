@@ -506,6 +506,11 @@
 
 		    async.detectSeries(hosts, check_health, function(host) {
 			if (!host) {
+			    if (Platform.isNodeWebkit() && Utils.exists(hosts, 'youtube', 'title')) {
+				next(null, hosts[Utils.find(hosts, 'youtube', 'title')].url);
+				return;
+			    }
+
 			    next('no stream');
 			    return;
 			}
