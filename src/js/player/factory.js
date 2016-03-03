@@ -222,7 +222,6 @@
 
 	updateLive: function() {
 	    document.body.classList.toggle('live', P.data.room);
-	    canvas.classList.toggle('disabled', !!P.data.room);
 
 	    var elem = document.querySelector('.p-live .list');
 	    elem.innerHTML = null;
@@ -497,10 +496,6 @@
 		    }
 		}
 	    }
-	},
-
-	withinStatusBar: function (o) {
-	    return (P.lastSound !== null && Elem.isChildOfClass(o, 'statusbar-container'));
 	},
 
 	join: function(room) {
@@ -784,8 +779,6 @@
 	},
 
 	handleMouseDown: function (e) {
-	    if (P.data.room) return true;
-
 	    if (Platform.isTouchDevice() && e.touches) {
 		e = e.touches[0];
 	    }
@@ -793,10 +786,12 @@
 	    var o = Elem.getTheDamnTarget(e);
 	    if (!o) return true;
 
-	    if (!P.withinStatusBar(o)) return true;
+	    if (!Elem.isChildOfClass(o, 'statusbar-container')) return true;
+
+	    if (!(P.lastSound || P.data.remote)) return true;
 
 	    P.dragActive = true;
-	    P.lastSound.pause();
+	    if (!P.data.remote) P.lastSound.pause();
 	    P.setPosition(e);
 	    if (!Platform.isTouchDevice()) {
 		_event.add(sb, 'mousemove', P.handleMouseMove);
@@ -836,14 +831,16 @@
 		} else {
 		    _event.remove(sb, 'touchmove', P.handleMouseMove);
 		}
-		if (P.data.playing) {
-		    P.lastSound.resume();
-		} else {
-		    P.updatePosition(((P.lastSound.position / P.lastSound.durationEstimate) * 100) + '%');
-		    WS.emit('player:status', {
-			position: P.data.position,
-			id: P.lastSound._data.vitamin.id
-		    });
+		if (!P.data.remote) {
+		    if (P.data.playing) {
+			P.lastSound.resume();
+		    } else {
+			P.updatePosition(((P.lastSound.position / P.lastSound.durationEstimate) * 100) + '%');
+			WS.emit('player:status', {
+			    position: P.data.position,
+			    id: P.lastSound._data.vitamin.id
+			});
+		    }
 		}
 		P.dragActive = false;
 		P.stopEvent(e);
@@ -872,7 +869,7 @@
 
 	setPosition: function (e) {
 	    var oThis = Elem.getTheDamnTarget(e),
-		x, oSb, oSound, nMsecOffset;
+		x, oSb, oSound, nMsecOffset, duration;
 	    if (!oThis) {
 		return;
 	    }
@@ -880,14 +877,19 @@
 	    while (!oSb.classList.contains('statusbar-container') && oSb.parentNode) {
 		oSb = oSb.parentNode;
 	    }
-	    oSound = P.lastSound;
+	    duration = P.data.remote ? P.data.time.total : P.lastSound.durationEstimate;
 	    x = parseInt(e.clientX, 10);
-	    nMsecOffset = Math.floor((x - Elem.getOffX(oSb) - 4) / (oSb.offsetWidth) * oSound.durationEstimate);
+	    nMsecOffset = Math.floor((x - Elem.getOffX(oSb) - 4) / (oSb.offsetWidth) * duration);
 	    if (!isNaN(nMsecOffset)) {
-		nMsecOffset = Math.min(nMsecOffset, oSound.durationEstimate);
+		nMsecOffset = Math.min(nMsecOffset, duration);
 	    }
 	    if (!isNaN(nMsecOffset)) {
-		oSound.setPosition(nMsecOffset);
+		if (P.data.remote) {
+		    WS.emit('player:position', { position: nMsecOffset });
+		} else {
+		    oSound = P.lastSound;
+		    oSound.setPosition(nMsecOffset);
+		}
 	    }
 	},
 	
@@ -1023,6 +1025,10 @@
 	    WS.on('users', function(users) {
 		P.data.users = users;
 		P.updateLiveUsers();
+	    });
+
+	    WS.on('player:position', function(data) {
+		if (!P.data.remote && P.lastSound) P.lastSound.setPosition(data.position);
 	    });
 
 	    WS.on('player:volume', function(data) {
