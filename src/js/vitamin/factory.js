@@ -451,16 +451,40 @@
 
 		    var check_health = function(h, check) {
 			var test = function(url) {
-			    Request.head(url).success(function(data, res) {
+			    if (!url) {
+				check(false);
+				return;
+			    }
+
+			    Log.info('Testing: ', url);
+
+			    if (h.title === 'youtube') {
+				Request.head(url).success(function(data, res) {
+				    host = h;
+				    check(true);
+				}).error(function(data, res) {
+				    check(false);
+				});
+				return;
+			    }
+
+			    var audio = document.createElement('audio');
+
+			    audio.onerror = function() {
+				check(false);
+			    };
+			    audio.onloadedmetadata = function() {
 				host = h;
 				check(true);
-			    }).error(function(data, res) {
-				check(false);
-			    });
+			    };
+
+			    audio.src = url;
+			    audio.load();
+
 			};
 
 			if (h.stream_url && h.stream_url.indexOf('soundcloud.com') > -1)
-			    test(h.stream_url.replace('/stream',''));
+			    test(h.stream_url);
 
 			else if (h.title === 'youtube' && window.YTDL) {
 			    window.YTDL.stream(h.identifier, function(err, video) {
@@ -480,7 +504,7 @@
 			stream_url: 'https://s3.amazonaws.com/vacay/' + CONFIG.env + '/vitamins/' + id + '.mp3'
 		    });
 
-		    async.detect(hosts, check_health, function(host) {
+		    async.detectSeries(hosts, check_health, function(host) {
 			if (!host) {
 			    next('no stream');
 			    return;
