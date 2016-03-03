@@ -58,6 +58,8 @@
 	Shortcuts.init();
 
 	FastClick.attach(document.body);
+
+	document.body.classList.add('app-init');
     };
 
     Platform.ready(function() {
