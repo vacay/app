@@ -105,6 +105,14 @@
 	    if (!r) return;
 	    var width = (m.offsetWidth - r.offsetWidth) / 2;
 	    document.getElementById('toolbar').style.width = width + 'px';
+	},
+	open: function(url) {
+	    if (Platform.isNodeWebkit()) {
+		var gui = require('nw.gui');
+		gui.Shell.openExternal(url);
+	    } else {
+		window.open(url, Platform.isCordova() ? '_system' : '_blank');
+	    }
 	}
     };
 

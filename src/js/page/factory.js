@@ -26,6 +26,7 @@
 		var btn = Elem.create({
 		    tag: 'button',
 		    className: 'rnd sm success',
+		    parent: elem,
 		    text: isSubscribed ? 'subscribed' : 'subscribe'
 		});
 		btn.onclick = function() {
@@ -42,12 +43,20 @@
 		};
 		btn.classList.toggle('active', isSubscribed);
 
-		if (!opts.single) {
+		if (opts.single) {
+		    Elem.create({
+			tag: 'button',
+			className: 'rnd sm',
+			text: 'Open page',
+			parent: elem,
+			onclick: function() {
+			    View.open(data.url);
+			}
+		    });
+		} else {
 		    elem.classList.add('i-right');
 		    btn.classList.add('right');
 		}
-
-		elem.appendChild(btn);
 	    }
 
 	    if (data.title) {

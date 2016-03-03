@@ -25,6 +25,7 @@ cordova:
 	if [ ! -d './plugins/cordova-plugin-network-information' ]; then $(CPLUGIN) add cordova-plugin-network-information; fi
 	if [ ! -d './plugins/nl.kingsquare.cordova.background-audio' ]; then $(CPLUGIN) add https://github.com/AubreyHewes/cordova-background-audio.git; fi
 	if [ ! -d './plugins/cordova-plugin-app-version' ]; then $(CPLUGIN) add cordova-plugin-app-version; fi
+	if [ ! -d './plugins/cordova-plugin-inappbrowser' ]; then $(CPLUGIN) add cordova-plugin-inappbrowser; fi
 
 	cordova prepare
 
