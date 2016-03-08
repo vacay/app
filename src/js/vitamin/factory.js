@@ -101,7 +101,7 @@
 		});
 	    }
 
-	    if (Platform.isNative() && data.crated) {
+	    if (Platform.isNative()) {
 		localforage.getItem(data.id.toString()).then(function(v) {
 		    if (v) {
 			var icon = Elem.create({tag: 'i', className: 'icon-download'});
@@ -162,7 +162,7 @@
 		Vitamin.showEdit(data);
 	    };
 
-	    if (o.offlineMode && o.crated) {
+	    if (o.offlineMode) {
 		var offline = elem.querySelector('.offline');
 		offline.onclick = function(e) {
 		    Modal.close(e);
@@ -296,8 +296,6 @@
 		}
 		Queue.broadcast();
 	    }
-
-	    //TODO - if native - update localforage
 
 	    var cb = function(err) {
 		if (err) {

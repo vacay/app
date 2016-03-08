@@ -99,6 +99,11 @@
 	    this.clear();
 	},
 
+	offline: function() {
+	    Offline.save(this.vitamins);
+	    this.clear();
+	},
+
 	indeterminate: function(state, ids) {
 	    for (var i=1; i<ids.length; i++) {
 		if (state !== Utils.exists(this.vitamins, ids[i])) return true;

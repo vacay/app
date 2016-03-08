@@ -39,11 +39,20 @@
 
 	save: function(data) {
 	    var self = this;
-	    localforage.setItem(data.id.toString(), data, function(err, o) {
-		if (err) Log.error(err);
-		Downloader.save(o);
-		self.updateUI(data.id, true, false);
-	    });
+
+	    var save = function(d) {
+		localforage.setItem(d.id.toString(), d, function(err, o) {
+		    if (err) Log.error(err);
+		    Downloader.save(o);
+		    self.updateUI(d.id, true, false);
+		});
+	    };
+
+	    if (data instanceof Array) {
+		data.forEach(save);
+	    } else {
+		save(data);
+	    }
 	},
 
 	remove: function(data) {
