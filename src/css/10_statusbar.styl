@@ -5,12 +5,6 @@
     position absolute
     width 100%
     line-height 0
-    canvas
-        position absolute
-        opacity 0.7
-        top -15px
-        margin-bottom 0
-        cursor crosshair
     &.dragging
         .statusbar
             cursor -moz-grabbing
@@ -18,8 +12,8 @@
 
 .statusbar
     position relative
-    height 3px
-    background-color rgba(200, 200, 200, 1)
+    height 5px
+    background-color $border
     overflow hidden
     cursor -moz-grab
     cursor grab
@@ -32,10 +26,10 @@
     position absolute
     left 0
     top 0
-    height 3px
+    bottom 0
 
 .statusbar .loading
-    background-color $grey
+    background-color white
 
 .statusbar .position
 .statusbar .loading
@@ -43,10 +37,10 @@
 
 #statusbar
     fixed top left right
+    height 30px
+    cursor crosshair
     z-index 10002
     .statusbar
-    .statusbar .position
-    .statusbar .loading
         height 3px
     .statusbar .position
         background-color $red
@@ -62,16 +56,39 @@ body.native
     &.modal-open #statusbar
         top 0
 
-@media (max-width: $extraSmallMax)
-    #statusbar canvas
-        display none
-    .player-open #statusbar
+#waveform
+    absolute top
+    z-index 1
+    width 100%
+    height 0
+    display none
+    &[src]
+        display block
+
+@media (min-width: $smallMin)
+    #waveform
+        height 0
+    #statusbar .statusbar .loading
+        background-color $grey
+    #statusbar:hover
         .statusbar
-        .loading
-        .position
-            height 10px
-        canvas
-            top 10px
-            display block
+            height 50px
+            .loading
+                background-color white
+        #waveform
+            height 40px
+            margin 5px 0
+
+@media (max-width: $extraSmallMax)
+    #statusbar .statusbar .loading
+        background-color $grey
+    .player-open #statusbar
+        .statusbar .loading
+            background-color white
+        .statusbar
+        #waveform
+            height 30px
     body.native.player-open #statusbar
         top 0
+    .menu-open #statusbar
+        display none

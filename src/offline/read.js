@@ -29,6 +29,8 @@
 			});
 		    };
 
+		    if (keys.length < 50) View.scrollOff();
+
 		    async.each(keys, append, next);
 		}
 	    ], function(err) {

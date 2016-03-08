@@ -11,8 +11,7 @@
 	ym = youtubeManager,
 	sb = document.getElementById('statusbar'),
 	vol = document.querySelector('#volume input'),
-	canvas = document.getElementById('waveform'),
-	ctx = canvas.getContext('2d'),
+	waveform = document.getElementById('waveform'),
 	cleanup;
 
     var _event = (function () {
@@ -307,24 +306,13 @@
 	    play: function () {
 		P.updatePlaying(true);
 		P.setPageTitle('\u25B6');
-		canvas.width = window.innerWidth;
 
 		WS.emit('player:status', {
 		    playing: P.data.playing,
 		    id: this._data.vitamin.id
 		});
 
-		if (this._data.vitamin.processed_at) {
-		    var waveformPath = 'https://s3.amazonaws.com/vacay/' + CONFIG.env + '/waveforms/' + this._data.vitamin.id + '.png';
-		    var imageObj = new Image();
-		    imageObj.crossOrigin = 'Anonymous';
-		    imageObj.onload = function() {
-			ctx.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
-		    };
-		    imageObj.src = waveformPath;
-		} else {
-		    ctx.clearRect(0,0,canvas.width,canvas.height);
-		}
+		waveform.src = 'https://s3.amazonaws.com/vacay/' + CONFIG.env + '/waveforms/' + this._data.vitamin.id + '.png';
 	    },
 	    stop: function () {
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
@@ -452,34 +440,6 @@
 
 			var progress = this.position / this.durationEstimate;
 
-			if (this._data.vitamin.processed_at && progress) {
-
-			    var progressWidth = progress * canvas.width;
-
-			    try {
-
-				var imageData = ctx.getImageData(0, 0, progressWidth, canvas.height);
-				var data = imageData.data;
-				for (i = 0; i < data.length; i += 4) {
-				    data[i] = 211; // red
-				    data[i + 1] = 228; // green
-				    data[i + 2] = 120; // blue
-				}
-				ctx.putImageData(imageData, 0, 0);
-
-				imageData = ctx.getImageData(progressWidth, 0, (canvas.width - progressWidth), canvas.height);
-				data = imageData.data;
-				for (i = 0; i < data.length; i += 4) {
-				    data[i] = 200; // red
-				    data[i + 1] = 200; // green
-				    data[i + 2] = 200; // blue
-				}
-				ctx.putImageData(imageData, progressWidth, 0);
-
-			    } catch (canvasError) {
-				Log.warn(canvasError);
-			    }
-			}
 			
 			P.updatePosition((progress * 100) + '%');
 			P.updateTime(this.position, this.durationEstimate);
@@ -691,6 +651,9 @@
 			//TODO - update UI
 			return;
 		    }
+
+		    // Prevent double loading
+		    if (P.data.nowplaying.id !== vitamin.id) return;
 
 		    Log.info('Loading: ', url);
 		    soundURL = url;

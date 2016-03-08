@@ -9,7 +9,7 @@
     -webkit-user-select none
     -webkit-app-region drag
     cursor move
-    z-index 10001
+    z-index 10003
     background white
     button
         width 14px
@@ -56,5 +56,7 @@ body.modal-open
     color #c8c8c8
 
 @media (max-width: $extraSmallMax)
-    body.native.player-open #windowbar
-        top -45px
+    body.native.player-open
+    body.native.menu-open
+        #windowbar
+            top -45px

@@ -14,7 +14,7 @@
 
     page('/settings', function() {
 
-	View.render();
+	View.render({ title: 'Settings' });
 
 	var r = document.getElementById('river');
 	var l = r.querySelector('.list');
