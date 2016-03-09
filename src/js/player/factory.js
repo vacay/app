@@ -178,7 +178,7 @@
 
 	    // Nowplaying
 	    l.appendChild(Vitamin.render(P.data.nowplaying));
-
+	    waveform.src = 'https://s3.amazonaws.com/vacay/' + CONFIG.env + '/waveforms/' + P.data.nowplaying.id + '.png';
 	    this.updateArtwork();
 
 	    // Vitamin Styling
@@ -311,8 +311,6 @@
 		    playing: P.data.playing,
 		    id: this._data.vitamin.id
 		});
-
-		waveform.src = 'https://s3.amazonaws.com/vacay/' + CONFIG.env + '/waveforms/' + this._data.vitamin.id + '.png';
 	    },
 	    stop: function () {
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
