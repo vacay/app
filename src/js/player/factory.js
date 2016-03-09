@@ -178,7 +178,7 @@
 
 	    // Nowplaying
 	    l.appendChild(Vitamin.render(P.data.nowplaying));
-	    waveform.src = 'https://s3.amazonaws.com/vacay/' + CONFIG.env + '/waveforms/' + P.data.nowplaying.id + '.png';
+	    waveform.style['background-image'] = 'url(https://s3.amazonaws.com/vacay/' + CONFIG.env + '/waveforms/' + P.data.nowplaying.id + '.png)';
 	    this.updateArtwork();
 
 	    // Vitamin Styling
