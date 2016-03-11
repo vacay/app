@@ -74,8 +74,8 @@
   <preference name="keyboardDisplayRequiresUserAction" value="false"/>
   <preference name="SplashScreen" value="screen"/>
   <preference name="SplashScreenDelay" value="3000"/>
-  <preference name="iosPersistentFileLocation" value="Library" />
-  <preference name="iosExtraFilesystems" value="library-nosync" />
+  <preference name="iosPersistentFileLocation" value="Library"/>
+  <preference name="iosExtraFilesystems" value="library-nosync"/>
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
