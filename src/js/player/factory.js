@@ -287,6 +287,7 @@
 
 	updatePlaying: function(value) {
 	    P.data.playing = value;
+	    if (MusicControls) MusicControls.updateIsPlaying(value);
 	    document.body.classList.toggle('playing', value);
 	},
 
@@ -413,7 +414,7 @@
 
 		    if (d - P.lastWPExec > 30) {
 
-			if (window.remoteControls && cordova) {
+			if (cordova) {
 			    var vitamin = this._data.vitamin;
 
 			    var artist = '';
@@ -429,8 +430,6 @@
 				}
 			    }
 
-			    var params = [artist, title, album, image, duration, elapsedTime];
-
 			    var completed = function(e) {
 				Log.debug(e);
 			    };
@@ -439,12 +438,24 @@
 				Log.error(e);
 			    };
 
-			    cordova.exec(completed, failed, 'RemoteControls', 'updateMetas', params);
+			    if (Platform.isIOS() && window.remoteControls) {
+				var params = [artist, title, album, image, duration, elapsedTime];
+				cordova.exec(completed, failed, 'RemoteControls', 'updateMetas', params);
+			    }
+
+			    if (Platform.isAndroid() && MusicControls) {
+				MusicControls.create({
+				    track: title,
+				    artist: artist,
+				    cover: image,
+				    isPlaying: true,
+				    ticker: 'Now playing "' +  title + '"'
+				}, completed, failed);
+			    }
 			}
 
 			var progress = this.position / this.durationEstimate;
 
-			
 			P.updatePosition((progress * 100) + '%');
 			P.updateTime(this.position, this.durationEstimate);
 
@@ -912,6 +923,32 @@
 			break;
 		    }
 		});
+	    }
+
+	    if (MusicControls) {
+		var androidEvents = function(action) {
+		    console.log(action);
+		    switch(action) {
+		    case 'music-controls-next':
+			P.next();
+			break;
+		    case 'music-controls-previous':
+			P.prev();
+			break;
+		    case 'music-controls-pause':
+			P.lastSound && P.lastSound.togglePause();
+			break;
+		    case 'music-controls-play':
+			P.lastSound && P.lastSound.togglePause();
+			break;
+		    default:
+			break;
+		    }
+		};
+
+		MusicControls.subscribe(androidEvents);
+		MusicControls.listen();
+
 	    }
 
 	    vol.value = P.data.volume;
