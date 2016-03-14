@@ -107,6 +107,10 @@
 		div.parentNode.removeChild(div);
 	    });
 	    document.body.classList.toggle('modal-open', false);
+	},
+
+	exists: function() {
+	    return !!document.querySelectorAll('.modal').length;
 	}
 
     };

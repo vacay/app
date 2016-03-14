@@ -9,6 +9,13 @@ Platform.ready(function() {
 		}, 0);
 	    }
 	});
+
+	document.addEventListener('backbutton', function(e) {
+	    if (Modal.exists())
+		Modal.closeAll();
+	    else if (window.history.length)
+		App.back();
+	});
     } else {
 	StatusBar && StatusBar.hide();
     }
