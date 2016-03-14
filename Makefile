@@ -79,7 +79,7 @@ deploy_desktop: build_desktop
 
 deploy_android: build_android
 	rsync -avz --delete ./dist/android.apk deploy@52.21.6.168:/home/deploy/app/mobile/android.apk
-	rsync -av --delete ./mobile.json deploy@52.21.6.158:/home/deploy/app/mobile/package.json
+	rsync -av --delete ./mobile.json deploy@52.21.6.168:/home/deploy/app/mobile/package.json
 
 ## Mobile
 build_mobile: update
