@@ -202,8 +202,8 @@
 		if (P.lastSound)
 		    P.lastSound.setVolume(volume);
 
-		if (cordova && cordova.plugins.VolumeControl)
-		    cordova.plugins.VolumeControl.setVolume(volume / 100);
+		if (window.cordova && window.cordova.plugins.VolumeControl)
+		    window.cordova.plugins.VolumeControl.setVolume(volume / 100);
 	    }
 
 	    document.querySelector('.vol-val').style.width  = P.data.volume + '%';
@@ -414,7 +414,7 @@
 
 		    if (d - P.lastWPExec > 30) {
 
-			if (cordova) {
+			if (window.cordova) {
 			    var vitamin = this._data.vitamin;
 
 			    var artist = '';
@@ -440,7 +440,7 @@
 
 			    if (Platform.isIOS() && window.remoteControls) {
 				var params = [artist, title, album, image, duration, elapsedTime];
-				cordova.exec(completed, failed, 'RemoteControls', 'updateMetas', params);
+				window.cordova.exec(completed, failed, 'RemoteControls', 'updateMetas', params);
 			    }
 
 			    if (Platform.isAndroid() && window.MusicControls) {
