@@ -14,31 +14,31 @@
 	    var self = this;
 	    var cnt = this.vitamins.length;
 	    document.body.classList.toggle('show-multi', cnt);
-	    document.querySelector('#multi .selected').innerHTML = cnt + ' selected';
+	    document.querySelector('#multi .selected').innerHTML = cnt;
 
-	    var ps = document.querySelectorAll('.prescription');
-	    Elem.each(ps, function(p) {
-		var ids = [];
-		var vs = p.querySelectorAll('.vitamin');
-		Elem.each(vs, function(v) {
-		    ids.push(parseInt(v.dataset.id, 10));
-		});
+	    // var ps = document.querySelectorAll('.prescription');
+	    // Elem.each(ps, function(p) {
+	    // 	var ids = [];
+	    // 	var vs = p.querySelectorAll('.vitamin');
+	    // 	Elem.each(vs, function(v) {
+	    // 	    ids.push(parseInt(v.dataset.id, 10));
+	    // 	});
 
-		if (!ids.length) return;
+	    // 	if (!ids.length) return;
 
-		var state = Utils.exists(self.vitamins, ids[0]);
+	    // 	var state = Utils.exists(self.vitamins, ids[0]);
 
-		var ch = p.querySelector('.checkbox');
+	    // 	var ch = p.querySelector('.checkbox');
 
-		if (self.indeterminate(state, ids)) {
-		    ch.classList.add('indeterminate');
-		    ch.classList.remove('selected');
-		} else {
-		    ch.classList.remove('indeterminate');		    
-		    ch.classList.toggle('selected', state);
-		}
+	    // 	if (self.indeterminate(state, ids)) {
+	    // 	    ch.classList.add('indeterminate');
+	    // 	    ch.classList.remove('selected');
+	    // 	} else {
+	    // 	    ch.classList.remove('indeterminate');
+	    // 	    ch.classList.toggle('selected', state);
+	    // 	}
 
-	    });
+	    // });
 
 	    var ds = document.querySelectorAll('.vitamin.selected');
 	    Elem.each(ds, function(d) {
