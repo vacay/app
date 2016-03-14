@@ -287,7 +287,7 @@
 
 	updatePlaying: function(value) {
 	    P.data.playing = value;
-	    if (MusicControls) MusicControls.updateIsPlaying(value);
+	    if (window.MusicControls) window.MusicControls.updateIsPlaying(value);
 	    document.body.classList.toggle('playing', value);
 	},
 
@@ -443,8 +443,8 @@
 				cordova.exec(completed, failed, 'RemoteControls', 'updateMetas', params);
 			    }
 
-			    if (Platform.isAndroid() && MusicControls) {
-				MusicControls.create({
+			    if (Platform.isAndroid() && window.MusicControls) {
+				window.MusicControls.create({
 				    track: title,
 				    artist: artist,
 				    cover: image,
@@ -925,7 +925,7 @@
 		});
 	    }
 
-	    if (MusicControls) {
+	    if (window.MusicControls) {
 		var androidEvents = function(action) {
 		    console.log(action);
 		    switch(action) {
@@ -946,8 +946,8 @@
 		    }
 		};
 
-		MusicControls.subscribe(androidEvents);
-		MusicControls.listen();
+		window.MusicControls.subscribe(androidEvents);
+		window.MusicControls.listen();
 
 	    }
 
