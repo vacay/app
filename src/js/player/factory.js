@@ -195,9 +195,15 @@
 
 	updateVolume: function(localOnly) {
 	    var volume = parseInt(vol.value, 10);
+
 	    if (P.data.volume !== volume) {
 		P.data.volume = volume;
-		if (P.lastSound) P.lastSound.setVolume(volume);
+
+		if (P.lastSound)
+		    P.lastSound.setVolume(volume);
+
+		if (cordova && cordova.plugins.VolumeControl)
+		    cordova.plugins.VolumeControl.setVolume(volume / 100);
 	    }
 
 	    document.querySelector('.vol-val').style.width  = P.data.volume + '%';
