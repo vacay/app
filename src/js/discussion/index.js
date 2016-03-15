@@ -13,7 +13,8 @@
 
 		r.dataset.loading = true;
 		l.innerHTML = null;
-		offset = 0;		
+		offset = 0;
+		View.scrollOn();
 		closed = opts.reset ? false : opts.closed;
 
 		View.active('.filter-container .' + closed);
