@@ -123,9 +123,8 @@
 	    var elem = document.querySelector('#queue .list');
 
 	    if (data instanceof Array) {
-		data = data.filter(function(d) {
-		    return !self.isQueued(d.id);
-		});
+
+		data.forEach(function(v) { self.remove(v.id); });
 		this.vitamins = data.concat(this.vitamins);
 
 		var frag = document.createDocumentFragment();
@@ -136,7 +135,8 @@
 
 		elem.insertBefore(frag, elem.firstChild);
 		
-	    } else if (!this.isQueued(data.id)){
+	    } else {
+		this.remove(data.id);
 		this.vitamins.unshift(data);
 		this.updateVitaminUI(data.id, true);
 		elem.insertBefore(Vitamin.render(data, { drag: true }), elem.firstChild);
