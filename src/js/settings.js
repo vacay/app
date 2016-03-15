@@ -198,7 +198,7 @@
 		text: 'Crate'
 	    }, {
 		tag: 'span',
-		text: 'Control wether or not your crate is viewable to other people on the site'
+		text: 'Control whether or not your crate is viewable to other people on the site'
 	    }]
 	});
 	var cswitch = btnswitch.cloneNode(true);
@@ -217,7 +217,7 @@
 		text: 'Listening history'
 	    }, {
 		tag: 'span',
-		text: 'Control wether or not your listening history is viewable to other people on the site'
+		text: 'Control whether or not your listening history is viewable to other people on the site'
 	    }]
 	});
 	history.appendChild(hb);
