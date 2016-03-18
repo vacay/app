@@ -46,6 +46,11 @@
 		return false;
 	    });
 
+	    Mousetrap.bind('h', function() {
+		page('/');
+		return false;
+	    });
+
 	}
     };
 });
