@@ -43,12 +43,12 @@ update: npm cordova
 
 ## Web
 deploy_web:
-	grunt web
+	grunt production
 	rsync -av --delete ./www/index.html deploy@52.21.6.168:/home/deploy/app/index.html
 	rsync -av --delete ./resources/favicon.ico deploy@52.21.6.168:/home/deploy/app/favicon.ico
 
 deploy_staging:
-	grunt web
+	grunt production
 	aws s3 cp www/index.html s3://staging.vacay.io/index.html
 	aws s3 cp resources/favicon.ico s3://staging.vacay.io/favicon.ico
 
@@ -83,7 +83,7 @@ deploy_android: build_android
 
 ## Mobile
 build_mobile: update
-	grunt web
+	grunt production
 
 emulate_ios: build_mobile
 	cordova emulate ios

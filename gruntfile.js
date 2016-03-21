@@ -351,7 +351,7 @@ module.exports = function(grunt) {
 	'after'
     ]);
 
-    grunt.registerTask('web', [
+    grunt.registerTask('production', [
 	'base',
 
 	'concat:production',

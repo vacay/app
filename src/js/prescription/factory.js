@@ -147,7 +147,16 @@
 		    className: 'sm link success save',
 		    text: 'save',
 		    parent: owner_actions
-		}).onclick = function(e) {
+		});
+
+		var edit = Elem.create({
+		    tag: 'button',
+		    className: 'sm link',
+		    text: 'edit',
+		    parent: owner_actions
+		});
+
+		save.onclick = function(e) {
 
 		    var cb = function(err) {
 			if (err) Log.error(err);
@@ -164,12 +173,7 @@
 		    e.target.parentNode.classList.toggle('editable', false);
 		};
 
-		var edit = Elem.create({
-		    tag: 'button',
-		    className: 'sm link',
-		    text: 'edit',
-		    parent: owner_actions
-		}).onclick = function(e) {
+		edit.onclick = function(e) {
 		    var editable = !e.target.parentNode.classList.contains('editable');
 
 		    if (editable) {
