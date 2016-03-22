@@ -75,7 +75,7 @@
 		}
 	    }
 
-	    if (opts.editable) {
+	    if (opts.remove) {
 		Elem.create({
 		    tag: 'button',
 		    className: 'icon failure delete',

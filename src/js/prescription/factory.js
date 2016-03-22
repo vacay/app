@@ -287,7 +287,10 @@
 
 	    data.vitamins.forEach(function(v) {
 		//TODO - remove button
-		vitamins.appendChild(Vitamin.render(v, { editable: isOwner, drag: isOwner }));
+		vitamins.appendChild(Vitamin.render(v, {
+		    remove: (isOwner && !data.published_at),
+		    drag: isOwner
+		}));
 	    });
 
 	    elem.appendChild(vitamins);
