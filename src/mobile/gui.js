@@ -33,6 +33,7 @@ Platform.ready(function() {
 			    action: {
 				text: 'Download',
 				onclick: function() {
+				    alert('make sure to uninstall this version before installing the new version');
 				    View.open('https://vacay.io/mobile/android.apk');
 				}
 			    }

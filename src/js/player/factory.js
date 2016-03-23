@@ -449,6 +449,7 @@
 				    artist: artist,
 				    cover: image,
 				    isPlaying: true,
+				    dismissable: true,
 				    ticker: 'Now playing "' +  title + '"'
 				}, completed, failed);
 			    }
@@ -927,7 +928,6 @@
 
 	    if (window.MusicControls) {
 		var androidEvents = function(action) {
-		    console.log(action);
 		    switch(action) {
 		    case 'music-controls-next':
 			P.next();

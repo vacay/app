@@ -17,6 +17,10 @@
 	    if (opts.className) {
 		el.className = opts.className;
 	    }
+
+	    if (opts.id) {
+		el.id = opts.id;
+	    }
 	    
 	    if (opts.attributes) {
 		for (a in opts.attributes) {
