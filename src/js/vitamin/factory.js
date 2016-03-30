@@ -64,16 +64,7 @@
 
 	    elem.classList.toggle('nowplaying', Player.isPlaying(data.id));
 
-	    if (data.crated) {
-		elem.appendChild(Tags.render());
-
-		var parent = elem.querySelector('.tags .current');
-		if (data.tags.length) {
-		    data.tags.forEach(function(t) {
-			parent.appendChild(Tags.tag(t.value, { create: true }));
-		    });
-		}
-	    }
+	    if (data.tags) elem.appendChild(Tags.render(data.tags));
 
 	    if (opts.remove) {
 		Elem.create({
@@ -261,14 +252,6 @@
 
 	    Elem.each(divs, function(div) {
 		div.dataset.active = !crated;
-
-		var p = Elem.getClosest(div, '.vitamin');
-
-		if (!crated) {
-		    p.appendChild(Tags.render());
-		} else {
-		    p.removeChild(p.querySelector('.tags'));
-		}
 	    });
 
 	    var np = Player.data.nowplaying;
@@ -303,14 +286,6 @@
 
 		    Elem.each(divs, function(div) {
 			div.dataset.active = crated;
-
-			var p = Elem.getClosest(div, '.vitamin');
-
-			if (crated) {
-			    p.appendChild(Tags.render());
-			} else {
-			    p.removeChild(p.querySelector('.tags'));
-			}
 		    });
 		}
 	    };

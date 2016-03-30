@@ -19,31 +19,44 @@
 
     var read = function(ctx) {
 
+	console.log(ctx);
+
 	var search = Location.search();
 
 	ctx.state.user.isOwner = ctx.state.user.username === Me.username;
 
 	var filterLoaded, headingLoaded;
 
-	var q, offset = 0, tags = search.tag ? [search.tag] : [];
+	var q, offset = 0;
 
 	var load = function(options) {
 
 	    var self = this;
-
-	    var subpath = ctx.params.subpath || 'summary';
-	    var type;
-
+	    var type, tags;
 	    var r = document.getElementById('river');
 	    var l = r.querySelector('.list');
-
 	    var intro = ctx.state.user.isOwner ? 'You have ' : ctx.params.id + ' has ';
+
+	    var subpath = ctx.params.subpath ? ctx.params.subpath.split('/').shift() : 'summary';
 
 	    switch(subpath) {
 	    case 'crate':
 		l.setAttribute('empty', intro + 'not crated (saved) any vitamins (recordings).');
 		type = 'vitamin';
 		break;
+
+	    case 'tags':
+		l.setAttribute('empty', intro + 'not tagged any vitamins');
+		type = 'tag';
+		break;
+
+	    case 'tag':
+		l.setAttribute('empty', intro + 'no vitamins with this tag');
+		type = 'vitamin';
+		tags = ctx.path.split('/').pop().split('+');
+		tags = tags.map(function(t) {
+		    return decodeURIComponent(t);
+		});
 
 	    case 'listens':
 		l.setAttribute('empty', intro + 'no listening history.');
@@ -92,15 +105,9 @@
 		headingLoaded = false;
 
 		if (typeof options.q !== 'undefined') q = options.q;
-		if (typeof options.tags !== 'undefined') tags = options.tags;
 
 		if (options.reset) {
 		    document.querySelector('.filter-container input').value = q = null;
-		    tags = [];
-		    var ts = document.querySelectorAll('.filter-tags .tag');
-		    Elem.each(ts, function(t) {
-			t.classList.remove('active');
-		    });
 		}
 	    }
 
@@ -175,20 +182,17 @@
 
 		    } else {
 
-			if (data.length < 10) View.scrollOff();
+			if (data.length < 10 || ctx.params.subpath === 'tags')
+			    View.scrollOff();
+
 			offset += data.length;
 
 			if (!!offset && self.filter && !filterLoaded) {
 
 			    var f = document.querySelector('.filter-container');
-			    f.innerHTML = doT.template(View.tmpl('/filter/search.html'))({ placeholder: ctx.params.subpath });
-
-			    if (ctx.params.subpath === 'crate') {
-				f.appendChild(Tags.filter({
-				    username: ctx.state.user.username,
-				    tag: tags[0]
-				}));
-			    }
+			    f.innerHTML = doT.template(View.tmpl('/filter/search.html'))({
+				placeholder: ctx.params.subpath
+			    });
 			    filterLoaded = true;
 			}
 
@@ -199,7 +203,6 @@
 			    };
 
 			    if (params.q) shuffleParams.q = params.q;
-			    if (params.tags) shuffleParams.tags = params.tags;
 
 			    var heading = Vitamins.renderHeading({
 				shuffle: {
@@ -215,6 +218,10 @@
 			
 			data.forEach(function(d) {
 			    switch(type) {
+			    case 'tag':
+				frag.appendChild(Tag.render(d.value, { link: true }));
+				break;
+
 			    case 'vitamin':
 				frag.appendChild(Vitamin.render(d));
 				break;
@@ -264,6 +271,6 @@
 	}));
     };
 
-    page('/@:id/:subpath?', init, read);
+    page('/@:id/:subpath(.*)?', init, read);
 
 })();
