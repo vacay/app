@@ -163,6 +163,14 @@
 	    });
 	},
 
+	activity: function(options, cb) {
+	    App.api('/me/activity').get(options).success(function(data) {
+		cb(null, data.data);
+	    }).error(function(res) {
+		cb(res, null);
+	    });
+	},
+
 	getData: function() {
 	    var user = Utils.clone(this.data);
 	    delete user.email;
