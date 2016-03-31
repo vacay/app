@@ -242,7 +242,7 @@ module.exports = function(grunt) {
 		    'bower_components/**/*',
 		    'src/css/**/*'
 		],
-		tasks: ['development']
+		tasks: ['production']
 	    }
 	},
 

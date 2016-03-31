@@ -2,7 +2,8 @@
 (function() {
 
     var init = function(ctx, next) {
-	Room.read(ctx.params.id, function(err, room) {
+	var id = decodeURIComponent(ctx.path.split('/').pop());
+	Room.read(id, function(err, room) {
 	    if (err) {
 		page('/');
 	    } else {

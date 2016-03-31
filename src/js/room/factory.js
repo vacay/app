@@ -28,7 +28,7 @@
 		text: data.name,
 		parent: body
 	    });
-	    a.href = '/room/' + data.name;
+	    a.href = '/room/' + encodeURIComponent(data.name);
 
 	    var btn = Elem.create({
 		tag: 'button',
@@ -163,6 +163,11 @@
 		parent: btnElem
 	    }).onclick = function(e) {
 		if (!input.value) return;
+
+		if (!/^[A-Za-z0-9\s\-_.+!*'&]*$/.test(input.value)) {
+		    Notification.show({msg: 'Room name includes an invalid character.'});
+		    return;
+		}
 
 		data.name = input.value;
 
