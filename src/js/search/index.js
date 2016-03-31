@@ -28,8 +28,6 @@
 
     var read = function(ctx) {
 
-	console.log(ctx);
-
 	var offset = 0;
 
 	var load = function() {

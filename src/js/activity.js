@@ -3,8 +3,6 @@
 
     page('/activity', function() {
 
-	console.log('here');
-
 	var offset = 0, limit = 10;
 
 	var load = function() {

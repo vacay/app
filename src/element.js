@@ -10,7 +10,7 @@
     return {
 	create: function(opts) {
 	    opts = opts || {};
-	    var el, a, i;
+	    var el, a, i, d;
 
 	    el = document.createElement(opts.tag || 'div');
 
@@ -53,6 +53,12 @@
 
 	    if (opts.onclick) {
 		el.onclick = opts.onclick;
+	    }
+
+	    if (opts.dataset) {
+		for (d in opts.dataset) {
+		    el.dataset[d] = opts.dataset[d];
+		}
 	    }
 
 	    return el;

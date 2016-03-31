@@ -242,7 +242,7 @@ module.exports = function(grunt) {
 		    'bower_components/**/*',
 		    'src/css/**/*'
 		],
-		tasks: ['default']
+		tasks: ['development']
 	    }
 	},
 
@@ -358,6 +358,15 @@ module.exports = function(grunt) {
 	'jade:index',
 
 	'uglify',
+	'after'
+    ]);
+
+    grunt.registerTask('development', [
+	'base',
+
+	'concat:development',
+	'jade:index',
+
 	'after'
     ]);
 

@@ -49,6 +49,7 @@
 
 	    Player.reset();
 	    Queue.reset();
+	    Room.reset();
 
 	    page(window.location.pathname);
 	},

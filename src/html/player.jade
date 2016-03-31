@@ -36,8 +36,11 @@
             small.pull-right
             button.xs.link.failure(onclick="Player.setMaster()") play here instead
 
-        .p-live
-            .p-header Listening Along With
+
+        #proom.hide-auth
+            .p-header
+                span Room
+                a.small.pull-right(onclick="Room.create()") Join/Create
             .list
 
         #nowplaying

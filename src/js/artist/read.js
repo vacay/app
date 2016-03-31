@@ -69,12 +69,10 @@
 
 			if (params.q) shuffleParams.q = params.q;
 
-			var heading = Vitamins.renderHeading({
-			    shuffle: {
-				title: '@' + ctx.state.artist.name + '\'s (artist) vitamins',
-				path: '/artist/' + ctx.params.id + '/vitamins',
-				params: shuffleParams
-			    }
+			var heading = Vitamins.renderShuffle({
+			    title: '@' + ctx.state.artist.name + '\'s (artist) vitamins',
+			    path: '/artist/' + ctx.params.id + '/vitamins',
+			    params: shuffleParams
 			});
 			frag.appendChild(heading);
 

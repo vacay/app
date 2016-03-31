@@ -76,6 +76,8 @@ body.native
                     background-color white
 
 @media (max-width: $extraSmallMax)
+    body:not(.player-open) #statusbar
+        pointer-events none
     .player-open #statusbar
         #waveform
             height 30px

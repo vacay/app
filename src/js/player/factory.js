@@ -66,8 +66,6 @@
 	    remote: null,
 	    repeat: false,
 	    mode: null,
-	    room: null,
-	    roomUsers: [],
 	    users: [],
 	    nowplaying: null,
 	    playing: false,
@@ -80,13 +78,11 @@
 
 	reset: function() {
 	    this.data.remote = null;
-	    this.data.room = null;
-	    this.data.roomUsers = [];
 	    this.data.users = [];
 
 	    this.data.mode = null;
 
-	    this.updateLiveUsers();
+	    //this.updateLiveUsers();
 	    document.body.classList.toggle('remote', P.data.remote);
 	},
 
@@ -225,57 +221,6 @@
 	    }
 	},
 
-	updateLive: function() {
-	    document.body.classList.toggle('live', P.data.room);
-
-	    var elem = document.querySelector('.p-live .list');
-	    elem.innerHTML = null;
-
-	    var divs = document.querySelectorAll('#live .user a');
-	    Elem.each(divs, function(d) {
-		d.classList.remove('active');
-	    });
-
-	    if (P.data.room) {
-		if (P.data.room.charAt(0) === 'u') {
-		    var user = P.data.users.filter(function(o) {
-			return 'u:' + o.username === P.data.room;
-		    })[0];
-		    elem.appendChild(User.render(user, { live: true }));
-		    View.active('#live .user[data-username="' + P.data.room.slice(2) + '"] a');
-		} else {
-		    var i = Elem.create({
-			className: 'i i-right'
-		    });
-
-		    var body = Elem.create({
-			className: 'i-body'
-		    });
-		    i.appendChild(body);
-
-		    var p = Elem.create({
-			tag: 'small',
-			text: P.data.room.slice(2)
-		    });
-		    body.appendChild(p);
-
-		    var btn = Elem.create({
-			tag: 'button',
-			className: 'rnd sm success right active',
-			text: 'leave room'
-		    });
-		    btn.onclick = P.leave;
-		    i.appendChild(btn);
-
-		    P.data.roomUsers.forEach(function(u) {
-			body.appendChild(User.render(u, { avatarOnly: true }));
-		    });
-
-		    elem.appendChild(i);
-		}
-	    }
-	},
-
 	updateLiveUsers: function() {
 	    var elem = document.getElementById('live');
 	    elem.innerHTML = null;
@@ -364,7 +309,8 @@
 		P.updatePlaying(false);
 		P.setPageTitle();
 
-		if (!P.data.room) P.data.repeat ? P.repeat() : P.next();
+		if (!Room.name()) P.data.repeat ? P.repeat() : P.next();
+		else if (Room.isMaster()) P.next();
 	    },
 	    whileloading: function () {
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
@@ -465,27 +411,14 @@
 			    playing: P.data.playing,
 			    position: P.data.position,
 			    loading: P.data.loading,
-			    id: this._data.vitamin.id
+			    id: this._data.vitamin.id,
+			    room: Room.name()
 			});
 
 			P.lastWPExec = d;
 		    }
 		}
 	    }
-	},
-
-	join: function(room) {
-	    P.data.mode = null;
-	    P.data.room = room;
-	    P.updateLive();
-
-	    WS.emit('join', { room: room, user: Me.getData() });
-	},
-
-	leave: function() {
-	    P.data.room = null;
-	    P.updateLive();
-	    WS.emit('leave');
 	},
 
 	playId: function(id) {
@@ -504,8 +437,8 @@
 		return;
 	    }
 
-	    if (P.data.room && P.data.room.charAt(0) === 'u')
-		P.leave();
+	    //TODO - alert user
+	    if (!Room.canControl()) Room.leave();
 
 	    P.data.mode = mode;
 
@@ -518,11 +451,11 @@
 		var vitamins = JSON.parse(JSON.stringify(vitamin));
 		var first = vitamins.shift();
 		Queue.addNext(vitamins);
-		P.load(first, true);
+		P.load(first);
 	    } else if (vitamin || P.data.nowplaying) {
-		P.load(vitamin || P.data.nowplaying, true);
+		P.load(vitamin || P.data.nowplaying);
 	    } else if (Queue.vitamins[0]) {
-		P.load(Queue.getNext(), true);
+		P.load(Queue.getNext());
 	    }
 	},
 
@@ -556,7 +489,7 @@
 	},
 
 	repeat: function() {
-	    P.load(P.data.nowplaying, true);
+	    P.load(P.data.nowplaying);
 	},
 
 	next: function () {
@@ -565,14 +498,14 @@
 		return;
 	    }
 
-	    if (P.data.room && P.data.room.charAt(0) === 'u')
-		P.leave();
+	    //TODO - alert user
+	    if (!Room.canControl()) Room.leave();
 
 	    if (Queue.vitamins[0]) {
-		P.load(Queue.getNext(), true);
+		P.load(Queue.getNext());
 	    } else if (P.data.mode) {
 		P.loadMode();
-	    } else if (P.data.autoplay) { //TODO - not during P.data.room
+	    } else if (P.data.autoplay) { //TODO - not during Room.data.name
 		var username = Me.username;
 		User.read(username, 'crate', {
 		    limit: 1,
@@ -580,7 +513,7 @@
 		}, function(err, vitamins) {
 		    if (err) Log.error(err);
 		    if (vitamins.length) {
-			P.load(vitamins[0], true);
+			P.load(vitamins[0]);
 		    } else {
 			P.toggleAutoplay();
 		    }
@@ -594,7 +527,8 @@
 		return;
 	    }
 
-	    if (P.data.room && P.data.room.charAt(0) === 'u') P.leave();
+	    //TODO - alert user
+	    if (!Room.canControl()) Room.leave();
 
 	    if (P.lastSound.position > 3000) {
 		P.lastSound.setPosition(0);
@@ -603,7 +537,7 @@
 		//TODO - use persisted history
 
 		Queue.addNext(P.data.nowplaying);
-		P.load(P.data.history.pop(), false);
+		P.load(P.data.history.pop(), { noHistory: true });
 		P.updateHistory();
 	    }
 	},
@@ -611,7 +545,7 @@
 	loadMode: function() {
 	    App.api(P.data.mode.path).get(P.data.mode.params).success(function(res) {
 		if (P.data.mode.params.offset) P.data.mode.params.offset++;
-		if (res.data.length) P.load(res.data[0], true);
+		if (res.data.length) P.load(res.data[0]);
 	    }).error(function(res) {
 		P.data.mode = null;
 		var header = document.querySelector('#nowplaying .p-header');
@@ -620,17 +554,18 @@
 	    });
 	},
 
-	load: function(vitamin, createHistory, position) {
+	load: function(vitamin, opts) {
 	    var soundURL, thisSound;
 
-	    if (P.lastSound && P.lastSound._data.vitamin.id === vitamin.id) {
+	    opts = opts || {};
 
+	    if (P.lastSound && P.lastSound._data.vitamin.id === vitamin.id) {
 
 		// ..and was playing (or paused) and isn't in an error state
 		if (P.lastSound.readyState !== 2) {
 		    if (P.lastSound.playState !== 1) P.lastSound.play(); // not yet playing
-		    else if (P.data.room) {
-			if (position) P.lastSound.setPosition(position);
+		    else if (Room.name()) {
+			if (opts.position) P.lastSound.setPosition(opts.position);
 			if (P.lastSound.paused) P.lastSound.play();
 		    } else P.lastSound.togglePause();
 		} else {
@@ -643,7 +578,7 @@
 
 		    P.lastSound.stop();
 
-		    if (createHistory) {
+		    if (!opts.noHistory) {
 			P.data.history.push(P.data.nowplaying);
 			P.updateHistory();
 		    }
@@ -686,12 +621,12 @@
 		    P.lastSound = thisSound;
 
 		    thisSound.play();
-		    if (position) thisSound.setPosition(position);
+		    if (opts.position) thisSound.setPosition(opts.position);
 
 		    // analytics.track('play');
 		    // record play count & history
 
-		    if (Network.online) {
+		    if (Network.online && !opts.noBroadcast) {
 			P.broadcast.nowplaying();
 		    }
 
@@ -885,7 +820,7 @@
 		WS.emit('player:nowplaying', {
 		    nowplaying: P.data.nowplaying,
 		    user: Me.getData(),
-		    room: P.data.room,
+		    room: Room.name(),
 		    mode: P.data.mode
 		});
 	    }
@@ -992,27 +927,13 @@
 		});
 	    });
 
-	    WS.on('room:nowplaying', function(data) {
-		if (data.room !== P.data.room || P.data.remote) return;
-
-		if (data.vitamin) P.load(data.vitamin, true, data.position);
-	    });
-
-	    WS.on('room:users', function(data) {
-		P.data.roomUsers = data;
-		P.updateLive();
-	    });
-
 	    WS.on('init', function(data) {
 		Log.debug(data);
 
 		socketID = data.socket;
 
-		P.data.users = data.users;
-		P.data.room = data.room;
-		P.updateLiveUsers();
-		P.updateLive();
-		// update room
+		Room.data = data.room;
+		Room.update();
 
 		updateMaster(data.master, data.ua);
 	    });
@@ -1020,15 +941,10 @@
 	    WS.on('sync', function(data) {
 		Log.debug(data);
 
-		P.data.room = data.room;
-		P.updateLive();
+		Room.data = data.room;
+		Room.update();
 
 		updateMaster(data.master, data.ua);
-	    });
-
-	    WS.on('users', function(users) {
-		P.data.users = users;
-		P.updateLiveUsers();
 	    });
 
 	    WS.on('player:position', function(data) {
@@ -1057,6 +973,11 @@
 		Queue.vitamins = data.queue;
 		Queue.broadcast(true);
 		Queue.render();
+	    });
+
+	    WS.on('room', function(data) {
+		Room.data = data;
+		Room.update();
 	    });
 
 	    WS.on('player:history', function(data) {
@@ -1090,8 +1011,19 @@
 
 	    WS.on('player:nowplaying', function(data) {
 		P.data.mode = data.mode;
-		P.data.nowplaying = data.nowplaying;
-		P.updateNowplaying();
+
+		if (data.nowplaying) {
+		    P.data.nowplaying = data.nowplaying;
+		    P.updateNowplaying();
+
+		    if (data.room !== Room.name() || P.data.remote)
+			return;
+
+		    if (data.nowplaying) P.load(data.nowplaying, {
+			position: data.position,
+			noBroadcast: !!data.room
+		    });
+		}
 	    });
 
 	    sm._writeDebug('player.init(): Ready', 1);

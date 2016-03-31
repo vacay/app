@@ -77,7 +77,10 @@
 
 	    this.updateUI();
 
-	    if (!localOnly) WS.emit('queue', { queue: this.vitamins });
+	    if (!localOnly) WS.emit('queue', {
+		queue: this.vitamins,
+		room: Room.data && Room.data.name
+	    });
 	},
 	
 	getNext: function() {

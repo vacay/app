@@ -19,8 +19,6 @@
 
     var read = function(ctx) {
 
-	console.log(ctx);
-
 	var search = Location.search();
 
 	ctx.state.user.isOwner = ctx.state.user.username === Me.username;
@@ -204,12 +202,10 @@
 
 			    if (params.q) shuffleParams.q = params.q;
 
-			    var heading = Vitamins.renderHeading({
-				shuffle: {
-				    title: '@' + ctx.state.user.username + '\'s crate',
-				    path: '/user/' + ctx.state.user.username + '/crate',
-				    params: shuffleParams
-				}
+			    var heading = Vitamins.renderShuffle({
+				title: '@' + ctx.state.user.username + '\'s crate',
+				path: '/user/' + ctx.state.user.username + '/crate',
+				params: shuffleParams
 			    });
 			    frag.appendChild(heading);
 

@@ -18,7 +18,6 @@
 	    });
 
 	    data.time = data._pivot_created_at ? Utils.fromNow(data._pivot_created_at) : '';
-	    data.displayURL = this.displayURL(data.url);
 	    elem.innerHTML = tmpl(data);
 
 	    if (opts.subscribe && Me.id) {
@@ -59,11 +58,11 @@
 		}
 	    }
 
-	    if (data.title) {
-		var title = Elem.create({ tag: 'small' });
-		title.innerHTML = data.title;
-		elem.querySelector('.i-body').appendChild(title);
-	    }
+	    // if (data.title) {
+	    // 	var title = Elem.create({ tag: 'small' });
+	    // 	title.innerHTML = data.title;
+	    // 	elem.querySelector('.i-body').appendChild(title);
+	    // }
 	    
 	    return elem;
 	},

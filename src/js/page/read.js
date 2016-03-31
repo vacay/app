@@ -32,14 +32,12 @@
 		    var frag = document.createDocumentFragment();
 
 		    if (offset && !headingLoaded) {
-			var heading = Vitamins.renderHeading({
-			    shuffle: {
-				title: '@' + ctx.state.page.title + '\'s (page) vitamins',
-				path: '/page/' + ctx.params.id + '/vitamins',
-				params: {
-				    limit: 1,
-				    order_by: 'rand'
-				}
+			var heading = Vitamins.renderShuffle({
+			    title: '@' + ctx.state.page.title + '\'s (page) vitamins',
+			    path: '/page/' + ctx.params.id + '/vitamins',
+			    params: {
+				limit: 1,
+				order_by: 'rand'
 			    }
 			});
 			frag.appendChild(heading);
