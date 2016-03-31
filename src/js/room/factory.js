@@ -30,6 +30,20 @@
 	    });
 	    a.href = '/room/' + encodeURIComponent(data.name);
 
+	    Elem.create({
+		parent: body,
+		childs: [{
+		    tag: 'small',
+		    text: 'Created by: ' + data.master
+		}, {
+		    tag: 'small',
+		    text: 'Shared Control: ' + data.shared
+		}, {
+		    tag: 'small',
+		    text: 'Visible: ' + data.listed
+		}]
+	    });
+
 	    var btn = Elem.create({
 		tag: 'button',
 		className: 'rnd sm success right ' + (inRoom ? 'active' : ''),
