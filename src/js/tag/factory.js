@@ -24,7 +24,7 @@
 	    elem.appendChild(link);
 
 	    if (opts.link)
-		link.href = '/@' + Me.username + '/tag/' + encodeURIComponent(value);
+		link.href = '/@' + opts.username + '/tag/' + encodeURIComponent(value);
 
 	    if (opts.remove) {
 

@@ -18,7 +18,7 @@
 
 	    if (data.length) {
 		data.forEach(function(t) {
-		    current.appendChild(Tag.render(t.value, { link: true, remove: true }));
+		    current.appendChild(Tag.render(t.value, { link: true, remove: true, username: Me.username }));
 		});
 	    }	    
 

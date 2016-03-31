@@ -219,7 +219,7 @@
 			data.forEach(function(d) {
 			    switch(type) {
 			    case 'tag':
-				frag.appendChild(Tag.render(d.value, { link: true }));
+				frag.appendChild(Tag.render(d.value, { link: true, username: ctx.state.user.username }));
 				break;
 
 			    case 'vitamin':
