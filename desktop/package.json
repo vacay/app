@@ -2,7 +2,7 @@
     "main": "index.html",
     "name": "vacay",
     "description": "A music community & platform.",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "user-agent": "%name/%ver NodeWebkit/%nwver Webkit/%webkit_ver %osinfo",
     "manifestUrl": "https://vacay.io/desktop/package.json",
     "packages": {
