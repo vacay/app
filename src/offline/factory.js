@@ -15,6 +15,25 @@
 		if (err) Log.error(err);
 		self.used = total;
 		Log.info('space used: ', self.used);
+
+		self.check();
+	    });
+	},
+
+	check: function() {
+	    var self = this;
+	    localforage.iterate(function(v, id, iterationNumber) {
+		if (!v.filename) {
+		    Downloader.save(v);
+		    self.updateUI(v.id, true, false);
+		}
+	    }, function(err) {
+		if (err) {
+		    Log.error(err);
+		    return;
+		}
+
+		Log.info('Offline check complete');
 	    });
 	},
 

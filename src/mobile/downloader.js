@@ -44,6 +44,7 @@
 		    cb(err, total);
 		});
 	    } else {
+		//TODO - check if it should be removed
 		cb(null, total);
 	    }
 	}, function(err) {
@@ -52,6 +53,7 @@
     }
 
     function download(data, done) {
+	Log.debug('started download job: ', data);
 	var id = data.vitamin.id;
 
 	//TODO - check if we should be using data
@@ -60,6 +62,8 @@
 	//     cb('network connection is not wifi');
 	//     return;
 	// }
+
+	//TODO - validate if it should be downloaded still
 
 	async.waterfall([
 
@@ -99,9 +103,9 @@
 	], done);
     }
 
-    var q = async.queue(download, 1);
-
     var downloader = {
+	q: async.queue(download, 1),
+
 	clear: function(cb) {
 	    window.resolveLocalFileSystemURL(this.offlinePath, function(entry) {
 		entry.createReader().readEntries(function(entries) {
@@ -132,17 +136,12 @@
 	    });
 	},
 
-	pause: function() {
-	    q.pause();
-	},
-
-	resume: function() {
-	    q.resume();
-	},
-
 	save: function(vitamin) {
-	    q.push({ vitamin: vitamin }, function(err) {
+	    this.q.push({ vitamin: vitamin }, function(err) {
 		if (err) {
+		    if (vitamin.failure) vitamin.failure++;
+		    else vitamin.failure = 1;
+		    Offline.update(vitamin);
 		    Log.error(err);
 		    return;
 		}

@@ -95,9 +95,22 @@
 	    if (Platform.isNative()) {
 		localforage.getItem(data.id.toString()).then(function(v) {
 		    if (v) {
-			var icon = Elem.create({tag: 'i', className: 'icon-download'});
-			elem.querySelector('.i-description').appendChild(icon);
-			if (v.filename) icon.classList.add('success');
+			var desc = elem.querySelector('.i-description');
+			Elem.create({
+			    tag: 'i',
+			    className: 'icon-download ' + (v.filename ? 'success' : ''),
+			    parent: desc
+			});
+
+			if (!v.filename) {
+			    Elem.create({
+				className: 'statusbar',
+				parent: desc,
+				childs: [{
+				    className: 'position'
+				}]
+			    });
+			}
 		    }
 		});
 	    }
@@ -399,6 +412,7 @@
 
 	getArtwork: function(data) {
 	    var artwork = '';
+
 	    for (var a=0; a<data.hosts.length; a++) {
 		if (data.hosts[a].artwork_url) {
 		    artwork = data.hosts[a].artwork_url.indexOf('.sndcdn.com') === -1 ?

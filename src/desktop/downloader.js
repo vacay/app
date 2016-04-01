@@ -43,11 +43,16 @@
 		    });
 		});
 	    } else {
+		//TODO - check if it should be removed
 		cb(err, total);
 	    }
 	});
     }
     var download = function(vitamin, done) {
+	Log.debug('started download job: ', vitamin);
+
+	//TODO - validate if it should be downloaded still
+
 	async.waterfall([
 
 	    function(next) {
@@ -96,9 +101,9 @@
 	], done);
     };
 
-    var q = async.queue(download, 1);
-
     return {
+
+	q: async.queue(download, 1),
 
 	offlinePath: offlinePath + '/',
 
@@ -122,17 +127,12 @@
 	    spaceUsed(this.offlinePath, cb);
 	},
 
-	pause: function() {
-	    q.pause();
-	},
-
-	resume: function() {
-	    q.resume();
-	},
-
 	save: function(v) {
-	    q.push(v, function(err) {
+	    this.q.push(v, function(err) {
 		if (err) {
+		    if (v.failure) v.failure++;
+		    else v.failure = 1;
+		    Offline.update(v);
 		    Log.error(err);
 		    return;
 		}

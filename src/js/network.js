@@ -44,7 +44,7 @@
 			    Log.info('initialization complete');
 			});
 
-			if (Platform.isNative()) Downloader.resume();
+			if (Platform.isNative()) Downloader.q.resume();
 
 		    } else {
 			//TODO - notify user of offline
@@ -52,7 +52,7 @@
 
 			if (Platform.isNative()) {
 			    page('/offline');
-			    Downloader.pause();
+			    Downloader.q.pause();
 			}
 		    }
 		}
