@@ -197,9 +197,6 @@
 
 		if (P.lastSound)
 		    P.lastSound.setVolume(volume);
-
-		if (window.cordova && window.cordova.plugins.VolumeControl)
-		    window.cordova.plugins.VolumeControl.setVolume(volume / 100);
 	    }
 
 	    document.querySelector('.vol-val').style.width  = P.data.volume + '%';

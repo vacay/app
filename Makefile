@@ -20,15 +20,13 @@ cordova:
 	if [ ! -d './platforms/android' ]; then $(CPLATFORM) add android; fi
 	if [ ! -d './plugins/cordova-plugin-statusbar' ]; then $(CPLUGIN) add cordova-plugin-statusbar; fi
 	if [ ! -d './plugins/cordova-plugin-device' ]; then $(CPLUGIN) add cordova-plugin-device; fi
-	if [ ! -d './plugins/com.rd11.remote-controls' ]; then $(CPLUGIN) add com.rd11.remote-controls; fi
+	if [ ! -d './plugins/com.rd11.remote-controls' ]; then $(CPLUGIN) add https://github.com/jcesarmobile/RemoteControls.git; fi
 	if [ ! -d './plugins/cordova-plugin-file-transfer' ]; then $(CPLUGIN) add cordova-plugin-file-transfer; fi
 	if [ ! -d './plugins/cordova-plugin-network-information' ]; then $(CPLUGIN) add cordova-plugin-network-information; fi
 	if [ ! -d './plugins/nl.kingsquare.cordova.background-audio' ]; then $(CPLUGIN) add https://github.com/AubreyHewes/cordova-background-audio.git; fi
 	if [ ! -d './plugins/cordova-plugin-app-version' ]; then $(CPLUGIN) add cordova-plugin-app-version; fi
 	if [ ! -d './plugins/cordova-plugin-inappbrowser' ]; then $(CPLUGIN) add cordova-plugin-inappbrowser; fi
-	if [ ! -d './plugins/cordova-volume-control' ]; then $(CPLUGIN) add cordova-volume-control; fi
 	if [ ! -d './plugins/cordova-plugin-music-controls' ]; then $(CPLUGIN) add https://github.com/homerours/cordova-music-controls-plugin; fi
-	if [ ! -d './plugins/com.borismus.webintent' ]; then $(CPLUGIN) add https://github.com/Initsogar/cordova-webintent.git; fi
 
 	cordova prepare
 
