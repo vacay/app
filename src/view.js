@@ -13,11 +13,11 @@
 
     if (!Platform.isMobile()) {
 	toolbar.addEventListener('mouseenter', function(e) {
-	    document.body.classList.toggle('menu-open', true);
+	    if (window.innerWidth > 899) document.body.classList.toggle('menu-open', true);
 	});
 
 	toolbar.addEventListener('mouseleave', function(e) {
-	    document.body.classList.toggle('menu-open', false);
+	    if (window.innerWidth > 899) document.body.classList.toggle('menu-open', false);
 	});
 
 	window.addEventListener('resize', function() {
