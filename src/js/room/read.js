@@ -18,23 +18,37 @@
 	var load = function() {
 	    var r = document.getElementById('river');
 	    var l = r.querySelector('.list');
-	    var frag = document.createDocumentFragment();
 
 	    View.scrollOff();
 
-	    l.appendChild(Elem.create({
+	    var nowplaying = Elem.create();
+	    nowplaying.appendChild(Elem.create({
+		className: 'h _d',
+		childs: [{
+		    tag: 'a',
+		    text: 'Nowplaying'
+		}]
+	    }));
+
+	    if (ctx.state.room.nowplaying)
+		nowplaying.appendChild(Vitamin.render(ctx.state.room.nowplaying));
+
+	    var users = Elem.create();
+	    users.appendChild(Elem.create({
 		className: 'h _d',
 		childs: [{
 		    tag: 'a',
 		    text: 'Users in the room'
 		}]
 	    }));
-
+	    var frag = document.createDocumentFragment();
 	    ctx.state.room.users.forEach(function(u) {
 		frag.appendChild(User.render(u));
 	    });
+	    users.appendChild(frag);
 
-	    l.appendChild(frag);
+	    l.appendChild(nowplaying);
+	    l.appendChild(users);
 	    delete r.dataset.loading;	    
 	};
 

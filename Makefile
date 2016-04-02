@@ -51,6 +51,10 @@ deploy_staging:
 	aws s3 cp www/index.html s3://staging.vacay.io/index.html
 	aws s3 cp resources/favicon.ico s3://staging.vacay.io/favicon.ico
 
+remove_staging:
+	aws s3 rm s3://staging.vacay.io/index.html
+	aws s3 rm s3://staging.vacay.io/favicon.ico
+
 ## Desktop
 
 release_patch_desktop:

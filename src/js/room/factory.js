@@ -54,6 +54,7 @@
 		    else Room.join(data);
 
 		    inRoom = !inRoom;
+		    btn.innerHTML = inRoom ? 'leave room' : 'join room';
 		    btn.classList.toggle('active', inRoom);		    
 		}
 	    });
