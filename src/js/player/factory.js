@@ -255,11 +255,7 @@
 	    play: function () {
 		P.updatePlaying(true);
 		P.setPageTitle('\u25B6');
-
-		WS.emit('player:status', {
-		    playing: P.data.playing,
-		    id: this._data.vitamin.id
-		});
+		P.broadcast.status();
 	    },
 	    stop: function () {
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
@@ -267,12 +263,7 @@
 		P.updatePlaying(false);
 		P.updatePosition('0%');
 		P.setPageTitle();
-
-		WS.emit('player:status', {
-		    playing: P.data.playing,
-		    position: P.data.position,
-		    id: this._data.vitamin.id
-		});
+		P.broadcast.status();
 	    },
 	    pause: function () {
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
@@ -281,11 +272,7 @@
 
 		P.updatePlaying(false);
 		P.setPageTitle('\u25FC');
-
-		WS.emit('player:status', {
-		    playing: P.data.playing,
-		    id: this._data.vitamin.id
-		});
+		P.broadcast.status();
 	    },
 	    resume: function () {
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
@@ -294,11 +281,7 @@
 
 		P.updatePlaying(true);
 		P.setPageTitle('\u25B6');
-
-		WS.emit('player:status', {
-		    playing: P.data.playing,
-		    id: this._data.vitamin.id
-		});
+		P.broadcast.status();
 	    },
 	    finish: function () {
 		if (this._data.vitamin.id !== P.data.nowplaying.id) return;
@@ -402,15 +385,7 @@
 
 			P.updatePosition((progress * 100) + '%');
 			P.updateTime(this.position, this.durationEstimate);
-
-			WS.emit('player:status', {
-			    time: P.data.time,
-			    playing: P.data.playing,
-			    position: P.data.position,
-			    loading: P.data.loading,
-			    id: this._data.vitamin.id,
-			    room: Room.name()
-			});
+			P.broadcast.status();
 
 			P.lastWPExec = d;
 		    }
@@ -564,6 +539,7 @@
 		    else if (Room.name()) {
 			if (opts.position) P.lastSound.setPosition(opts.position);
 			if (P.lastSound.paused) P.lastSound.play();
+			else P.lastSound.pause();
 		    } else P.lastSound.togglePause();
 		} else {
 		    sm._writeDebug('Warning: sound failed to load (security restrictions, 404 or bad format)', 2);
@@ -747,10 +723,7 @@
 			P.lastSound.resume();
 		    } else {
 			P.updatePosition(((P.lastSound.position / P.lastSound.durationEstimate) * 100) + '%');
-			WS.emit('player:status', {
-			    position: P.data.position,
-			    id: P.lastSound._data.vitamin.id
-			});
+			P.broadcast.status();
 		    }
 		}
 		P.dragActive = false;
@@ -795,9 +768,11 @@
 		nMsecOffset = Math.min(nMsecOffset, duration);
 	    }
 	    if (!isNaN(nMsecOffset)) {
-		if (P.data.remote) {
-		    WS.emit('player:position', { position: nMsecOffset });
-		} else {
+
+		if (P.data.remote || Room.name())
+		    P.broadcast.position(nMsecOffset);
+
+		if (!P.data.remote) {
 		    oSound = P.lastSound;
 		    oSound.setPosition(nMsecOffset);
 		}
@@ -820,6 +795,19 @@
 		    room: Room.name(),
 		    mode: P.data.mode
 		});
+	    },
+	    status: function() {
+		WS.emit('player:status', {
+		    time: P.data.time,
+		    playing: P.data.playing,
+		    position: P.data.position,
+		    loading: P.data.loading,
+		    id: P.data.nowplaying.id,
+		    room: Room.name()
+		});
+	    },
+	    position: function(p) {
+		WS.emit('player:position', { position: p, room: Room.name() });
 	    }
 	},
 
@@ -945,7 +933,8 @@
 	    });
 
 	    WS.on('player:position', function(data) {
-		if (!P.data.remote && P.lastSound) P.lastSound.setPosition(data.position);
+		if (P.lastSound && (!P.data.remote || (data.room && data.room === Room.name())))
+		    P.lastSound.setPosition(data.position);
 	    });
 
 	    WS.on('player:volume', function(data) {
@@ -1003,17 +992,21 @@
 		    if (data.loading) P.updateLoading(data.loading);
 
 		    if (typeof data.playing !== 'undefined' && P.data.playing !== data.playing) P.updatePlaying(data.playing);
+		} else if (Room.name() && P.data.playing !== data.playing) {
+		    P.lastSound.togglePause();
+		    P.updatePlaying(data.playing);
 		}
 	    });
 
 	    WS.on('player:nowplaying', function(data) {
+		console.log('player:nowplaying', data);
 		P.data.mode = data.mode;
 
 		if (data.nowplaying) {
 		    P.data.nowplaying = data.nowplaying;
 		    P.updateNowplaying();
 
-		    if (data.room !== Room.name() || P.data.remote)
+		    if (!data.room || data.room !== Room.name() || P.data.remote)
 			return;
 
 		    if (data.nowplaying) P.load(data.nowplaying, {
