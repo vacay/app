@@ -44,20 +44,22 @@
 		}]
 	    });
 
-	    var btn = Elem.create({
-		tag: 'button',
-		className: 'rnd sm success right ' + (inRoom ? 'active' : ''),
-		text: inRoom ? 'leave room' : 'join room',
-		parent: i,
-		onclick: function(e) {
-		    if (inRoom) Room.leave();
-		    else Room.join(data);
+	    if (Me.id) {
+		var btn = Elem.create({
+		    tag: 'button',
+		    className: 'rnd sm success right ' + (inRoom ? 'active' : ''),
+		    text: inRoom ? 'leave room' : 'join room',
+		    parent: i,
+		    onclick: function(e) {
+			if (inRoom) Room.leave();
+			else Room.join(data);
 
-		    inRoom = !inRoom;
-		    btn.innerHTML = inRoom ? 'leave room' : 'join room';
-		    btn.classList.toggle('active', inRoom);		    
-		}
-	    });
+			inRoom = !inRoom;
+			btn.innerHTML = inRoom ? 'leave room' : 'join room';
+			btn.classList.toggle('active', inRoom);		    
+		    }
+		});
+	    }
 
 	    return i;
 	},
