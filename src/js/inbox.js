@@ -38,7 +38,9 @@
 				subscribed = items[i].pages;
 			    }
 			    frag.appendChild(Elem.create({className: 'i-divider'}));
-			    frag.appendChild(Page.render(subscribed[0]));
+			    frag.appendChild(Page.render(subscribed[0], {
+				className: 'i-clear'
+			    }));
 			    last_page = subscribed[0].id;
 			}
 			frag.appendChild(Vitamin.render(items[i]));

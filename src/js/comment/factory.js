@@ -14,7 +14,7 @@
 
 	    var elem = Elem.create({ className: 'i comment' });
 
-	    var user = User.render(data.user, { avatarOnly: true, comment: true });
+	    var user = User.render(data.user, { simple: true });
 	    elem.appendChild(user);
 
 	    var body = Elem.create({ className: 'i i-body _m' });

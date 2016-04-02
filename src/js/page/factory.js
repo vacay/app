@@ -14,10 +14,10 @@
 	    opts = opts || {};
 
 	    var elem = Elem.create({
-		className: 'page i'
+		className: 'page i ' + opts.className
 	    });
 
-	    data.time = data._pivot_created_at ? Utils.fromNow(data._pivot_created_at) : '';
+	    data.time = data._pivot_created_at ? (' ' + Utils.fromNow(data._pivot_created_at)) : '';
 	    elem.innerHTML = tmpl(data);
 
 	    if (opts.subscribe && Me.id) {

@@ -2,11 +2,11 @@
 @import 'nib'
 
 .mouse .i:hover
-    a.i-title
+    a
         color blue
         text-decoration underline
 
-.mouse .list > .i:hover
+.mouse .list > .i:hover:not(.i-clear)
     background-color #fcfcfc
 
 .i
@@ -14,6 +14,9 @@
     display block
     background white
     padding 15px
+
+    &.i-clear
+        background transparent
 
     &:before
     &:after

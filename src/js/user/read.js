@@ -172,9 +172,9 @@
 			    });
 			}
 
+			frag.appendChild(crate);
 			frag.appendChild(recommended);
 			frag.appendChild(recommendations);
-			frag.appendChild(crate);
 
 			View.scrollOff();
 
@@ -262,7 +262,6 @@
 	    single: true,
 	    subscribe: true,
 	    bio: true,
-	    live: true,
 	    editable: ctx.state.user.isOwner
 	}));
     };

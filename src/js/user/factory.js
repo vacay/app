@@ -13,12 +13,14 @@
 	    opts = opts || {};
 	    var elem = Elem.create({
 		tag: opts.avatarOnly ? 'span' : 'div',
-		className: 'user'
+		className: 'user ' + opts.className
 	    });
 	    elem.dataset.username = data.username;
 
+	    var body = Elem.create({ className: 'i-body' });
 	    var avatar = Elem.create({
 		tag: opts.editable ? 'form' : 'a',
+		parent: opts.simple ? body : elem,
 		className: 'avatar',
 		attributes: {
 		    href: '/@' + data.username
@@ -31,65 +33,15 @@
 		    }
 		}]
 	    });
+	    avatar.title = data.username;
 
-	    elem.appendChild(avatar);
+	    if (opts.avatarOnly) return elem;
 
-	    if (opts.avatarOnly) {
-		avatar.title = data.username;
-
-		if (opts.comment) {
-		    var dis = Elem.create({
-			tag: 'a',
-			text: data.name
-		    });
-		    //TODO - href
-		    var dos = Elem.create({
-			tag: 'small',
-			text: '  @' + data.username
-		    });
-
-		    dis.appendChild(dos);
-		    elem.appendChild(dis);
-		}
-
-		if (opts.live) {
-		    avatar.classList.add('t-left');
-		    avatar.removeAttribute('href');
-		    avatar.onclick = function() {
-			if (avatar.classList.contains('active'))
-			    Player.leave();
-			else
-			    Player.join('u:' + data.username);
-
-		    };
-
-		    avatar.classList.toggle('active', Player.data.room === 'u:' + data.username);
-
-		    var play = Elem.create({
-			tag: 'i',
-			className: 'icon-play'
-		    });
-
-		    var pause = Elem.create({
-			tag: 'i',
-			className: 'icon-pause'
-		    });
-		    avatar.appendChild(play);
-		    avatar.appendChild(pause);
-		}
-		return elem;
-	    }
-
-	    if (!opts.avatarOnly) {
-		elem.classList.add('i', 'i-left');
-		avatar.classList.add('left');
-	    }
-
-	    var body = Elem.create({ className: 'i-body' });
 	    var o = {
 		tag: opts.single ? 'h1' : 'a',
 		attributes: {},
 		text: data.name,
+		parent: body,
 		className: 'i-title'
 	    };
 
@@ -97,7 +49,31 @@
 	    if (opts.editable) o.attributes.placeholder = 'Your name';
 
 	    var name = Elem.create(o);
-	    body.appendChild(name);
+	    elem.appendChild(body);
+
+	    if (opts.simple) {
+		var img = avatar.querySelector('img');
+		img.style.width = '30px';
+		img.style.height = '30px';
+		elem.classList.add('simple');
+		if (opts.text) {
+		    Elem.create({
+			tag: 'small',
+			text: ' ' + opts.text,
+			parent: body
+		    });
+		} else {
+		    Elem.create({
+			tag: 'small',
+			text: '  @' + data.username,
+			parent: body
+		    });
+		}
+		return elem;
+	    }
+
+	    elem.classList.add('i', 'i-left');
+	    avatar.classList.add('left');
 
 	    if (data.location || opts.editable) {
 		var location = Elem.create({
@@ -116,8 +92,6 @@
 		if (opts.editable) bio.setAttribute('placeholder', 'A Short bio.');
 		body.appendChild(bio);
 	    }
-
-	    elem.appendChild(body);
 
 	    if (opts.single) {
 		var meta = Elem.create();
@@ -138,37 +112,6 @@
 	    }
 
 	    if (Me.id && data.username !== Me.username) {
-		if (opts.live) {
-
-		    var isLive = Player.data.users.filter(function(u) {
-			return u.username === data.username;
-		    });
-
-		    if (isLive.length) {
-			var isListening = Player.data.room === 'u:' + data.username;
-			var live = Elem.create({
-			    tag: 'button',
-			    className: 'rnd sm success' + (opts.single ? '' : ' right') + (isListening ? ' active' : ''),
-			    text: isListening ? 'stop listening' : 'listen live'
-			});
-
-			live.onclick = function() {
-			    if (live.classList.contains('active')) {
-				Player.leave();
-				live.innerHTML = 'listen live';
-			    } else {
-				Player.join('u:' + data.username);
-				live.innerHTML = 'stop listening';
-			    }
-
-			    live.classList.toggle('active');
-			};
-
-			elem.classList.add('i-right');
-			elem.appendChild(live);
-		    }
-		}
-
 		if (opts.subscribe) {
 		    var isSubscribed = Me.isSubscribed('users', data.id);
 		    var btn = Elem.create({
