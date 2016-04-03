@@ -25,18 +25,14 @@
 		offset += items.length;
 
 		var frag = document.createDocumentFragment();
-		var last_user, i =0;
+		var i =0;
 		for ( ; i < items.length; i++) {
-		    if (last_user !== items[i].user_id) {
-			console.log(items[i]);
-			frag.appendChild(Elem.create({className: 'i-divider'}));
-			frag.appendChild(User.render(items[i].taggers[0], {
-			    simple: true,
-			    text: 'tagged you ' + Utils.fromNow(items[i].published_at),
-			    className: 'i i-clear'
-			}));
-			last_user = items[i].user_id;
-		    }
+		    frag.appendChild(Elem.create({className: 'i-divider'}));
+		    frag.appendChild(User.render(items[i].taggers[0], {
+			simple: true,
+			text: 'tagged you ' + Utils.fromNow(items[i].published_at),
+			className: 'i i-clear'
+		    }));
 		    frag.appendChild(Vitamin.render(items[i]));
 		}
 
