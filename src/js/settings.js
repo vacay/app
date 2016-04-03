@@ -104,16 +104,18 @@
 	    var s = p.querySelector('.btn-switch');
 
 	    var params = {};
-	    var prop = 'public_' + p.dataset.type;
+	    var prop = p.dataset.type;
 	    var value = Me.data[prop] ? 0 : 1;
 	    params[prop] = value;
 
 	    s.classList.toggle('active', value);
+	    Me.data[prop] = value;
 
 	    User.update(params, function(err) {
 		if (err) {
 		    Log.error(err);
 		    s.classList.toggle('active', !value);
+		    Me.data[prop] = !value;
 		}
 	    });
 	};
@@ -189,7 +191,7 @@
 	    className: 'i i-right',
 	    parent: privacy
 	});
-	crate.dataset.type = 'crate';
+	crate.dataset.type = 'public_crate';
 	var cb = Elem.create({
 	    className: 'i-body',
 	    parent: crate,
@@ -209,7 +211,7 @@
 	var history = Elem.create({
 	    className: 'i i-right'
 	});
-	history.dataset.type = 'listens';
+	history.dataset.type = 'public_listens';
 	var hb = Elem.create({
 	    className: 'i-body',
 	    childs: [{
@@ -239,8 +241,32 @@
 	    }]
 	});
 
+	var activity = Elem.create({
+	    className: 'i i-right',
+	    parent: notifications
+	});
+	activity.dataset.type = 'activity';
+	Elem.create({
+	    className: 'i-body',
+	    parent: activity,
+	    childs: [{
+		tag: 'h4',
+		text: 'Activity'
+	    }, {
+		tag: 'span',
+		text: 'Control whether or not you want to be notified when someone tags you'
+	    }]
+	});
+	var activitySwitch = btnswitch.cloneNode(true);
+	activitySwitch.querySelector('.on').innerHTML = 'on';
+	activitySwitch.querySelector('.off').innerHTML = 'off';
+	activitySwitch.classList.toggle('active', Me.data.activity);
+	activitySwitch.addEventListener('click', onswitch);
+	activity.appendChild(activitySwitch);
+
 	var discussions = Elem.create({
 	    className: 'i',
+	    parent: notifications,
 	    childs: [{
 		tag: 'h4',
 		text: 'Discussions'
@@ -249,8 +275,6 @@
 		text: 'These are the discussions you will be notified about when there are new comments.'
 	    }]
 	});
-
-	notifications.appendChild(discussions);
 
 	var toggleWatch = function(e) {
 	    var id = parseInt(Elem.getClosest(e.target, '.discussion').dataset.id, 10);
