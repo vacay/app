@@ -56,7 +56,7 @@
 	async.waterfall([
 
 	    function(next) {
-		Vitamin.getStream(vitamin.id, next);
+		Vitamin.getStream(vitamin.id, {}, next);
 	    },
 
 	    function(url, next) {

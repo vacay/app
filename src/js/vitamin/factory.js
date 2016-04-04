@@ -433,7 +433,8 @@
 	    };
 	},
 
-	getStream: function(id, cb) {
+	getStream: function(id, opts, cb) {
+	    opts = opts || {};
 	    var self = this;
 
 	    async.waterfall([
@@ -454,7 +455,7 @@
 
 			    Log.info('Testing: ', url);
 
-			    if (h.title === 'youtube') {
+			    if (h.title === 'youtube' && !opts.audioOnly) {
 				Request.head(url).success(function(data, res) {
 				    host = h;
 				    check(true);
@@ -479,15 +480,12 @@
 
 			};
 
-			if (h.stream_url && h.stream_url.indexOf('soundcloud.com') > -1)
-			    test(h.stream_url);
-
-			else if (h.title === 'youtube' && window.YTDL) {
+			if (h.title === 'youtube' && window.YTDL) {
 			    window.YTDL.stream(h.identifier, function(err, video) {
 				if (err) check(false);
 				else test(video);
 			    });
-			} else if (h.title === 'youtube' && !Platform.isMobile()) {
+			} else if (h.title === 'youtube' && !Platform.isMobile() && !opts.audioOnly) {
 			    host = h;
 			    check(true);
 			}
@@ -511,7 +509,7 @@
 			    return;
 			}
 
-			next(null, host.title !== 'youtube' ? host.stream_url : window.YTDL ? host.stream_url : host.url );
+			next(null, host.title !== 'youtube' ? host.stream_url : (window.YTDL || opts.audioOnly) ? host.stream_url : host.url );
 		    });
 
 		}

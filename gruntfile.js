@@ -64,6 +64,7 @@ module.exports = function(grunt) {
 			'bower_components/mousetrap/mousetrap.min.js',
 			'bower_components/showdown/dist/showdown.min.js',
 			'bower_components/ua-parser-js/dist/ua-parser.min.js',
+			'bower_components/waveform-generator/dist/WaveformGenerator.js',
 			'src/request.js',
 			'src/raf.js',
 			'src/element.js',

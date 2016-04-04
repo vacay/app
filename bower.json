@@ -29,6 +29,7 @@
 	"showdown": "~1.2.2",
 	"ua-parser-js": "~0.7.9",
 	"localforage": "~1.2.7",
-	"async": "1.5.2"
+	"async": "1.5.2",
+	"waveform-generator": "enjikaka/WaveformGenerator.js#master"
     }
 }

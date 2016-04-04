@@ -68,7 +68,7 @@
 	async.waterfall([
 
 	    function(next) {
-		Vitamin.getStream(id, next);
+		Vitamin.getStream(id, {}, next);
 	    },
 
 	    function(url, next) {

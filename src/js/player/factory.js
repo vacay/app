@@ -128,6 +128,33 @@
 	    document.getElementById('remaining-time').innerHTML = '-' + P.getTime(total - position, true);
 	},
 
+	updateWaveform: function(id, url) {
+	    waveform.style['background-image'] = null;
+	    var xhr = new XMLHttpRequest();
+	    xhr.open('GET', url, true);
+	    xhr.responseType = 'blob';
+	    xhr.onload = function (e) {
+		if (this.status == 200) {
+		    var reader = new FileReader();
+		    reader.onload = function (event) {
+			if (id !== P.data.nowplaying.id) return;
+
+			var settings = {
+			    waveformColor: '#666666',
+			    waveformWidth: 3500,
+			    waveformHeight: 120
+			};
+
+			new WaveformGenerator(event.target.result, settings).then(function (url) {
+			    waveform.style['background-image'] = 'url(' + url + ')';
+			});
+		    };
+		    reader.readAsArrayBuffer(this.response);
+		}
+	    };
+	    xhr.send();
+	},
+
 	updateArtwork: function(isYoutube) {
 	    var artwork = document.getElementById('artwork');
 
@@ -178,7 +205,14 @@
 		l.innerHTML = null;
 		l.appendChild(Vitamin.render(vitamin));
 	    });
-	    waveform.style['background-image'] = 'url(https://s3.amazonaws.com/vacay/' + CONFIG.env + '/waveforms/' + P.data.nowplaying.id + '.png)';
+
+	    if (P.lastSound && P.lastSound.url) {
+		this.updateWaveform(P.data.nowplaying.id, P.lastSound.url);
+	    } else {
+		Vitamin.getStream(P.data.nowplaying.id, { audioOnly: true }, function(err, url) {
+		    if (!err) P.updateWaveform(P.data.nowplaying.id, url);
+		});
+	    }
 	    this.updateArtwork();
 
 	    // Vitamin Styling
@@ -616,7 +650,7 @@
 		if (f && f.filename) {
 		    cb(null, Downloader.offlinePath + f.filename);
 		} else {
-		    Vitamin.getStream(vitamin.id, cb);
+		    Vitamin.getStream(vitamin.id, {}, cb);
 		}
 	    });
 	},
