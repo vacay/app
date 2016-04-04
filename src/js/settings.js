@@ -109,7 +109,6 @@
 	    params[prop] = value;
 
 	    s.classList.toggle('active', value);
-	    Me.data[prop] = value;
 
 	    User.update(params, function(err) {
 		if (err) {
@@ -330,9 +329,6 @@
 
 	View.scrollOff();
 	delete r.dataset.loading;
-
-	Log.debug('settings page');
-
     });
 
 })();

@@ -299,6 +299,7 @@
 		if (res.data.email) Me.data.email = res.email;
 		if (typeof res.data.public_listens !== 'undefined') Me.data.public_listens = res.data.public_listens;
 		if (typeof res.data.public_crate !== 'undefined') Me.data.public_crate = res.data.public_crate;
+		if (typeof res.data.activity !== 'undefined') Me.data.activity = res.data.activity;
 
 		if (res.token) {
 		    WS.emit('token', {
@@ -306,7 +307,7 @@
 			token: res.token
 		    });
 
-		    Auth.setToken(data.token);
+		    Auth.setToken(res.token);
 		    Me.username = Me.data.username = res.data.username;
 		    Me.updateUI();
 		    WS.connect();
