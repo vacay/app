@@ -64,23 +64,33 @@
 		});
 	    }
 
-	    var frag = document.createDocumentFragment();
-	    this.vitamins.forEach(function(v) {
-		frag.appendChild(Vitamin.render(v, { drag: true }));
-		self.updateVitaminUI(v.id, true);
-	    });
+	    async.mapLimit(this.vitamins, 3, function(v, cb) {
+		Vitamin.readOffline(v, cb);
+	    }, function(err, results) {
+		if (err) {
+		    Log.error(err);
+		    return;
+		}
 
-	    elem.appendChild(frag);
+		var frag = document.createDocumentFragment();
+		results.forEach(function(v) {
+		    frag.appendChild(Vitamin.render(v, { drag: true }));
+		    self.updateVitaminUI(v.id, true);
+		});
+		elem.appendChild(frag);
+	    });
 	},
 
 	broadcast: function(localOnly) {
 
 	    this.updateUI();
 
-	    if (!localOnly) WS.emit('queue', {
-		queue: this.vitamins,
-		room: Room.data && Room.data.name
-	    });
+	    if (!localOnly) {
+		WS.emit('queue', {
+		    queue: this.vitamins.map(Vitamin.getData),
+		    room: Room.data && Room.data.name
+		});
+	    }
 	},
 	
 	getNext: function() {

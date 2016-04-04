@@ -231,6 +231,15 @@
 	    });
 	},
 
+	readOffline: function(data, cb) {
+	    if (!Network.online) {
+		cb(null, this.getData(data));
+		return;
+	    }
+
+	    this.read(data.id, null, null, cb);
+	},
+
 	update: function(id, title, original) {
 	    App.api('/vitamin/' + id).put({
 		title: title
@@ -266,32 +275,6 @@
 	    Elem.each(divs, function(div) {
 		div.dataset.active = !crated;
 	    });
-
-	    var np = Player.data.nowplaying;
-	    if (np.id === data.id) {
-		if (!crated) {
-		    np.craters.push({
-			username: Me.username
-		    });
-		} else {
-		    var idx = Utils.find(np.craters, Me.username, 'username');
-		    Player.data.nowplaying.craters.splice(idx, 1);
-		}
-		Player.broadcast.nowplaying();
-	    }
-
-	    if (Queue.isQueued(data.id)) {
-		var qv = Queue.vitamins[Utils.find(Queue.vitamins, data.id)];
-		if (!crated) {
-		    qv.craters.push({
-			username: Me.username
-		    });
-		} else {
-		    var idx2 = Utils.find(qv.craters, Me.username, 'username');
-		    qv.craters.splice(idx2, 1);
-		}
-		Queue.broadcast();
-	    }
 
 	    var cb = function(err) {
 		if (err) {
@@ -422,6 +405,32 @@
 		}
 	    }
 	    return artwork;
+	},
+
+	getData: function(data) {
+	    return {
+		id: data.id,
+		echonest_id: data.echonest_id,
+		fingerprint_id: data.fingerprint_id,
+		lastfm_fingerprint_id: data.lastfm_fingerprint_id,
+		mbid: data.mbid,
+
+		created_at: data.created_at,
+		processed_at: data.processed_at,
+		processing_failed_at: data.processing_failed_at,
+		updated_at: data.updated_at,
+
+		hosts: data.hosts,
+
+		time: data.time,
+		title: data.title,
+		original: data.original,
+		variation: data.variation,
+		displayTitle: data.displayTitle,
+		duration: data.duration,
+		artwork: data.artwork,
+		bitrate: data.bitrate
+	    };
 	},
 
 	getStream: function(id, cb) {

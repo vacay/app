@@ -150,10 +150,6 @@
 	},
 
 	updateNowplaying: function() {
-	    // set mode if applicable
-	    var l = document.querySelector('#nowplaying .list');
-	    l.innerHTML = null;
-
 	    // Mode
 	    var header = document.querySelector('#nowplaying .p-header');
 	    header.innerHTML = P.data.mode ?
@@ -173,7 +169,15 @@
 	    }
 
 	    // Nowplaying
-	    l.appendChild(Vitamin.render(P.data.nowplaying));
+	    Vitamin.readOffline(P.data.nowplaying, function(err, vitamin) {
+		if (err) {
+		    Log.error(err);
+		    return;
+		}
+		var l = document.querySelector('#nowplaying .list');
+		l.innerHTML = null;
+		l.appendChild(Vitamin.render(vitamin));
+	    });
 	    waveform.style['background-image'] = 'url(https://s3.amazonaws.com/vacay/' + CONFIG.env + '/waveforms/' + P.data.nowplaying.id + '.png)';
 	    this.updateArtwork();
 
@@ -209,9 +213,15 @@
 	},
 
 	updateHistory: function(localOnly) {
-	    var elem = document.querySelector('#previous .list');
-	    elem.innerHTML = null;
-	    elem.appendChild(Vitamin.render(P.data.history[P.data.history.length - 1]));
+	    Vitamin.readOffline(P.data.history[P.data.history.length - 1], function(err, vitamin) {
+		if (err) {
+		    Log.error(err);
+		    return;
+		}
+		var elem = document.querySelector('#previous .list');
+		elem.innerHTML = null;
+		elem.appendChild(Vitamin.render(vitamin));
+	    });
 
 	    if (!localOnly) {
 		WS.emit('player:history', P.data.history);
@@ -393,16 +403,6 @@
 	    }
 	},
 
-	playId: function(id) {
-	    Vitamin.read(id, null, null, function(err, vitamin) {
-		if (err) {
-		    Log.error(err);
-		} else {
-		    P.play(vitamin);
-		}
-	    });
-	},
-
 	play: function (vitamin, mode) {
 	    if (P.data.remote) {
 		WS.emit('player:play', { vitamin: vitamin, mode: mode });
@@ -503,6 +503,9 @@
 	    if (!Room.canControl()) Room.leave();
 
 	    if (P.lastSound.position > 3000) {
+		if (Room.name())
+		    P.broadcast.position(0);
+
 		P.lastSound.setPosition(0);
 		P.lastSound.resume();
 	    } else if (P.data.history.length) {
@@ -532,15 +535,12 @@
 	    opts = opts || {};
 
 	    if (P.lastSound && P.lastSound._data.vitamin.id === vitamin.id) {
+		if (opts.position) P.lastSound.setPosition(opts.position);
 
 		// ..and was playing (or paused) and isn't in an error state
 		if (P.lastSound.readyState !== 2) {
 		    if (P.lastSound.playState !== 1) P.lastSound.play(); // not yet playing
-		    else if (Room.name()) {
-			if (opts.position) P.lastSound.setPosition(opts.position);
-			if (P.lastSound.paused) P.lastSound.play();
-			else P.lastSound.pause();
-		    } else P.lastSound.togglePause();
+		    else P.lastSound.togglePause();
 		} else {
 		    sm._writeDebug('Warning: sound failed to load (security restrictions, 404 or bad format)', 2);
 		}
@@ -552,7 +552,7 @@
 		    P.lastSound.stop();
 
 		    if (!opts.noHistory) {
-			P.data.history.push(P.data.nowplaying);
+			P.data.history.push(P.lastSound._data.vitamin);
 			P.updateHistory();
 		    }
 		}
@@ -599,9 +599,8 @@
 		    // analytics.track('play');
 		    // record play count & history
 
-		    if (Network.online && !opts.noBroadcast) {
+		    if (Network.online && !opts.noBroadcast)
 			P.broadcast.nowplaying();
-		    }
 
 		});
 	    }
@@ -790,7 +789,7 @@
 	broadcast: {
 	    nowplaying: function() {
 		WS.emit('player:nowplaying', {
-		    nowplaying: P.data.nowplaying,
+		    nowplaying: Vitamin.getData(P.data.nowplaying),
 		    user: Me.getData(),
 		    room: Room.name(),
 		    mode: P.data.mode
@@ -993,13 +992,14 @@
 
 		    if (typeof data.playing !== 'undefined' && P.data.playing !== data.playing) P.updatePlaying(data.playing);
 		} else if (Room.name() && P.data.playing !== data.playing) {
-		    P.lastSound.togglePause();
+		    if (P.lastSound)
+			data.playing ? P.lastSound.resume() : P.lastSound.pause();
 		    P.updatePlaying(data.playing);
 		}
 	    });
 
 	    WS.on('player:nowplaying', function(data) {
-		console.log('player:nowplaying', data);
+		Log.info('player:nowplaying', data);
 		P.data.mode = data.mode;
 
 		if (data.nowplaying) {
@@ -1011,7 +1011,7 @@
 
 		    if (data.nowplaying) P.load(data.nowplaying, {
 			position: data.position,
-			noBroadcast: !!data.room
+			noBroadcast: true
 		    });
 		}
 	    });
