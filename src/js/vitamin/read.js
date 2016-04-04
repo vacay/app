@@ -20,84 +20,78 @@
 	    var r = document.getElementById('river');
 	    var l = r.querySelector('.list');
 	    
-	    Vitamin.read(ctx.params.id, null, null, function(err, data) {
-		if (err) {
-		    Log.error(err);
-		} else {
-		    View.scrollOff();
+	    View.scrollOff();
 
-		    var frag = document.createDocumentFragment();
+	    var frag = document.createDocumentFragment();
 
-		    if (data.artists.length) {
-			frag.appendChild(Elem.create({
-			    className: 'h _d',
-			    childs: [{
-				tag: 'a',
-				text: 'Artists'
-			    }]
-			}));
-			data.artists.forEach(function(a) {
-			    frag.appendChild(Artist.render(a));
-			});
-		    }
+	    if (ctx.state.vitamin.artists.length) {
+		frag.appendChild(Elem.create({
+		    className: 'h _d',
+		    childs: [{
+			tag: 'a',
+			text: 'Artists'
+		    }]
+		}));
+		ctx.state.vitamin.artists.forEach(function(a) {
+		    frag.appendChild(Artist.render(a));
+		});
+	    }
 
-		    if (data.prescribers.length) {
-			frag.appendChild(Elem.create({
-			    className: 'h _d',
-			    childs: [{
-				tag: 'a',
-				text: 'Prescribers'
-			    }]
-			}));
-			data.prescribers.forEach(function(u) {
-			    frag.appendChild(User.render(u, { subscribe: true, bio: true }));
-			});
-		    }
+	    if (ctx.state.vitamin.prescribers.length) {
+		frag.appendChild(Elem.create({
+		    className: 'h _d',
+		    childs: [{
+			tag: 'a',
+			text: 'Prescribers'
+		    }]
+		}));
+		ctx.state.vitamin.prescribers.forEach(function(u) {
+		    frag.appendChild(User.render(u, { subscribe: true, bio: true }));
+		});
+	    }
 
-		    if (data.craters.length) {
-			frag.appendChild(Elem.create({
-			    className: 'h _d',
-			    childs: [{
-				tag: 'a',
-				text: 'Craters'
-			    }]
-			}));
-			data.craters.forEach(function(u) {
-			    frag.appendChild(User.render(u, { subscribe: true, bio: true }));
-			});
-		    }
+	    if (ctx.state.vitamin.craters.length) {
+		frag.appendChild(Elem.create({
+		    className: 'h _d',
+		    childs: [{
+			tag: 'a',
+			text: 'Craters'
+		    }]
+		}));
+		ctx.state.vitamin.craters.forEach(function(u) {
+		    frag.appendChild(User.render(u, { subscribe: true, bio: true }));
+		});
+	    }
 
-		    if (data.pages.length) {
-			frag.appendChild(Elem.create({
-			    className: 'h _d',
-			    childs: [{
-				tag: 'a',
-				text: 'Pages'
-			    }]
-			}));
-			data.pages.forEach(function(p) {
-			    frag.appendChild(Page.render(p, { subscribe: true }));
-			});
-		    }
+	    if (ctx.state.vitamin.pages.length) {
+		frag.appendChild(Elem.create({
+		    className: 'h _d',
+		    childs: [{
+			tag: 'a',
+			text: 'Pages'
+		    }]
+		}));
+		ctx.state.vitamin.pages.forEach(function(p) {
+		    frag.appendChild(Page.render(p, { subscribe: true }));
+		});
+	    }
 
-		    if (data.prescriptions.length) {
-			frag.appendChild(Elem.create({
-			    className: 'h _d',
-			    childs: [{
-				tag: 'a',
-				text: 'Prescriptions'
-			    }]
-			}));
-			data.prescriptions.forEach(function(p) {
-			    frag.appendChild(Prescription.render(p));
-			});
-		    }
+	    if (ctx.state.vitamin.prescriptions.length) {
+		frag.appendChild(Elem.create({
+		    className: 'h _d',
+		    childs: [{
+			tag: 'a',
+			text: 'Prescriptions'
+		    }]
+		}));
+		ctx.state.vitamin.prescriptions.forEach(function(p) {
+		    frag.appendChild(Prescription.render(p));
+		});
+	    }
 
-		    l.appendChild(frag);
-		}
+	    l.appendChild(frag);
 
-		delete r.dataset.loading;
-	    });
+	    delete r.dataset.loading;
 	};
 
 	View.render({

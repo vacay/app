@@ -237,7 +237,7 @@
 		return;
 	    }
 
-	    this.read(data.id, null, null, cb);
+	    this.read(data.id, null, { simple: true }, cb);
 	},
 
 	update: function(id, title, original) {

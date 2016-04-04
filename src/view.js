@@ -77,9 +77,9 @@
 	    this.updateToolbar();
 
 	    if (opts.load) {
-		opts.load();
-		this.load = opts.load;
 		this.scrollOn();
+		this.load = opts.load;
+		this.load();
 	    }
 	},
 	github: function(file, cb) {
