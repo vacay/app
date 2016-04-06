@@ -51,30 +51,25 @@
 	    //TODO - markdown
 	    var description = Elem.create({
 		className: 'i description',
-		text: data.description
+		text: data.description,
+		parent: elem
 	    });
-	    elem.appendChild(description);
-	    elem.appendChild(Elem.create({
+	    Elem.create({
 		className: 'i description',
+		parent: elem,
 		childs: [{
 		    tag: 'small',
 		    text: Utils.fromNow(data.published_at)
-		}, {
-		    tag: 'small',
-		    text: data.vitamins.length + ' Vitamins'
 		}]
-	    }));
+	    });
 
-	    var recommendations = Elem.create({ className: 'recommendations' });
 	    var actions = Elem.create({ className: 'i p-actions' });
 
-	    actions.appendChild(recommendations);
-
-	    //TODO - play all / queue all
+	    //TODO - queue all
 	    Elem.create({
 		tag: 'button',
-		className: 'link icon',
-		html: '<i class="icon-play"></i>',
+		className: 'sm rnd',
+		html: '<i class="icon-play"></i> Play',
 		parent: actions
 	    }).onclick = function() {
 		Player.play(data.vitamins);
@@ -83,12 +78,38 @@
 	    if (!opts.single) {
 		Elem.create({
 		    tag: 'button',
-		    className: 'link icon',
-		    text: '...',
+		    className: 'sm rnd',
+		    text: data.vitamins.length + ' Vitamin' + (data.vitamins.length > 1 ? 's' : ''),
 		    parent: actions
 		}).onclick = function() {
 		    elem.classList.toggle('simple');
+		    this.classList.toggle('active');
 		};
+	    }
+
+	    var recommend = Elem.create({
+		tag: 'button',
+		className: 'sm rnd success recommend',
+		text: '',
+		parent: actions,
+		childs: [{
+		    tag: 'span',
+		    className: 'active',
+		    text: 'Recommended'
+		}, {
+		    tag: 'span',
+		    className: 'inactive',
+		    text: 'Recommend'
+		}]
+	    });
+
+	    if (!isOwner && Me.id) {
+		recommend.onclick = function(e) {
+		    Prescription.toggleVote(e);
+		};
+		recommend.classList.toggle('active', Utils.exists(data.votes, Me.id, 'user_id'));
+	    } else {
+		recommend.classList.add('disabled');
 	    }
 
 	    var users = [];
@@ -105,39 +126,15 @@
 	    if (additional.length) {
 		var count = Elem.create({
 		    tag: 'button',
-		    className: 'sm link',
-		    text: '+' + additional.length
+		    className: 'sm link pull-right',
+		    text: '+' + additional.length,
+		    parent: actions
 		});
-		recommendations.appendChild(count);
 	    }
 
 	    users.forEach(function(u) {
-		recommendations.appendChild(User.render(u.user, { avatarOnly: true }));
+		actions.appendChild(User.render(u.user, { avatarOnly: true, className: 'pull-right' }));
 	    });
-
-	    var recommend = Elem.create({
-		tag: 'button',
-		className: 'sm rnd success recommend',
-		text: '',
-		childs: [{
-		    tag: 'span',
-		    className: 'active',
-		    text: 'Recommended'
-		}, {
-		    tag: 'span',
-		    className: 'inactive',
-		    text: 'Recommend'
-		}]
-	    });
-	    if (!isOwner && Me.id) {
-		recommend.onclick = function(e) {
-		    Prescription.toggleVote(e);
-		};
-		recommend.classList.toggle('active', Utils.exists(data.votes, Me.id, 'user_id'));
-	    } else {
-		recommend.classList.add('disabled');
-	    }
-	    recommendations.appendChild(recommend);
 
 	    var owner_actions = Elem.create({ className: 'i o-actions' });
 

@@ -23,7 +23,7 @@
 
 	ctx.state.user.isOwner = ctx.state.user.username === Me.username;
 
-	var filterLoaded, headingLoaded;
+	var filterLoaded;
 
 	var q, offset = 0;
 
@@ -100,7 +100,6 @@
 	    if (options) {
 		offset = 0;
 		l.innerHTML = null;
-		headingLoaded = false;
 
 		if (typeof options.q !== 'undefined') q = options.q;
 
@@ -185,31 +184,13 @@
 
 			offset += data.length;
 
-			if (!!offset && self.filter && !filterLoaded) {
-
-			    var f = document.querySelector('.filter-container');
+			var f = document.querySelector('.filter-container');
+			if (!!offset && f && !filterLoaded) {
+			    console.log('loading filter search');
 			    f.innerHTML = doT.template(View.tmpl('/filter/search.html'))({
 				placeholder: ctx.params.subpath
 			    });
 			    filterLoaded = true;
-			}
-
-			if (offset && !headingLoaded && ctx.params.subpath === 'crate') {
-			    var shuffleParams = {
-				limit: 1,
-				order_by: 'rand'
-			    };
-
-			    if (params.q) shuffleParams.q = params.q;
-
-			    var heading = Vitamins.renderShuffle({
-				title: '@' + ctx.state.user.username + '\'s crate',
-				path: '/user/' + ctx.state.user.username + '/crate',
-				params: shuffleParams
-			    });
-			    frag.appendChild(heading);
-
-			    headingLoaded = true;
 			}
 			
 			data.forEach(function(d) {
@@ -262,7 +243,8 @@
 	    single: true,
 	    subscribe: true,
 	    bio: true,
-	    editable: ctx.state.user.isOwner
+	    editable: ctx.state.user.isOwner,
+	    shuffle: true
 	}));
     };
 

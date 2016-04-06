@@ -10,7 +10,7 @@
     return {
 	render: function(data) {
 	    var self = this;
-	    var container = Elem.create({ className: 'tags' });
+	    var container = Elem.create({ className: 'tags i-body' });
 	    var current = Elem.create({
 		tag: 'span',
 		className: 'current'

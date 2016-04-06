@@ -326,8 +326,8 @@
 	});
 
 	l.appendChild(notifications);
-
 	View.scrollOff();
+	View.active('[href="/settings"]');
 	delete r.dataset.loading;
     });
 

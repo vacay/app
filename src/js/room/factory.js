@@ -210,6 +210,7 @@
 	},
 
 	leave: function() {
+	    if (!this.name()) return;
 	    this.data = null;
 	    this.update();
 	    WS.emit('room:leave');

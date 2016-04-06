@@ -9,20 +9,14 @@
 
     return {
 	renderShuffle: function(opts) {
-	    var el = Elem.create({
+	    return Elem.create({
 		tag: 'button',
-		className: 'sm icon',
-		childs: [{
-		    tag: 'i',
-		    className: 'icon-shuffle'
-		}]
+		className: 'sm rnd',
+		html: '<i class="icon-shuffle"></i> ' + opts.title,
+		onclick: function() {
+		    Player.play(null, opts);
+		}
 	    });
-
-	    el.onclick = function() {
-		Player.play(null, opts);
-	    };
-
-	    return el;
 	}
     };
 });

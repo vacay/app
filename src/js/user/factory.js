@@ -272,6 +272,18 @@
 		elem.appendChild(edit);
 	    }
 
+	    if (opts.shuffle) {
+		var shuffle = Vitamins.renderShuffle({
+		    title: '@' + data.username + '\'s crate',
+		    path: '/user/' + data.username + '/crate',
+		    params: {
+			limit: 1,
+			order_by: 'rand'
+		    }
+		});
+		elem.appendChild(shuffle);
+	    }
+
 	    return elem;
 	},
 

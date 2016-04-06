@@ -58,6 +58,18 @@
 		}
 	    }
 
+	    if (opts.shuffle) {
+		var shuffle = Vitamins.renderShuffle({
+		    title: '@' + data.title + '\'s (page) vitamins',
+		    path: '/page/' + data.id + '/vitamins',
+		    params: {
+			limit: 1,
+			order_by: 'rand'
+		    }
+		});
+		elem.appendChild(shuffle);
+	    }
+
 	    // if (data.title) {
 	    // 	var title = Elem.create({ tag: 'small' });
 	    // 	title.innerHTML = data.title;

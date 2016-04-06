@@ -989,6 +989,7 @@
 	    });
 
 	    WS.on('queue', function(data) {
+		Log.info('queue: ', data);
 		Queue.vitamins = data.queue;
 		Queue.broadcast(true);
 		Queue.render();

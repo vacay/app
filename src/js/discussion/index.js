@@ -54,6 +54,7 @@
 
 	document.querySelector('.filter-container').innerHTML = View.tmpl('/discussion/filter.html');
 	View.active('.filter-container .' + closed);
+	View.active('[href="/discussions"]');
 	
     };
 

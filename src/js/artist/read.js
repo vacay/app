@@ -20,7 +20,7 @@
     };
 
     var read = function(ctx) {
-	var offset = 0, headingLoaded, filterLoaded, q;
+	var offset = 0, filterLoaded, q;
 	var load = function(opts) {
 
 	    var subpath = ctx.params.subpath || 'vitamins';
@@ -32,7 +32,6 @@
 	    if (opts) {
 		offset = 0;
 		l.innerHTML = null;
-		headingLoaded = false;
 
 		if (typeof opts.q !== 'undefined') q = opts.q;
 
@@ -61,24 +60,6 @@
 			filterLoaded = true;
 		    }
 
-		    if (offset && !headingLoaded) {
-			var shuffleParams = {
-			    limit: 1,
-			    order_by: 'rand'
-			};
-
-			if (params.q) shuffleParams.q = params.q;
-
-			var heading = Vitamins.renderShuffle({
-			    title: '@' + ctx.state.artist.name + '\'s (artist) vitamins',
-			    path: '/artist/' + ctx.params.id + '/vitamins',
-			    params: shuffleParams
-			});
-			frag.appendChild(heading);
-
-			headingLoaded = true;
-		    }
-
 		    data.forEach(function(d) {
 			frag.appendChild(Vitamin.render(d));
 		    });
@@ -98,7 +79,7 @@
 	    load: load
 	});
 
-	var artistElem = Artist.render(ctx.state.artist, { single: true });
+	var artistElem = Artist.render(ctx.state.artist, { single: true, shuffle: true });
 	document.getElementById('artist').appendChild(artistElem);
     };
 

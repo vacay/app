@@ -64,6 +64,7 @@
 		});
 	    }
 
+	    //TODO - optimize
 	    async.mapLimit(this.vitamins, 3, function(v, cb) {
 		Vitamin.readOffline(v, cb);
 	    }, function(err, results) {

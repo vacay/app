@@ -56,6 +56,18 @@
 
 	    elem.appendChild(body);
 
+	    if (opts.shuffle) {
+		var shuffle = Vitamins.renderShuffle({
+		    title: data.name + '\'s (artist) vitamins',
+		    path: '/artist/' + data.id + '/vitamins',
+		    params: {
+			limit: 1,
+			order_by: 'rand'
+		    }
+		});
+		elem.appendChild(shuffle);
+	    }
+
 	    return elem;
 	},
 

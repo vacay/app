@@ -15,7 +15,7 @@
 
     var read = function(ctx) {
 
-	var offset = 0, headingLoaded;
+	var offset = 0;
 	var load = function() {
 	    var r = document.getElementById('river');
 	    var l = r.querySelector('.list');
@@ -30,21 +30,6 @@
 		    offset += data.length;
 
 		    var frag = document.createDocumentFragment();
-
-		    if (offset && !headingLoaded) {
-			var heading = Vitamins.renderShuffle({
-			    title: '@' + ctx.state.page.title + '\'s (page) vitamins',
-			    path: '/page/' + ctx.params.id + '/vitamins',
-			    params: {
-				limit: 1,
-				order_by: 'rand'
-			    }
-			});
-			frag.appendChild(heading);
-
-			headingLoaded = true;
-		    }
-
 		    data.forEach(function(v) {
 			frag.appendChild(Vitamin.render(v));
 		    });
@@ -61,7 +46,11 @@
 	    load: load
 	});
 
-	document.getElementById('page').appendChild(Page.render(ctx.state.page, { subscribe: true, single: true }));
+	document.getElementById('page').appendChild(Page.render(ctx.state.page, {
+	    subscribe: true,
+	    single: true,
+	    shuffle: true
+	}));
     };
 
     page('/page/:id/:subpath?', init, read);
