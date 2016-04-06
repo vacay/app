@@ -61,7 +61,7 @@
 		    }
 
 		    var frag = document.createDocumentFragment();
-		    frag.appendChild(Page.render(page, { subscribe: true }));
+		    frag.appendChild(Page.render(page, { subscribe: true, meta: true }));
 
 		    page.vitamins.forEach(function(v) {
 			frag.appendChild(Vitamin.render(v));
@@ -104,7 +104,7 @@
 			    if (typeof i.duration !== 'undefined') {
 				frag.appendChild(Vitamin.render(i));
 			    } else if (i.url) {
-				frag.appendChild(Page.render(i, { subscribe: true }));
+				frag.appendChild(Page.render(i, { subscribe: true, meta: true }));
 			    } else if (i.description) {
 				frag.appendChild(Prescription.render(i));
 			    } else if (i.username) {
@@ -122,7 +122,7 @@
 			break;
 		    case 'pages':
 			handler = function(i) {
-			    frag.appendChild(Page.render(i, { subscribe: true }));
+			    frag.appendChild(Page.render(i, { subscribe: true, meta: true }));
 			};
 			break;
 		    case 'users':

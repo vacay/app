@@ -98,6 +98,7 @@
 	    }
 
 	    if (options) {
+		View.scrollOn();
 		offset = 0;
 		l.innerHTML = null;
 
@@ -208,7 +209,7 @@
 				break;
 
 			    case 'page':
-				frag.appendChild(Page.render(d, { subscribe: true }));
+				frag.appendChild(Page.render(d, { subscribe: true, meta: true }));
 				break;
 
 			    case 'user':

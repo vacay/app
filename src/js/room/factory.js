@@ -192,6 +192,12 @@
 		Modal.close(e);
 	    };
 
+	    Elem.create({
+		className: 'tip',
+		parent: elem,
+		html: 'Rooms are a way for groups of users to listen to music together. Create a room and share it with other users. <a class="link" href="/discussion/105">Learn More</a>'
+	    });
+
 	    Modal.show({
 		elem: elem,
 		header: 'Join Room',

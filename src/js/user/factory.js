@@ -312,6 +312,7 @@
 		if (typeof res.data.public_listens !== 'undefined') Me.data.public_listens = res.data.public_listens;
 		if (typeof res.data.public_crate !== 'undefined') Me.data.public_crate = res.data.public_crate;
 		if (typeof res.data.activity !== 'undefined') Me.data.activity = res.data.activity;
+		if (typeof res.data.notification !== 'undefined') Me.data.notification = res.data.notification;
 
 		if (res.token) {
 		    WS.emit('token', {

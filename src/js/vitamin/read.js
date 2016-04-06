@@ -72,7 +72,7 @@
 		    }]
 		}));
 		ctx.state.vitamin.pages.forEach(function(p) {
-		    frag.appendChild(Page.render(p, { subscribe: true }));
+		    frag.appendChild(Page.render(p, { subscribe: true, meta: true }));
 		});
 	    }
 

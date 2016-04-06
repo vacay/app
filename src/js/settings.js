@@ -240,6 +240,29 @@
 	    }]
 	});
 
+	var ann = Elem.create({
+	    className: 'i i-right',
+	    parent: notifications
+	});
+	ann.dataset.type = 'notification';
+	Elem.create({
+	    className: 'i-body',
+	    parent: ann,
+	    childs: [{
+		tag: 'h4',
+		text: 'Annoucements / State of Vacay'
+	    }, {
+		tag: 'span',
+		text: 'Control whether or not you want to be notified about site changes & updates'
+	    }]
+	});
+	var annSwitch = btnswitch.cloneNode(true);
+	annSwitch.querySelector('.on').innerHTML = 'on';
+	annSwitch.querySelector('.off').innerHTML = 'off';
+	annSwitch.classList.toggle('active', Me.data.notification);
+	annSwitch.addEventListener('click', onswitch);
+	ann.appendChild(annSwitch);
+
 	var activity = Elem.create({
 	    className: 'i i-right',
 	    parent: notifications

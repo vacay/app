@@ -3,7 +3,6 @@
 
 .vitamin
     padding 0
-    min-height 100px
     border-bottom 1px solid $border
     .right
         top 10px
@@ -91,14 +90,25 @@
         border-radius 0
 
 @media (min-width: $smallMin)
-    .vitamin .i-select
-        display none
+    .vitamin
+        min-height 100px
+        .i-select
+            display none
     #vitamins .tags
         margin-left 215px
 
 @media (max-width: $extraSmallMax)
     .vitamin
-
+        .play
+            width 45px
+            height 45px
+            i
+                line-height 45px
+        .avatar img
+            width 45px
+            height 45px
+        .i-body
+            margin-left 45px
         &.i-right
             .i-body
                 padding-right 70px

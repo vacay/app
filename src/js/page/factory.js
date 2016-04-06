@@ -20,6 +20,16 @@
 	    data.time = data._pivot_created_at ? (' ' + Utils.fromNow(data._pivot_created_at)) : '';
 	    elem.innerHTML = tmpl(data);
 
+	    if (opts.meta) {
+		Elem.create({
+		    parent: elem,
+		    childs: [{
+			tag: 'small',
+			text: data.url
+		    }]
+		});
+	    }
+
 	    if (opts.subscribe && Me.id) {
 		var isSubscribed = Me.isSubscribed('pages', data.id);
 		var btn = Elem.create({

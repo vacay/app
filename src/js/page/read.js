@@ -49,6 +49,7 @@
 	document.getElementById('page').appendChild(Page.render(ctx.state.page, {
 	    subscribe: true,
 	    single: true,
+	    meta: true,
 	    shuffle: true
 	}));
     };
