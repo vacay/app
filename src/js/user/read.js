@@ -19,7 +19,7 @@
 
     var read = function(ctx) {
 
-	var search = Location.search();
+	var search = Utils.search();
 
 	ctx.state.user.isOwner = ctx.state.user.username === Me.username;
 

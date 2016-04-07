@@ -8,7 +8,7 @@
     'use strict';
 
     return {
-	token: Location.search().token,
+	token: null,
 	ip: null,
 	api: function(path) {
 	    var token = window.localStorage.token || this.token;

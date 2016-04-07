@@ -2,6 +2,8 @@
 (function() {
     'use strict';
     var init = function() {
+	App.token = Utils.search().token;
+
 	page.exit('*', function(ctx, next) {
 	    View.scrollOff();
 	    Modal.closeAll();
@@ -35,7 +37,7 @@
 		page('/search?q=' + window.location.pathname.substring(1));
 	    } else {
 		page(window.location.pathname + window.location.search);
-		var search = Location.search();
+		var search = Utils.search();
 		if (search.invite || search.reset) Landing.show(search);
 	    }
 

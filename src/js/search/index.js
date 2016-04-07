@@ -2,7 +2,7 @@
 (function() {
 
     var init = function(ctx, next) {
-	var params = Location.search(ctx.querystring);
+	var params = Utils.search(ctx.querystring);
 	var query = params.q;
 
 	if (!query) {
@@ -32,7 +32,7 @@
 
 	var load = function() {
 
-	    var params = Location.search(ctx.querystring);
+	    var params = Utils.search(ctx.querystring);
 	    var query = params.q;
 
 	    var r = document.getElementById('river');
