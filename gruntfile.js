@@ -275,18 +275,6 @@ module.exports = function(grunt) {
 	},
 
 	/************************ BUILD ***********************/
-	cordovacli: {
-	    build: {
-		options: {
-		    id: 'io.vacay',
-		    name: 'vacay',
-		    path: './',
-		    command: 'build',
-		    platforms: [ 'ios'/*, 'android'*/ ]
-		}
-	    }
-	},
-
 	connect: {
 	    server: {
 		options: {
@@ -385,6 +373,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-inline-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-connect');
-    grunt.loadNpmTasks('grunt-cordovacli');
 
 };	
