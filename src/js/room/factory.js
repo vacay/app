@@ -215,6 +215,14 @@
 	    WS.emit('room:join', data);
 	},
 
+	play: function() {
+	    WS.emit('room:play');
+	},
+
+	pause: function() {
+	    WS.emit('room:pause');
+	},
+
 	leave: function() {
 	    if (!this.name()) return;
 	    this.data = null;

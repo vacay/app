@@ -66,7 +66,8 @@
 	    remote: null,
 	    repeat: false,
 	    mode: null,
-	    users: [],
+	    users: [], //TODO - Deprecated
+	    sessions: [],
 	    nowplaying: null,
 	    playing: false,
 	    loading: '0%',
@@ -79,10 +80,10 @@
 	reset: function() {
 	    this.data.remote = null;
 	    this.data.users = [];
+	    this.data.sessions = [];
 
 	    this.data.mode = null;
 
-	    //this.updateLiveUsers();
 	    document.body.classList.toggle('remote', P.data.remote);
 	},
 
@@ -260,15 +261,6 @@
 	    if (!localOnly) {
 		WS.emit('player:history', P.data.history);
 	    }
-	},
-
-	updateLiveUsers: function() {
-	    var elem = document.getElementById('live');
-	    elem.innerHTML = null;
-	    var users = P.data.users.filter(function(u) { return u.username !== Me.username; });
-	    users.forEach(function(u) {
-		elem.appendChild(User.render(u, { avatarOnly: true }));
-	    });
 	},
 
 	updatePlaying: function(value) {
@@ -573,8 +565,12 @@
 
 		// ..and was playing (or paused) and isn't in an error state
 		if (P.lastSound.readyState !== 2) {
+		    var paused = P.lastSound.paused;
 		    if (P.lastSound.playState !== 1) P.lastSound.play(); // not yet playing
 		    else P.lastSound.togglePause();
+
+		    if (Network.online && Room.name() && !opts.noBroadcast)
+			paused ? Room.play() : Room.pause();
 		} else {
 		    sm._writeDebug('Warning: sound failed to load (security restrictions, 404 or bad format)', 2);
 		}
@@ -830,6 +826,9 @@
 		});
 	    },
 	    status: function() {
+		if (!Room.name() && !(P.data.sessions && P.data.sessions.length > 1))
+		    return;
+
 		WS.emit('player:status', {
 		    time: P.data.time,
 		    playing: P.data.playing,
@@ -949,6 +948,7 @@
 		Log.debug(data);
 
 		socketID = data.socket;
+		P.data.sessions = data.sessions;
 
 		Room.data = data.room;
 		Room.update();
@@ -958,6 +958,8 @@
 
 	    WS.on('sync', function(data) {
 		Log.debug(data);
+
+		P.data.sessions = data.sessions;
 
 		Room.data = data.room;
 		Room.update();
@@ -976,8 +978,21 @@
 		return;
 	    });
 
+	    WS.on('room:pause', function(data) {
+		console.log('room:pause');
+		if (Room.name() && P.lastSound)
+		    P.lastSound.pause();
+	    });
+
+	    WS.on('room:play', function(data) {
+		console.log('room:play');
+		if (Room.name() && P.lastSound)
+		    P.lastSound.resume();
+	    });
+
 	    WS.on('player:play', function(data) {
-		if (!P.data.remote) P.play(data.vitamin, data.mode);
+		if (!P.data.remote)
+		    P.play(data.vitamin, data.mode);
 	    });
 
 	    WS.on('player:next', function() {
@@ -1012,7 +1027,6 @@
 
 	    WS.on('player:autoplay', function(data) {
 		P.data.autoplay = data.autoplay;
-
 		P.updateAutoplay();
 	    });
 
@@ -1026,10 +1040,6 @@
 		    if (data.loading) P.updateLoading(data.loading);
 
 		    if (typeof data.playing !== 'undefined' && P.data.playing !== data.playing) P.updatePlaying(data.playing);
-		} else if (Room.name() && P.data.playing !== data.playing) {
-		    if (P.lastSound)
-			data.playing ? P.lastSound.resume() : P.lastSound.pause();
-		    P.updatePlaying(data.playing);
 		}
 	    });
 
