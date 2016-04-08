@@ -963,7 +963,10 @@
 
 		Room.data = data.room;
 		Room.update();
+	    });
 
+	    WS.on('master', function(data) {
+		Log.debug(data);
 		updateMaster(data.master, data.ua);
 	    });
 
