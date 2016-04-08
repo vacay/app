@@ -87,6 +87,7 @@ deploy_android: build_android
 ## Mobile
 build_mobile: update
 	grunt production
+	grunt string-replace:cordova
 
 emulate_ios: build_mobile
 	cordova emulate ios

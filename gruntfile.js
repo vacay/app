@@ -275,6 +275,19 @@ module.exports = function(grunt) {
 	},
 
 	/************************ BUILD ***********************/
+	'string-replace': {
+	    cordova: {
+		files: {
+		    'www/index.html': 'www/index.html'
+		},
+		options: {
+		    replacements: [{
+			pattern: '</html>',
+			replacement: '<script src="cordova.js"></script></html>'
+		    }]
+		}
+	    }
+	},
 	connect: {
 	    server: {
 		options: {
@@ -373,5 +386,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-inline-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-string-replace');
 
 };	
