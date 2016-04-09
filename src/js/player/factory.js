@@ -207,13 +207,6 @@
 		l.appendChild(Vitamin.render(vitamin));
 	    });
 
-	    if (P.lastSound && P.lastSound.url) {
-		this.updateWaveform(P.data.nowplaying.id, P.lastSound.url);
-	    } else {
-		Vitamin.getStream(P.data.nowplaying.id, { audioOnly: true }, function(err, url) {
-		    if (!err) P.updateWaveform(P.data.nowplaying.id, url);
-		});
-	    }
 	    this.updateArtwork();
 
 	    // Vitamin Styling
@@ -611,6 +604,7 @@
 
 		    Log.info('Loading: ', url);
 		    soundURL = url;
+		    P.updateWaveform(P.data.nowplaying.id, url);
 
 		    if (soundURL.indexOf('youtube.com') !== -1) {
 			thisSound = P.createYTSound(soundURL);
@@ -1053,6 +1047,9 @@
 		if (data.nowplaying) {
 		    P.data.nowplaying = data.nowplaying;
 		    P.updateNowplaying();
+		    Vitamin.getStream(data.nowplaying.id, { audioOnly: true }, function(err, url) {
+			if (!err) P.updateWaveform(data.nowplaying.id, url);
+		    });
 
 		    if (!data.room || data.room !== Room.name() || P.data.remote)
 			return;
