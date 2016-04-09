@@ -2,9 +2,7 @@
     "name": "vacay",
     "version": "0.0.1",
     "homepage": "https://github.com/vacay/vacay",
-    "authors": [
-	"Kia Rahimian <kr@vacay.fm>"
-    ],
+    "authors": [ "admin <admin@vacay.io>" ],
     "license": "MIT",
     "private": true,
     "ignore": [
