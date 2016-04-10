@@ -236,7 +236,7 @@
 	    childs: [{
 		tag: 'small',
 		className: 'i',
-		text: 'Notifications'
+		text: 'Email Notifications'
 	    }]
 	});
 
