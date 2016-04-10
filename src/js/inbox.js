@@ -39,7 +39,8 @@
 			    }
 			    frag.appendChild(Elem.create({className: 'i-divider'}));
 			    frag.appendChild(Page.render(subscribed[0], {
-				className: 'i-clear'
+				className: 'i-clear',
+				text: ' ' + Utils.fromNow(items[i].published_at)
 			    }));
 			    last_page = subscribed[0].id;
 			}

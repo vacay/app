@@ -139,6 +139,7 @@
 
 	pluck: function(array, property) {
 	    var i, rv = [];
+	    property = property || 'id';
 
 	    for (i = 0; i < array.length; ++i) {
 		rv[i] = array[i][property];
