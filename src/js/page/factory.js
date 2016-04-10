@@ -18,6 +18,7 @@
 	    });
 
 	    data.time = data._pivot_created_at ? (' ' + Utils.fromNow(data._pivot_created_at)) : '';
+	    data.text = opts.text;
 	    elem.innerHTML = tmpl(data);
 
 	    if (opts.meta) {

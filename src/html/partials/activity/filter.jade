@@ -1,0 +1,11 @@
+nav.horizontal-pill.cf
+    ul
+        li
+            a.mentions(onclick='View.load({ t: "mentions" })') mentions
+        li
+            a.crates(onclick='View.load({ t: "crates" })') crates
+        li.pull-right
+            a.help-trigger(onclick='View.trigger("help")') ?
+
+.help-container.i
+    | When a user tags you, it will show up under mentions. Under crates you can see the crate activity of the users you are subscribed to. <a href="/about" class="link">Learn more.</a>

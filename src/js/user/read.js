@@ -187,7 +187,6 @@
 
 			var f = document.querySelector('.filter-container');
 			if (!!offset && f && !filterLoaded) {
-			    console.log('loading filter search');
 			    f.innerHTML = doT.template(View.tmpl('/filter/search.html'))({
 				placeholder: ctx.params.subpath
 			    });

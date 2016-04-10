@@ -16,7 +16,7 @@
 		if (rbracket.test(prefix)) {
 		    add(prefix, obj[i]);
 		} else {
-		    buildParams(prefix + '[' + ( typeof obj[i] === 'object' ? i : '' ) + ']', obj[i], add);
+		    buildParams(prefix + ( typeof obj[i] === 'object' ? ('[' + i + ']') : '' ), obj[i], add);
 		}
 	    }
 	} else if (typeof obj == 'object') {
