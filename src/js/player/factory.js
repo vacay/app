@@ -559,7 +559,9 @@
 		// ..and was playing (or paused) and isn't in an error state
 		if (P.lastSound.readyState !== 2) {
 		    var paused = P.lastSound.paused;
-		    if (P.lastSound.playState !== 1) P.lastSound.play(); // not yet playing
+
+		    if (P.lastSound.playState !== 1 || opts.forcePlay)
+			P.lastSound.play();
 		    else P.lastSound.togglePause();
 
 		    if (Network.online && Room.name() && !opts.noBroadcast)
@@ -1056,7 +1058,8 @@
 
 		    if (data.nowplaying) P.load(data.nowplaying, {
 			position: data.position,
-			noBroadcast: true
+			noBroadcast: true,
+			forcePlay: true
 		    });
 		}
 	    });

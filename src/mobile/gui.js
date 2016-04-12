@@ -2,6 +2,25 @@
 
 Platform.ready(function() {
 
+
+    if (cordova.plugins.backgroundMode) {
+	cordova.plugins.backgroundMode.enable();
+	cordova.plugins.backgroundMode.setDefaults({
+	    title:  'Vacay',
+	    ticker: 'Ticker',
+	    text:   'Playing music in the background'
+	});
+	cordova.plugins.backgroundMode.onactivate = function () {
+            setInterval(function () {
+		var disable = Player.data.remote || !Room.name() || !Player.data.playing;
+		Log.info('disable background mode: ', disable);
+
+		if (disable)
+		    cordova.plugins.backgroundMode.disable();
+            }, 5000);
+	};
+    }
+
     if (Platform.isAndroid()){
 	window.addEventListener('resize', function(){
 	    if (document.activeElement.tagName === 'INPUT') {
