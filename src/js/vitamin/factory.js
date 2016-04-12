@@ -131,7 +131,7 @@
 		offlineMode: Platform.isNative(),
 		crated: data.crated,
 		queued: Queue.isQueued(data.id),
-		playing: Player.data.playing && Player.isPlaying(data.id)
+		playing: Player.data.status.playing && Player.isPlaying(data.id)
 	    };
 
 	    elem.innerHTML = actionSheet(o);
