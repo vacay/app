@@ -20,6 +20,14 @@
         a.play(onclick="Player.play()")
             i.icon-pause
             i.icon-play
+            .md-loading.indeterminate
+                .md-spinner-wrapper
+                    .md-inner
+                        .md-gap
+                        .md-left
+                            .md-half-circle
+                        .md-right
+                            .md-half-circle
         a.next(onclick="Player.next()")
             i.icon-next
         a(onclick='document.querySelector(".p-container").classList.toggle("show-volume")')

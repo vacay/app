@@ -61,6 +61,10 @@
 
     var P = {
 	data: {
+	    status: {
+		playing: false,
+		loading: false
+	    },
 	    playInit: false,
 	    autoplay: false,
 	    remote: null,
@@ -69,7 +73,6 @@
 	    users: [], //TODO - Deprecated
 	    sessions: [],
 	    nowplaying: null,
-	    playing: false,
 	    loading: '0%',
 	    position: '0%',
 	    time: {},
@@ -257,9 +260,14 @@
 	},
 
 	updatePlaying: function(value) {
-	    P.data.playing = value;
+	    P.data.status.playing = value;
 	    if (window.MusicControls) window.MusicControls.updateIsPlaying(value);
 	    document.body.classList.toggle('playing', value);
+	},
+
+	updateStatusLoading: function(value) {
+	    P.data.status.loading = value;
+	    document.body.classList.toggle('loading', value);
 	},
 
 	updatePosition: function(value) {
@@ -423,6 +431,7 @@
 	},
 
 	play: function (vitamin, mode) {
+	    if (P.data.status.loading) return;
 	    if (P.data.remote) {
 		WS.emit('player:play', { vitamin: vitamin, mode: mode });
 		return;
@@ -584,8 +593,11 @@
 
 		P.data.nowplaying = vitamin;
 		P.updateNowplaying();
+		P.updateStatusLoading(true);
 
 		P.getStream(vitamin, function(err, url) {
+
+		    P.updateStatusLoading(false);
 
 		    if (err) {
 			Log.error(err, { vitamin: vitamin });
@@ -744,7 +756,7 @@
 		    _event.remove(sb, 'touchmove', P.handleMouseMove);
 		}
 		if (!P.data.remote) {
-		    if (P.data.playing) {
+		    if (P.data.status.playing) {
 			P.lastSound.resume();
 		    } else {
 			P.updatePosition(((P.lastSound.position / P.lastSound.durationEstimate) * 100) + '%');
@@ -758,7 +770,7 @@
 
 	handleStatusClick: function (e) {
 	    P.setPosition(e);
-	    if (P.data.playing) {
+	    if (P.data.status.playing) {
 		P.resume(); //this function may not exist?
 	    }
 	    return P.stopEvent(e);
@@ -827,7 +839,7 @@
 
 		WS.emit('player:status', {
 		    time: P.data.time,
-		    playing: P.data.playing,
+		    playing: P.data.status.playing,
 		    position: P.data.position,
 		    loading: P.data.loading,
 		    id: P.data.nowplaying.id,
@@ -910,9 +922,9 @@
 
 		var isMaster = socketID === master;
 
-		if (isMaster && P.data.remote && P.data.playing)
+		if (isMaster && P.data.remote && P.data.status.playing)
 		    P.updatePlaying(false);
-		else if (!isMaster && !P.data.remote  && P.data.playing)
+		else if (!isMaster && !P.data.remote  && P.data.status.playing)
 		    P.stop();
 
 		var parser = new UAParser();
@@ -1032,13 +1044,17 @@
 	    WS.on('player:status', function(data) {
 		if (P.data.remote) {
 
-		    if (data.time) P.updateTime(data.time.position, data.time.total);
+		    if (data.time)
+			P.updateTime(data.time.position, data.time.total);
 
-		    if (data.position) P.updatePosition(data.position);
+		    if (data.position)
+			P.updatePosition(data.position);
 
-		    if (data.loading) P.updateLoading(data.loading);
+		    if (data.loading)
+			P.updateLoading(data.loading);
 
-		    if (typeof data.playing !== 'undefined' && P.data.playing !== data.playing) P.updatePlaying(data.playing);
+		    if (typeof data.playing !== 'undefined' && P.data.status.playing !== data.playing)
+			P.updatePlaying(data.playing);
 		}
 	    });
 

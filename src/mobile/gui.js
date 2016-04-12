@@ -12,7 +12,7 @@ Platform.ready(function() {
 	});
 	cordova.plugins.backgroundMode.onactivate = function () {
             setInterval(function () {
-		var disable = Player.data.remote || !Room.name() || !Player.data.playing;
+		var disable = Player.data.remote || !Room.name() || (!Player.data.status.playing && !Player.data.status.loading);
 		Log.info('disable background mode: ', disable);
 
 		if (disable)
