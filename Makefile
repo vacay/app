@@ -27,6 +27,7 @@ cordova:
 	if [ ! -d './plugins/cordova-plugin-app-version' ]; then $(CPLUGIN) add cordova-plugin-app-version; fi
 	if [ ! -d './plugins/cordova-plugin-inappbrowser' ]; then $(CPLUGIN) add cordova-plugin-inappbrowser; fi
 	if [ ! -d './plugins/cordova-plugin-music-controls' ]; then $(CPLUGIN) add https://github.com/homerours/cordova-music-controls-plugin; fi
+	if [ ! -d './plugins/cordova-plugin-background-mode' ]; then $(CPLUGIN) add https://github.com/katzer/cordova-plugin-background-mode.git; fi
 
 	cordova prepare
 
