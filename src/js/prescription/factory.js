@@ -112,29 +112,14 @@
 		recommend.classList.add('disabled');
 	    }
 
-	    var users = [];
-	    var additional = [];
-	    for (var i=0; i<data.votes.length; i++) {
-		if (Me.isSubscribed('users', data.votes[i].user_id)) {
-		    users.push(data.votes[i]);
-		} else {
-		    additional.push(data.votes[i]);
-		}
-	    }
-	    users = users.concat(additional.splice(0, (4 - users.length)));
-
-	    if (additional.length) {
+	    if (data.votes.length) {
 		var count = Elem.create({
 		    tag: 'button',
-		    className: 'sm link pull-right',
-		    text: '+' + additional.length,
+		    className: 'sm success link',
+		    text: '+' + data.votes.length,
 		    parent: actions
 		});
 	    }
-
-	    users.forEach(function(u) {
-		actions.appendChild(User.render(u.user, { avatarOnly: true, className: 'pull-right' }));
-	    });
 
 	    actions.appendChild(Multi.render(data.vitamins));
 

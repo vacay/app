@@ -7,6 +7,7 @@
 	page.exit('*', function(ctx, next) {
 	    View.scrollOff();
 	    Modal.closeAll();
+	    Multi.clear();
 	    View.title('');
 	    View.main.innerHTML = null;
 	    View.main.appendChild(Loading.render({ indeterminate: true }));
@@ -16,8 +17,6 @@
 	    Elem.each(document.querySelectorAll('#toolbar a'), function(e) {
 		e.classList.remove('active');
 	    });
-
-	    //TODO - clear multiselect
 
 	    next();
 	});

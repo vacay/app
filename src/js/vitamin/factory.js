@@ -55,8 +55,6 @@
 		    e.stopPropagation();
 		    self.more(e, data);
 		    return false;
-		} else if (!e.target.classList.contains('i-title')) {
-		    Multi.toggle(data);
 		}
 	    };
 
