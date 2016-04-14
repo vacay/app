@@ -76,15 +76,6 @@
 		});
 	    }
 
-	    var multi = Elem.create({
-		tag: 'button',
-		className: 'i-select checkbox',
-		parent: actions,
-		onclick: function() {
-		    Multi.toggle(data);
-		}
-	    });
-
 	    if (opts.drag) {
 		Elem.create({
 		    className: 'i-handle',
@@ -114,6 +105,8 @@
 		    }
 		});
 	    }
+
+	    elem.appendChild(Multi.render(data));
 
 	    return elem;
 	},

@@ -136,6 +136,8 @@
 		actions.appendChild(User.render(u.user, { avatarOnly: true, className: 'pull-right' }));
 	    });
 
+	    actions.appendChild(Multi.render(data.vitamins));
+
 	    var owner_actions = Elem.create({ className: 'i o-actions' });
 
 	    if (isOwner) {
