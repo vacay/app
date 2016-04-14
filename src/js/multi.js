@@ -16,29 +16,27 @@
 	    document.body.classList.toggle('show-multi', cnt);
 	    document.querySelector('#multi .selected').innerHTML = cnt;
 
-	    // var ps = document.querySelectorAll('.prescription');
-	    // Elem.each(ps, function(p) {
-	    // 	var ids = [];
-	    // 	var vs = p.querySelectorAll('.vitamin');
-	    // 	Elem.each(vs, function(v) {
-	    // 	    ids.push(parseInt(v.dataset.id, 10));
-	    // 	});
+	    var ps = document.querySelectorAll('.prescription');
+	    Elem.each(ps, function(p) {
+		var ids = [];
+		var vs = p.querySelectorAll('.vitamin');
+		Elem.each(vs, function(v) {
+		    ids.push(parseInt(v.dataset.id, 10));
+		});
 
-	    // 	if (!ids.length) return;
+		if (!ids.length) return;
 
-	    // 	var state = Utils.exists(self.vitamins, ids[0]);
+		var state = Utils.exists(self.vitamins, ids[0]);
+		var ch = p.querySelector('.checkbox');
 
-	    // 	var ch = p.querySelector('.checkbox');
-
-	    // 	if (self.indeterminate(state, ids)) {
-	    // 	    ch.classList.add('indeterminate');
-	    // 	    ch.classList.remove('selected');
-	    // 	} else {
-	    // 	    ch.classList.remove('indeterminate');
-	    // 	    ch.classList.toggle('selected', state);
-	    // 	}
-
-	    // });
+		if (self.indeterminate(state, ids)) {
+		    ch.classList.add('indeterminate');
+		    ch.classList.remove('selected');
+		} else {
+		    ch.classList.remove('indeterminate');
+		    ch.classList.toggle('selected', state);
+		}
+	    });
 
 	    var ds = document.querySelectorAll('.vitamin.selected');
 	    Elem.each(ds, function(d) {
@@ -53,6 +51,34 @@
 		    d.querySelector('.checkbox').classList.add('selected');
 		});
 	    }
+	},
+
+	render: function(data) {
+	    var elem = Elem.create({
+		tag: 'button',
+		className: 'i-select checkbox'
+	    });
+
+	    if (data instanceof Array) {
+		var vitamin_ids = [];
+		for (var i=0; i<data.length; i++) {
+		    vitamin_ids.push(data[i].id);
+		}
+
+		elem.onclick = function() {
+		    var state = Utils.exists(Multi.vitamins, vitamin_ids[0]);
+		    if (!state || Multi.indeterminate(state, vitamin_ids))
+			Multi.add(data);
+		    else
+			Multi.remove(data);
+		};
+	    } else {
+		elem.onclick = function() {
+		    Multi.toggle(data);
+		};
+	    }
+
+	    return elem;
 	},
 
 	add: function(data) {

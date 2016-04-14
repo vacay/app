@@ -45,16 +45,26 @@ Platform.ready(function() {
 	    document.getElementById('version').innerHTML = v;
 
 	    if (Platform.isAndroid()) {
+		var showNotification = function() {
+		    Notification.show({
+			msg: 'Update Available',
+			action: {
+			    text: 'Download',
+			    onclick: function() {
+				alert('make sure to uninstall this version before installing the new version');
+				View.open('https://vacay.io/mobile/android.apk');
+			    }
+			}
+		    });
+		};
+
 		Request.get('https://vacay.io/mobile/package.json').success(function(data) {
 		    if (Utils.newerVersion(data.version, v)) {
-			Notification.show({
-			    msg: 'Update Available',
-			    action: {
-				text: 'Download',
-				onclick: function() {
-				    alert('make sure to uninstall this version before installing the new version');
-				    View.open('https://vacay.io/mobile/android.apk');
-				}
+			showNotification();
+		    } else {
+			cordova.getAppVersion.getVersionCode(function(build) {
+			    if (Utils.newerVersion(data.build, build)) {
+				showNotification();
 			    }
 			});
 		    }
