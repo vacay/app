@@ -138,7 +138,7 @@
 
 	    if (data instanceof Array) {
 
-		data.forEach(function(v) { self.remove(v.id); });
+		data.forEach(function(v) { self.remove(v); });
 		this.vitamins = data.concat(this.vitamins);
 
 		var frag = document.createDocumentFragment();
@@ -150,7 +150,7 @@
 		elem.insertBefore(frag, elem.firstChild);
 		
 	    } else {
-		this.remove(data.id);
+		this.remove(data);
 		this.vitamins.unshift(data);
 		this.updateVitaminUI(data.id, true);
 		elem.insertBefore(Vitamin.render(data, { drag: true }), elem.firstChild);
@@ -158,23 +158,27 @@
 	    this.broadcast();
 	},
 
-	remove: function(id) {
-	    var i = Utils.find(this.vitamins, id);
-	    if (i !== -1) {
-		this.vitamins.splice(i, 1);
-		var elem = document.querySelector('#queue .list [data-id="' + id + '"]');
-		elem.parentNode.removeChild(elem);
+	remove: function(data) {
+	    var f = function(d) {
+		var i = Utils.find(this.vitamins, d.id);
+		if (i !== -1) {
+		    this.vitamins.splice(i, 1);
+		    var elem = document.querySelector('#queue .list [data-id="' + d.id + '"]');
+		    elem.parentNode.removeChild(elem);
+		    this.updateVitaminUI(d.id, false);
+		}
+	    };
+	    if (data instanceof Array)
+		data.forEach(f.bind(this));
+	    else
+		f.call(this, data);
 
-		this.updateVitaminUI(id, false);
-
-		this.broadcast();
-	    }
+	    this.broadcast();
 	},
 
 	toggle: function(data) {
 	    var isQueued = this.isQueued(data.id);
-
-	    if (isQueued) this.remove(data.id);
+	    if (isQueued) this.remove(data);
 	    else this.add(data);
 	},
 
