@@ -990,13 +990,13 @@
 	    });
 
 	    WS.on('room:pause', function(data) {
-		console.log('room:pause');
+		Log.debug('room:pause');
 		if (Room.name() && P.lastSound)
 		    P.lastSound.pause();
 	    });
 
 	    WS.on('room:play', function(data) {
-		console.log('room:play');
+		Log.debug('room:play');
 		if (Room.name() && P.lastSound)
 		    P.lastSound.resume();
 	    });

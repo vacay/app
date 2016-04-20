@@ -291,12 +291,20 @@
 	    });
 	},
 
+	crateAll: function(data, cb) {
+	    async.each(data, this.crate.bind(this), cb);
+	},
+
 	uncrate: function(data, cb) {
 	    App.api('/vitamin/' + data.id + '/crate').del().success(function(res) {
 		cb(null, res.data);
 	    }).error(function(res) {
 		cb(res.data, null);
 	    });
+	},
+
+	uncrateAll: function(data, cb) {
+	    async.each(data, this.uncrate.bind(this), cb);
 	},
 
 	getEchonestTracks: function(id, cb) {

@@ -51,6 +51,14 @@
 		    d.querySelector('.checkbox').classList.add('selected');
 		});
 	    }
+
+	    if (cnt) {
+		var allCrated = this.vitamins[0].crated && !this.crateIndeterminate();
+		document.querySelector('#multi .crate').dataset.active = allCrated;
+
+		var allQueued = Queue.isQueued(this.vitamins[0].id) && !this.queueIndeterminate();
+		document.querySelector('#multi .queue').dataset.active = allQueued;
+	    }
 	},
 
 	render: function(data) {
@@ -121,8 +129,74 @@
 	},
 
 	queue: function() {
-	    Queue.add(this.vitamins);
+	    var queued = Queue.isQueued(this.vitamins[0].id) && !this.queueIndeterminate();
+	    if (queued) Queue.remove(this.vitamins);
+	    else Queue.add(this.vitamins);
 	    this.clear();
+	},
+
+	queueIndeterminate: function() {
+	    if (!this.vitamins.length) return false;
+
+	    var state = Queue.isQueued(this.vitamins[0].id);
+
+	    for (var i=1; i<this.vitamins.length; i++) {
+		if (state !== Queue.isQueued(this.vitamins[i].id)) return true;
+	    }
+
+	    return false;
+	},
+
+	crate: function() {
+	    var crated = this.vitamins[0].crated && !this.crateIndeterminate();
+	    var vitamins = this.vitamins.filter(function(v) {
+		return v.crated === crated;
+	    });
+
+	    var selectors = [];
+	    vitamins.forEach(function(v) {
+		selectors.push('.vitamin[data-id="' + v.id  + '"] .crate');
+	    });
+	    var divs = document.querySelectorAll(selectors);
+
+	    var cb = function(err) {
+		if (err) {
+		    vitamins.forEach(function(v) {
+			v.crated = crated;
+		    });
+
+		    Elem.each(divs, function(div) {
+			div.dataset.active = crated;
+		    });
+		}
+	    };
+
+	    Elem.each(divs, function(div) {
+		div.dataset.active = !crated;
+	    });
+
+	    vitamins.forEach(function(v) {
+		v.crated = !crated;
+	    });
+
+	    if (crated) {
+		Vitamin.uncrateAll(vitamins, cb);
+	    } else {
+		Vitamin.crateAll(vitamins, cb);
+	    }
+	    this.clear();
+	},
+
+	crateIndeterminate: function() {
+	    if (!this.vitamins.length) return false;
+
+	    var state = this.vitamins[0].crated;
+
+	    for (var i=1; i<this.vitamins.length; i++) {
+		if (state !== this.vitamins[i].crated) return true;
+	    }
+
+	    return false;
 	},
 
 	offline: function() {
