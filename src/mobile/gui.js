@@ -2,6 +2,7 @@
 
 Platform.ready(function() {
 
+    var background_check;
 
     if (cordova.plugins.backgroundMode) {
 	cordova.plugins.backgroundMode.enable();
@@ -10,9 +11,15 @@ Platform.ready(function() {
 	    ticker: 'Ticker',
 	    text:   'Playing music in the background'
 	});
+
+	cordova.plugins.backgroundMode.ondeactivate = function() {
+	    Log.info('background mode deactivated');
+	    clearInterval(background_check);
+	};
+
 	cordova.plugins.backgroundMode.onactivate = function () {
-            setInterval(function () {
-		var disable = Player.data.remote || !Room.name() || (!Player.data.status.playing && !Player.data.status.loading);
+            background_check = setInterval(function () {
+		var disable = Player.data.remote || (!Room.name() && !Queue.vitamins.length && !Player.data.autoplay);
 		Log.info('disable background mode: ', disable);
 
 		if (disable)

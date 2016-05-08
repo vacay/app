@@ -56,15 +56,16 @@
 		    return f.type && SUPPORTED_TYPES.indexOf(type) > -1;
 		});
 
-		for (var i = 0; i < formats.length; i += 1) {
-		    var format = formats[i];
+		// TODO - sort formats by quality
+		// for (var i = 0; i < formats.length; i += 1) {
+		//     var format = formats[i];
 
-		    if (bestFormat == null || format.audioBitrate > bestFormat.audioBitrate || (format.audioBitrate === bestFormat.audioBitrate && YTDL_AUDIO_ENCODINGS.indexOf(format.audioEncoding) > YTDL_AUDIO_ENCODINGS.indexOf(bestFormat.audioEncoding))) {
-			bestFormat = format;
-		    }
-		}
+		//     if (bestFormat == null || format.audioBitrate > bestFormat.audioBitrate || (format.audioBitrate === bestFormat.audioBitrate && YTDL_AUDIO_ENCODINGS.indexOf(format.audioEncoding) > YTDL_AUDIO_ENCODINGS.indexOf(bestFormat.audioEncoding))) {
+		// 	bestFormat = format;
+		//     }
+		// }
 
-		cb(null, bestFormat ? bestFormat.url : null);
+		cb(null, formats);
 	    };
 
 	    if (/([0-9A-Za-z_-]{11})/ig.test(url)) url = 'https://www.youtube.com/watch?v=' + url;

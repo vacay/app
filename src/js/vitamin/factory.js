@@ -436,79 +436,92 @@
 	    opts = opts || {};
 	    var self = this;
 
+	    var hosts;
+	    var urls = [];
+
 	    async.waterfall([
 		function(next) {
 		    self.read(id, 'stream', {}, next);
 		},
 
-		function(hosts, next) {
+		function(res, next) {
+		    hosts = res;
 
-		    var host;
+		    var yt_ids = [];
 
-		    var check_health = function(h, check) {
-			var test = function(url) {
-			    if (!url) {
-				check(false);
-				return;
-			    }
+		    hosts.forEach(function(h) {
+			if (h.title === 'youtube') {
+			    yt_ids.push(h.identifier);
 
-			    Log.info('Testing: ', url);
+			    if (!opts.audioOnly)
+				urls.push('https://www.youtube.com/watch?v=' + h.identifier);
 
-			    if (h.title === 'youtube' && !opts.audioOnly) {
-				Request.head(url).success(function(data, res) {
-				    host = h;
-				    check(true);
-				}).error(function(data, res) {
-				    check(false);
-				});
-				return;
-			    }
-
-			    var audio = document.createElement('audio');
-
-			    audio.onerror = function() {
-				check(false);
-			    };
-			    audio.onloadedmetadata = function() {
-				host = h;
-				check(true);
-			    };
-
-			    audio.src = url;
-			    audio.load();
-
-			};
-
-			if (h.title === 'youtube' && window.YTDL) {
-			    window.YTDL.stream(h.identifier, function(err, video) {
-				if (err) check(false);
-				else test(video);
-			    });
-			} else if (h.title === 'youtube' && !Platform.isMobile() && !opts.audioOnly) {
-			    host = h;
-			    check(true);
 			}
 
-			else test(h.stream_url);
-		    };
-
-		    hosts.push({
-			title: 'vacay',
-			stream_url: 'https://s3.amazonaws.com/vacay/' + CONFIG.env + '/vitamins/' + id + '.mp3'
+			urls.push(h.stream_url);
 		    });
 
-		    async.detectSeries(hosts, check_health, function(host) {
-			if (!host) {
-			    if (Platform.isNodeWebkit() && Utils.exists(hosts, 'youtube', 'title')) {
-				next(null, hosts[Utils.find(hosts, 'youtube', 'title')].url);
+		    if (window.YTDL) async.mapSeries(yt_ids, window.YTDL.stream, next);
+		    else next(null, []);
+		},
+
+		function(formats, next) {
+		    formats.forEach(function(f) {
+			urls.push(f.url);
+		    });
+
+		    urls.push('https://s3.amazonaws.com/vacay/' + CONFIG.env + '/vitamins/' + id + '.mp3');
+
+		    var test_url = function(url, check) {
+			if (!url) {
+			    check(false);
+			    return;
+			}
+
+			Log.info('Testing: ', url);
+
+			if (url.lastIndexOf('https://www.youtube.com/watch?v=') === 0 && !opts.audioOnly) {
+			    if (Platform.isMobile()) {
+				check(false);
 				return;
 			    }
 
+			    Request.head(url).success(function(data, res) {
+				check(true);
+			    }).error(function(data, res) {
+				check(false);
+			    });
+			    return;
+			}
+
+			var audio = document.createElement('audio');
+			var check_called;
+
+			setTimeout(function() {
+			    if (!check_called) check(false);
+			}, 10000);
+
+			audio.onerror = function() {
+			    check_called = true;
+			    check(false);
+			};
+			audio.onloadedmetadata = function() {
+			    check_called = true;
+			    check(true);
+			};
+
+			audio.src = url;
+			audio.load();
+
+		    };
+
+		    async.detectSeries(urls, test_url, function(url) {
+			if (!url) {
 			    next('no stream');
 			    return;
 			}
 
-			next(null, host.title !== 'youtube' ? host.stream_url : (window.YTDL || opts.audioOnly) ? host.stream_url : host.url );
+			next(null, url);
 		    });
 
 		}
