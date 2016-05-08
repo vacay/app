@@ -67,6 +67,7 @@ module.exports = function(grunt) {
 			'bower_components/waveform-generator/src/WaveformGenerator.js',
 			'src/request.js',
 			'src/raf.js',
+			'src/object-assign.js',
 			'src/element.js',
 			'src/location.js',
 			'src/platform.js',

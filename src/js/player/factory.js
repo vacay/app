@@ -403,7 +403,7 @@
 
 			    if (Platform.isIOS() && window.remoteControls) {
 				var params = [artist, title, album, image, duration, elapsedTime];
-				window.cordova.exec(completed, failed, 'RemoteControls', 'updateMetas', params);
+				window.remoteControls.updateMetas(completed, failed, params);
 			    }
 
 			    if (Platform.isAndroid() && window.MusicControls) {
