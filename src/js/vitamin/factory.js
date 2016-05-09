@@ -157,6 +157,31 @@
 		Vitamin.showEdit(data);
 	    };
 
+	    elem.querySelector('.download').onclick = function(e) {
+		Modal.close(e);
+
+		Vitamin.getStream(data.id, { audioOnly: true }, function(err, url) {
+		    if (err) {
+			Log.error(err);
+			Notification.show({ msg: 'download error' });
+			return;
+		    }
+
+		    var link = document.createElement('a');
+		    link.href = url;
+		    link.download = data.displayTitle;
+
+		    if (document.createEvent) {
+			var event = document.createEvent('MouseEvents');
+			event.initEvent('click', true, true);
+			link.dispatchEvent(event);
+			return;
+		    }
+
+		    window.open(url);
+		});
+	    };
+
 	    if (o.offlineMode) {
 		var offline = elem.querySelector('.offline');
 		offline.onclick = function(e) {

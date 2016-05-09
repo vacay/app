@@ -42,8 +42,8 @@ nav.vertical
             a.offline
 
         {{?? !it.offlineMode}}
-        li.hide-mobile
-            a(href='http://s3.amazonaws.com/vacay/production/vitamins/{{=it.id}}.mp3', target='_blank', download='{{=it.title}}.mp3')
+        li
+            a.download
                 i.icon-download
                 span Download
 
