@@ -506,7 +506,7 @@
 			Log.info('Testing: ', url);
 
 			if (url.lastIndexOf('https://www.youtube.com/watch?v=') === 0 && !opts.audioOnly) {
-			    if (Platform.isMobile()) {
+			    if (Platform.isNative()) {
 				check(false);
 				return;
 			    }
