@@ -1,4 +1,6 @@
 *.DS_Store
+*.key
+*.csr
 
 android-release-key.keystore
 index.html

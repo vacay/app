@@ -1,89 +1,89 @@
 /* global Elem, Utils, Me, App, Log, document */
 (function(root, factory) {
 
-    root.Tag = factory(root);
+  root.Tag = factory(root);
 
 })(this, function() {
 
-    'use strict';
+  'use strict';
 
-    return {
-	render: function(value, opts) {
-	    opts = opts || {};
+  return {
+    render: function(value, opts) {
+      opts = opts || {};
 
-	    var elem = Elem.create({
-		tag: 'span',
-		className: 'tag'
-	    });
+      var elem = Elem.create({
+	tag: 'span',
+	className: 'tag'
+      });
 
-	    var link = Elem.create({
-		tag: 'a',
-		text: value
-	    });
+      var link = Elem.create({
+	tag: 'a',
+	text: value
+      });
 
-	    elem.appendChild(link);
+      elem.appendChild(link);
 
-	    if (opts.link)
-		link.href = '/@' + opts.username + '/tag/' + encodeURIComponent(value);
+      if (opts.link)
+	link.href = '/@' + opts.username + '/tag/' + encodeURIComponent(value);
 
-	    if (opts.remove) {
+      if (opts.remove) {
 
-		var remove = Elem.create({
-		    tag: 'a',
-		    className: 'remove',
-		    text: 'x'
-		});
+	var remove = Elem.create({
+	  tag: 'a',
+	  className: 'remove',
+	  text: 'x'
+	});
 
-		elem.appendChild(remove);
-	    }
+	elem.appendChild(remove);
+      }
 
-	    elem.dataset.value = value;
+      elem.dataset.value = value;
 
-	    return elem;
-	},
+      return elem;
+    },
 
-	create: function(id, params, cb) {
-	    //TODO - if native - update localforage
-	    var self = this;
-	    var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .current');
+    create: function(id, params, cb) {
+      //TODO - if native - update localforage
+      var self = this;
+      var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .current');
 
-	    Elem.each(divs, function(div) {
-		div.appendChild(self.render(params.value, { link: true, remove: true }));
-	    });
+      Elem.each(divs, function(div) {
+	div.appendChild(self.render(params.value, { link: true, remove: true }));
+      });
 
-	    App.api('/vitamin/' + id + '/tag').post(params).success(function(res) {
-		cb(null, res.data);
-	    }).error(function(res) {
-		var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .tag[data-value="' + params.value + '"]');
+      App.api('/vitamin/' + id + '/tag').post(params).success(function(res) {
+	cb(null, res.data);
+      }).error(function(res) {
+	var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .tag[data-value="' + params.value + '"]');
 
-		Elem.each(divs, function(div) {
-		    div.parentNode.removeChild(div);
-		});
+	Elem.each(divs, function(div) {
+	  div.parentNode.removeChild(div);
+	});
 
-		cb(res.data, null);
-	    });
-	},
+	cb(res.data, null);
+      });
+    },
 
-	destroy: function(id, params, cb) {
-	    //TODO - if native - update localforage
-	    var self = this;
-	    var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .tag[data-value="' + params.value + '"]');
+    destroy: function(id, params, cb) {
+      //TODO - if native - update localforage
+      var self = this;
+      var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .tag[data-value="' + params.value + '"]');
 
-	    Elem.each(divs, function(div) {
-		div.parentNode.removeChild(div);
-	    });
+      Elem.each(divs, function(div) {
+	div.parentNode.removeChild(div);
+      });
 
-	    App.api('/vitamin/' + id + '/tag').del(params).success(function(res) {
-		cb(null, res.data);
-	    }).error(function(res) {
-		var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .current');
+      App.api('/vitamin/' + id + '/tag').del(params).success(function(res) {
+	cb(null, res.data);
+      }).error(function(res) {
+	var divs = document.querySelectorAll('.vitamin[data-id="' + id + '"] .current');
 
-		Elem.each(divs, function(div) {
-		    div.appendChild(self.render(params.value, { link: true, remove: true }));
-		});
+	Elem.each(divs, function(div) {
+	  div.appendChild(self.render(params.value, { link: true, remove: true }));
+	});
 
-		cb(res, null);
-	    });
-	}
-    };
+	cb(res, null);
+      });
+    }
+  };
 });
