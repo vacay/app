@@ -60,6 +60,10 @@
 
     FastClick.attach(document.body);
 
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-12719871-1', 'auto');
+    ga('send', 'pageview');
+
     document.body.classList.add('app-init');
   };
 
