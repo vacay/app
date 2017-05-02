@@ -72,6 +72,7 @@
 	html: '<i class="icon-play"></i> Play',
 	parent: actions
       }).onclick = function() {
+	ga('send', 'event', 'Mixtape', 'play')
 	Player.play(data.vitamins);
       };
 

@@ -20,6 +20,7 @@
     init: function (done) {
       App.api('/me').get().success(function(res) {
 	Me.init(res);
+	ga('set', 'userId', res.data.id);
 	done();
       }).error(function(data, res) {
 	done();

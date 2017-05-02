@@ -600,6 +600,7 @@
 	  P.updateStatusLoading(false);
 
 	  if (err) {
+	    ga('send', 'event', 'Track', 'error', { nonInteraction: true });
 	    Log.error(err, { vitamin: vitamin });
 	    Notification.show({
 	      msg: 'Stream currently unavailable.',
@@ -634,6 +635,7 @@
 	  thisSound.play();
 	  if (opts.position) thisSound.setPosition(opts.position);
 
+	  ga('send', 'event', 'Track', 'play');
 	  // analytics.track('play');
 	  // record play count & history
 
