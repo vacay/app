@@ -11,6 +11,7 @@
 
   return {
     msgs: [],
+    errors: [],
     show: function(opts) {
       var self = this;
 

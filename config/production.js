@@ -2,9 +2,9 @@
 
 var CONFIG = {
     env: 'production',
-    api: 'https://api.vacay.io/v1',
-    ws: 'https://api.vacay.io:1050',
+    api: 'https://api.vacay.io:8080/v1',
+    ws: 'https://api.vacay.io:8080',
     log: {
-	url: 'https://api.vacay.io/v1/logger'
+	url: 'https://api.vacay.io:8080/v1/logger'
     }
 };  

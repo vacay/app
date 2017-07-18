@@ -58,7 +58,7 @@
 	}
       };
       
-      Request.get('https://api.vacay.io/health_check').success(update).error(update);
+      Request.get('https://api.vacay.io:8080/health_check').success(update).error(update);
     }
   };
 });
