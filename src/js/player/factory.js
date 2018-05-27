@@ -287,7 +287,7 @@
     updateRepeat: function() {
       document.querySelector('.p-ctrls .repeat').classList.toggle('active', P.data.repeat);
     },
-    
+
     events: {
       play: function () {
 	P.updatePlaying(true);
@@ -338,7 +338,7 @@
 	    P.updateLoading(((self.bytesLoaded / self.bytesTotal) * 100) + '%');
 	  }
 	}
-	
+
 	var d = new Date();
 	if (d && d - P.lastWLExec > 50 || this.bytesLoaded === this.bytesTotal) {
 	  doWork.apply(this);
@@ -611,6 +611,9 @@
 	    });
 	    //TODO - update vitamin data
 	    //TODO - update UI
+
+            P.next();
+
 	    return;
 	  }
 
@@ -817,7 +820,7 @@
 	}
       }
     },
-    
+
     isPlaying: function(id) {
       return (this.data.nowplaying && this.data.nowplaying.id === id) ? true: false;
     },
@@ -871,7 +874,7 @@
       cleanup = function () {
 	doEvents('remove');
       };
-      
+
       doEvents('add');
 
       if (window.remoteControls) {
@@ -1084,7 +1087,7 @@
 
       sm._writeDebug('player.init(): Ready', 1);
     }
-    
+
   };
 
   return P;
